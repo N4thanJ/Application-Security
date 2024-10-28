@@ -3,8 +3,8 @@ import { Shoppingcart } from '../../model/shoppingcart';
 import shoppingcartDb from '../../repository/shoppingcart.db';
 import shoppingcartService from '../../service/shoppingcart.service';
 
-let mockShoppingcartDb: jest.Mock;
 let mockShoppingcartDbGetAllShoppingcarts: jest.Mock;
+let mockShoppingcartDbGetShoppingcartById: jest.Mock;
 let mockCreateShoppingcart: jest.SpyInstance<
     Shoppingcart,
     [{ name: string; deliveryDate: Date }],
@@ -14,8 +14,8 @@ let mockCreateShoppingcart: jest.SpyInstance<
 let mockAddItemToShoppingcart: jest.SpyInstance<Item, [Item, Shoppingcart], any>;
 
 beforeEach(() => {
-    mockShoppingcartDb = jest.fn();
     mockShoppingcartDbGetAllShoppingcarts = jest.fn();
+    mockShoppingcartDbGetShoppingcartById = jest.fn();
     mockCreateShoppingcart = jest.spyOn(shoppingcartService, 'createShoppingcart');
     mockAddItemToShoppingcart = jest
         .spyOn(shoppingcartService, 'addItemToShoppingcart')
@@ -81,4 +81,17 @@ test('given: a valid item, when: adding a item to a shoppingcart from shoppingca
     expect(mockAddItemToShoppingcart).toHaveBeenCalled();
     expect(mockAddItemToShoppingcart).toHaveBeenCalledWith(item, shoppingcart);
     expect(addedItem).toEqual(item);
+});
+
+test('given: a id of a shoppingcart, when: getting a shoppingcart by id, then: that shoppingcart is returned', () => {
+    // given a shoppingcart
+    const shoppingcart = new Shoppingcart({ name: 'fruits', deliveryDate: new Date('2025-12-24') });
+
+    // when getting a shoppingcart by id
+    const shoppingcartById = shoppingcartService.getShoppingcartById(shoppingcart.getId());
+
+    // then that shoppingcart is returned
+    expect(mockShoppingcartDbGetShoppingcartById).toHaveBeenCalled();
+    expect(mockShoppingcartDbGetShoppingcartById).toHaveBeenCalledWith(shoppingcart.getId());
+    expect(shoppingcartById).toEqual(shoppingcart);
 });
