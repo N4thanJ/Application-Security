@@ -21,6 +21,25 @@ const getAll = (): Shoppingcart[] => {
     }
 };
 
+const create = (shoppingcart: Shoppingcart): Shoppingcart => {
+    try {
+        if (!shoppingcart) {
+            throw new Error('No shoppingcart provided');
+        }
+
+        if (shoppingcarts.includes(shoppingcart)) {
+            throw new Error('Shoppingcart already exists');
+        }
+
+        shoppingcarts.push(shoppingcart);
+        return shoppingcart;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not create shoppingcart');
+    }
+};
+
 export default {
     getAll,
+    create,
 };

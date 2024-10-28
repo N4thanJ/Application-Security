@@ -1,12 +1,13 @@
-import { mock } from 'node:test';
-import { Item } from '../../model/item';
 import { Shoppingcart } from '../../model/shoppingcart';
 import shoppingcartDb from '../../repository/shoppingcart.db';
 import shoppingcartService from '../../service/shoppingcart.service';
-import exp from 'constants';
 
 let mockShoppingcartDbGetAllShoppingcarts: jest.Mock;
-let mockCreateShoppingcart: jest.SpyInstance<Shoppingcart, [Shoppingcart], any>;
+let mockCreateShoppingcart: jest.SpyInstance<
+    Shoppingcart,
+    [{ name: string; deliveryDate: Date }],
+    any
+>;
 
 beforeEach(() => {
     mockShoppingcartDbGetAllShoppingcarts = jest.fn();
@@ -37,9 +38,16 @@ test('given: a valid shoppingcart, when: creating a new shoppingcart, then: the 
     const shoppingcart = new Shoppingcart({ name: 'fruits', deliveryDate: new Date('2025-12-24') });
 
     // when creating a new shoppingcart
-    const createdShoppingCart = shoppingcartService.createShoppingcart(shoppingcart);
+    const createdShoppingCart = shoppingcartService.createShoppingcart({
+        name: shoppingcart.getName(),
+        deliveryDate: shoppingcart.getDeliveryDate(),
+    });
 
     // then the item is added to the shoppingcart
     expect(mockCreateShoppingcart).toHaveBeenCalled();
-    expect(mockCreateShoppingcart).toHaveBeenCalledWith(shoppingcart);
+    expect(mockCreateShoppingcart).toHaveBeenCalledWith({
+        name: shoppingcart.getName(),
+        deliveryDate: shoppingcart.getDeliveryDate(),
+    });
+    expect(createdShoppingCart).toEqual(shoppingcart);
 });
