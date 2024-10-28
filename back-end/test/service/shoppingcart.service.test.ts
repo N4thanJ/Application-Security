@@ -1,3 +1,4 @@
+import { Item } from '../../model/item';
 import { Shoppingcart } from '../../model/shoppingcart';
 import shoppingcartDb from '../../repository/shoppingcart.db';
 import shoppingcartService from '../../service/shoppingcart.service';
@@ -9,9 +10,12 @@ let mockCreateShoppingcart: jest.SpyInstance<
     any
 >;
 
+let mockAddItemToShoppingcart: jest.SpyInstance<Shoppingcart, [Shoppingcart], any>;
+
 beforeEach(() => {
     mockShoppingcartDbGetAllShoppingcarts = jest.fn();
     mockCreateShoppingcart = jest.spyOn(shoppingcartService, 'createShoppingcart');
+    mockAddItemToShoppingcart = jest.spyOn(shoppingcartService, 'addItemToShoppingcart');
 });
 
 test('given: a filled shoppingcartDb, when: getting all shoppingcarts from shoppingcartService, then: all shoppingcarts are returned', () => {
@@ -50,4 +54,24 @@ test('given: a valid shoppingcart, when: creating a new shoppingcart, then: the 
         deliveryDate: shoppingcart.getDeliveryDate(),
     });
     expect(createdShoppingCart).toEqual(shoppingcart);
+});
+
+test('given: a valid item, when: adding a item to a shoppingcart from shoppingcartService, then: that item is added to the shoppingcart', () => {
+    // given a valid item
+    const item = new Item({
+        name: 'Apple',
+        price: 0.49,
+        pathToImage: 'public/apple.png',
+        category: 'fruits',
+    });
+
+    // when adding item to a shoppingcart
+    const shoppingcart = new Shoppingcart({ name: 'fruits', deliveryDate: new Date('2025-12-24') });
+
+    const addedItem = shoppingcartService.addItemToShoppingcart(item, shoppingcart);
+
+    // then that item is added to the shoppingcart
+    expect(mockAddItemToShoppingcart).toHaveBeenCalled();
+    expect(mockAddItemToShoppingcart).toHaveBeenCalledWith(item, shoppingcart);
+    expect(addedItem).toEqual(item);
 });
