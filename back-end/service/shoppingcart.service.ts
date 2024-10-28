@@ -1,3 +1,4 @@
+import { Item } from '../model/item';
 import { Shoppingcart } from '../model/shoppingcart';
 import shoppingcartDb from '../repository/shoppingcart.db';
 
@@ -29,7 +30,22 @@ const createShoppingcart = (shoppingcart: { name: string; deliveryDate: Date }):
     return createdShoppingCart;
 };
 
+const addItemToShoppingcart = (item: Item, shoppingcart: Shoppingcart): Item => {
+    if (!shoppingcart || !item) {
+        throw new Error('No shoppingcart or item provided');
+    }
+
+    const updatedShoppingcart = shoppingcartDb.addItem(item, shoppingcart);
+
+    if (!updatedShoppingcart) {
+        throw new Error('Could not add item to shoppingcart');
+    }
+
+    return item;
+};
+
 export default {
     getAllShoppingcarts,
     createShoppingcart,
+    addItemToShoppingcart,
 };

@@ -3,6 +3,7 @@ import { Shoppingcart } from '../../model/shoppingcart';
 import shoppingcartDb from '../../repository/shoppingcart.db';
 import shoppingcartService from '../../service/shoppingcart.service';
 
+let mockShoppingcartDb: jest.Mock;
 let mockShoppingcartDbGetAllShoppingcarts: jest.Mock;
 let mockCreateShoppingcart: jest.SpyInstance<
     Shoppingcart,
@@ -10,12 +11,18 @@ let mockCreateShoppingcart: jest.SpyInstance<
     any
 >;
 
-let mockAddItemToShoppingcart: jest.SpyInstance<Shoppingcart, [Shoppingcart], any>;
+let mockAddItemToShoppingcart: jest.SpyInstance<Item, [Item, Shoppingcart], any>;
 
 beforeEach(() => {
+    mockShoppingcartDb = jest.fn();
     mockShoppingcartDbGetAllShoppingcarts = jest.fn();
     mockCreateShoppingcart = jest.spyOn(shoppingcartService, 'createShoppingcart');
-    mockAddItemToShoppingcart = jest.spyOn(shoppingcartService, 'addItemToShoppingcart');
+    mockAddItemToShoppingcart = jest
+        .spyOn(shoppingcartService, 'addItemToShoppingcart')
+        .mockImplementation((item, shoppingcart) => {
+            shoppingcart.addItem(item);
+            return item;
+        });
 });
 
 test('given: a filled shoppingcartDb, when: getting all shoppingcarts from shoppingcartService, then: all shoppingcarts are returned', () => {
