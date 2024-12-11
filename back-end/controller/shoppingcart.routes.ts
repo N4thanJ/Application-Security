@@ -96,6 +96,60 @@ shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFuncti
     }
 });
 
+shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const shoppingcartId = parseInt(req.params.itemId);
+        const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
+        res.status(200).json(shoppingcart);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+});
+/**
+ * @swagger
+ * /shoppingcarts/{id}:
+ *   get:
+ *     summary: Get a shopping cart by ID
+ *     description: Retrieve a specific shopping cart by its unique ID
+ *     tags:
+ *       - Shoppingcarts
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the shopping cart to retrieve
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Shopping cart retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ShoppingCart'
+ *       404:
+ *         description: Shopping cart not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Shopping cart not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error occurred"
+ */
+
 /**
  * @swagger
  * /shoppingcarts:

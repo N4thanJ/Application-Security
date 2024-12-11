@@ -33,6 +33,15 @@ const addItemToShoppingcart = async ({
     return shoppingcart;
 };
 
+const getShoppingcartById = async (id: number): Promise<Shoppingcart> => {
+    const shoppingcart = await shoppingcartDb.getById(id);
+    if (!shoppingcart) {
+        throw new Error('Shoppingcart not found');
+    }
+
+    return shoppingcart;
+};
+
 const createShoppingcart = async (
     shoppingcart: ShoppingcartInput,
     email: string,
@@ -57,4 +66,9 @@ const createShoppingcart = async (
     return createdShoppingcart;
 };
 
-export default { getAllShoppingcarts, addItemToShoppingcart, createShoppingcart };
+export default {
+    getAllShoppingcarts,
+    getShoppingcartById,
+    addItemToShoppingcart,
+    createShoppingcart,
+};
