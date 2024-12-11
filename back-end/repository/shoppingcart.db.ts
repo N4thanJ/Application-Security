@@ -40,7 +40,6 @@ const getAll = async (): Promise<Shoppingcart[]> => {
 
 const getById = async (id: number): Promise<Shoppingcart | undefined> => {
     try {
-        console.log('shoppingcartID' + id);
         const shoppingcartPrisma = await db.shoppingcart.findUnique({
             where: {
                 id: id,
