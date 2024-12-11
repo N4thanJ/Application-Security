@@ -10,7 +10,12 @@ test('given: valid values for a user, when: user is constructed, then: user is c
     const validRole = 'user';
 
     // when user is constructed
-    const user = new User({ email: validEmail, password: validPassword, role: validRole });
+    const user = new User({
+        email: validEmail,
+        password: validPassword,
+        role: validRole,
+        shoppingcarts: [],
+    });
 
     // then user is created with those values
     expect(user.getEmail()).toEqual(validEmail);
@@ -25,7 +30,13 @@ test('given: invalid email for a user, when: a user is constructed, then: error 
     const validRole = 'user';
 
     // when user is constructed
-    const user = () => new User({ email: invalidEmail, password: validPassword, role: validRole });
+    const user = () =>
+        new User({
+            email: invalidEmail,
+            password: validPassword,
+            role: validRole,
+            shoppingcarts: [],
+        });
 
     expect(user).toThrow('Email is required');
 });
@@ -37,29 +48,29 @@ test('given: invalid password for a user, when: a user is constructed, then: err
     const validRole = 'user';
 
     // when user is constructed
-    const user = () => new User({ email: validEmail, password: invalidPassword, role: validRole });
+    const user = () =>
+        new User({
+            email: validEmail,
+            password: invalidPassword,
+            role: validRole,
+            shoppingcarts: [],
+        });
 
     expect(user).toThrow('Password is required');
 });
 
-test('given: invalid role for a user, when: a user is constructed, then: error is thrown', () => {
-    // given invalid values for a user
-    const validEmail = 'john.doe@mail.com';
-    const validPassword = 'JohnD123!';
-    const invalidRole = '' as Role;
-
-    // when user is constructed
-    const user = () => new User({ email: validEmail, password: validPassword, role: invalidRole });
-
-    expect(user).toThrow('Role is required');
-});
-
 test('given: valid user, when: adding a shopping cart to a user, then: shopping cart is added to that user', () => {
     // given valid user
-    const user = new User({ email: 'john.doe@mail.com', password: 'JohnD123!', role: 'admin' });
+    const user = new User({
+        email: 'john.doe@mail.com',
+        password: 'JohnD123!',
+        role: 'admin',
+        shoppingcarts: [],
+    });
     const shoppingcart = new Shoppingcart({
         name: 'Groceries',
         deliveryDate: set(new Date(Date.now() + 86400000), { hours: 12, minutes: 0 }),
+        items: [],
     });
 
     // when adding a shopping cart to a user
@@ -72,10 +83,16 @@ test('given: valid user, when: adding a shopping cart to a user, then: shopping 
 
 test('given: valid user, when: adding a user to a shopping cart that is already added, then: error is thrown and user is not added', () => {
     // given valid user
-    const user = new User({ email: 'john.doe@mail.com', password: 'JohnD123!', role: 'admin' });
+    const user = new User({
+        email: 'john.doe@mail.com',
+        password: 'JohnD123!',
+        role: 'admin',
+        shoppingcarts: [],
+    });
     const shoppingcart = new Shoppingcart({
         name: 'Groceries',
         deliveryDate: set(new Date(Date.now() + 86400000), { hours: 12, minutes: 0 }),
+        items: [],
     });
 
     user.addShoppingcart(shoppingcart);

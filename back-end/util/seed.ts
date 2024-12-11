@@ -93,13 +93,20 @@ const main = async () => {
         }),
     ]);
 
-    const users = await Promise.all([
+    await Promise.all([
         prisma.user.create({
             data: {
                 id: 0,
                 email: 'john.doe@mail.com',
                 password: await bcrypt.hash('John123!', 12),
                 role: 'user',
+                shoppingcarts: {
+                    create: {
+                        id: 0,
+                        name: 'Shoppingcart 1',
+                        deliveryDate: new Date('2026-12-24'),
+                    },
+                },
             },
         }),
         prisma.user.create({
@@ -108,25 +115,13 @@ const main = async () => {
                 email: 'jane.doe@mail.com',
                 password: await bcrypt.hash('Jane123!', 12),
                 role: 'admin',
-            },
-        }),
-    ]);
-
-    await Promise.all([
-        prisma.shoppingcart.create({
-            data: {
-                id: 0,
-                name: 'Shoppingcart 1',
-                deliveryDate: new Date('2026-12-24'),
-                userId: 0,
-            },
-        }),
-        prisma.shoppingcart.create({
-            data: {
-                id: 1,
-                name: 'Shoppingcart 2',
-                deliveryDate: new Date('2026-09-16'),
-                userId: 1,
+                shoppingcarts: {
+                    create: {
+                        id: 1,
+                        name: 'Shoppingcart 2',
+                        deliveryDate: new Date('2026-09-16'),
+                    },
+                },
             },
         }),
     ]);

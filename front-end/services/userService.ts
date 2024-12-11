@@ -18,9 +18,19 @@ const register = async (email: string, password: string) => {
     });
 };
 
+const getUserByEmail = async (email: string) => {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + email, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
 const UserService = {
     login,
     register,
+    getUserByEmail,
 };
 
 export default UserService;

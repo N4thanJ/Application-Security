@@ -11,6 +11,7 @@ test('given: valid values for a shopping cart, when: shopping cart is constructe
     const shoppingcart = new Shoppingcart({
         name: validName,
         deliveryDate: validDeliveryDate,
+        items: [],
     });
 
     // then shopping cart is created with those values
@@ -29,6 +30,7 @@ test('given: invalid name for a shopping cart, when: shopping cart is constructe
         new Shoppingcart({
             name: invalidName,
             deliveryDate: validDeliveryDate,
+            items: [],
         });
 
     // then error is thrown
@@ -45,6 +47,7 @@ test('given: invalid delivery date for a shopping cart, when: shopping cart is c
         new Shoppingcart({
             name: validName,
             deliveryDate: invalidDeliveryDate,
+            items: [],
         });
 
     // then error is thrown
@@ -61,6 +64,7 @@ test('given: delivery date before today for a shopping cart, when: shopping cart
         new Shoppingcart({
             name: validName,
             deliveryDate: invalidDeliveryDate,
+            items: [],
         });
 
     // then error is thrown
@@ -72,6 +76,7 @@ test('given: valid shoppingcart and item, when: adding item to a shopping cart, 
     const shoppingcart = new Shoppingcart({
         name: 'Groceries',
         deliveryDate: set(new Date(Date.now() + 86400000), { hours: 12, minutes: 0 }),
+        items: [],
     });
 
     const item = new Item({
@@ -86,7 +91,7 @@ test('given: valid shoppingcart and item, when: adding item to a shopping cart, 
 
     // then item is added to the shopping cart
     expect(shoppingcart.getItems()).toHaveLength(1);
-    expect(shoppingcart.getItems()).toContain(item);
+    expect(shoppingcart.getItems().map((i) => i.item)).toContain(item);
 });
 
 test('given: valid shopping cart with items, when: removing item, then: that item is removed once', () => {
@@ -94,6 +99,7 @@ test('given: valid shopping cart with items, when: removing item, then: that ite
     const shoppingcart = new Shoppingcart({
         name: 'Groceries',
         deliveryDate: set(new Date(Date.now() + 86400000), { hours: 12, minutes: 0 }),
+        items: [],
     });
 
     const item = new Item({
@@ -118,6 +124,7 @@ test('given: valid shopping cart with items, when: removing item that does not e
     const shoppingcart = new Shoppingcart({
         name: 'Groceries',
         deliveryDate: set(new Date(Date.now() + 86400000), { hours: 12, minutes: 0 }),
+        items: [],
     });
 
     const item = new Item({

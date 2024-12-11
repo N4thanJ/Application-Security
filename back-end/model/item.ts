@@ -17,7 +17,7 @@ export class Item {
         price: number;
         pathToImage: string;
         category: Category;
-        nutritionlabel?: Nutritionlabel | null;
+        nutritionlabel?: Nutritionlabel;
     }) {
         this.validate(item);
         this.id = item.id;
@@ -25,7 +25,7 @@ export class Item {
         this.price = item.price;
         this.pathToImage = item.pathToImage;
         this.category = item.category;
-        this.nutritionlabel = item.nutritionlabel || null;
+        this.nutritionlabel = item.nutritionlabel;
     }
 
     validate(item: { name: string; price: number; pathToImage: string; category: Category }) {

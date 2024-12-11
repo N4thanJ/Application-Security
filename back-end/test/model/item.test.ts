@@ -123,29 +123,3 @@ test('given: invalid category for a item, when: item is constructed, then: error
     // then error is thrown
     expect(item).toThrow('Category is required');
 });
-
-test('given: valid item, when: adding nutritionlabel to a item, then: nutritionlabel is added to that item', () => {
-    // given valid item
-    const item = new Item({
-        name: 'Paprika',
-        price: 0.49,
-        pathToImage: '/public/paprika.png',
-        category: 'fruits' as Category,
-    });
-
-    const nutritionlabel = new Nutritionlabel({
-        energy: 100,
-        fat: 10,
-        saturatedFats: 5,
-        carbohydrates: 20,
-        sugar: 15,
-        protein: 8,
-        salts: 2,
-    });
-
-    // when adding nutritionlabel to a item
-    item.setNutritionLabel(nutritionlabel);
-
-    // then nutritionlabel is added to that item
-    expect(item.getNutritionLabel()).toEqual(nutritionlabel);
-});

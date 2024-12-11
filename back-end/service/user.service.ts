@@ -14,6 +14,15 @@ const getAllUsers = async (): Promise<User[]> => {
     return users;
 };
 
+const getByEmail = async (email: string): Promise<User> => {
+    const user = await userDb.getByEmail({ email });
+    if (!user) {
+        throw new Error(`No user found with email: ${email}`);
+    }
+
+    return user;
+};
+
 const createUser = async (user: UserInput): Promise<User> => {
     const existingUser = await userDb.getByEmail({ email: user.email });
 
@@ -27,6 +36,7 @@ const createUser = async (user: UserInput): Promise<User> => {
         email: user.email,
         role: user.role,
         password: hashedPassword,
+        shoppingcarts: [],
     });
 
     return userDb.createUser(newUser);
@@ -59,4 +69,4 @@ const authenticate = async ({
     return authresponse;
 };
 
-export default { getAllUsers, createUser, authenticate };
+export default { getAllUsers, createUser, authenticate, getByEmail };

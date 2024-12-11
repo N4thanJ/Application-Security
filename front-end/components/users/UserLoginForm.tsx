@@ -65,7 +65,7 @@ const UserLoginForm: React.FC = () => {
 
             setTimeout(() => {
                 router.push('/');
-            }, 200);
+            }, 2000);
         } catch (error) {
             setStatusMessages([
                 {

@@ -77,6 +77,49 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
+ * /users/{email}:
+ *   get:
+ *     summary: Get user by email
+ *     description: Retrieves a user by their email address. Requires administrative privileges.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The email address of the user to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Authentication required
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *       404:
+ *         description: Not Found - User does not exist
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.get('/:email', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const email = req.params.email;
+        const user = await userService.getByEmail(email);
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
  * /users/signup:
  *   post:
  *     summary: Create a new user

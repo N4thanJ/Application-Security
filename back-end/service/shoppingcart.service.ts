@@ -1,8 +1,9 @@
 import shoppingcartDb from '../repository/shoppingcart.db';
 import { Shoppingcart } from '../model/shoppingcart';
 import itemDb from '../repository/item.db';
-import { ShoppingcartInput } from '../types';
+import { Role, ShoppingcartInput } from '../types';
 import { User } from '../model/user';
+import userDb from '../repository/user.db';
 
 const getAllShoppingcarts = async (): Promise<Shoppingcart[]> => {
     const shoppingcarts = await shoppingcartDb.getAll();
@@ -32,18 +33,20 @@ const addItemToShoppingcart = async ({
     return shoppingcart;
 };
 
-const createShoppingcart = async (shoppingcart: ShoppingcartInput): Promise<Shoppingcart> => {
+const createShoppingcart = async (
+    shoppingcart: ShoppingcartInput,
+    email: string,
+    role: Role
+): Promise<Shoppingcart> => {
     const newShoppingcart = new Shoppingcart(shoppingcart);
 
-    // temp user
-    const tempUser = new User({
-        id: 0,
-        email: 'john@mail.com',
-        password: 'john123!',
-        role: 'admin',
-    });
+    const user = await userDb.getByEmail({ email });
 
-    newShoppingcart.setUser(tempUser);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    newShoppingcart.setUser(user);
 
     const createdShoppingcart = await shoppingcartDb.create(newShoppingcart);
 

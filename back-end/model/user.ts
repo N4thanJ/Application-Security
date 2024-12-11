@@ -1,21 +1,32 @@
 import { Role } from '../types';
 import { Shoppingcart } from './shoppingcart';
 
-import { User as UserPrisma, Shoppingcart as ShoppingcartPrisma } from '@prisma/client';
+import {
+    User as UserPrisma,
+    Shoppingcart as ShoppingcartPrisma,
+    Item as ItemPrisma,
+} from '@prisma/client';
 
 export class User {
     private id?: number | undefined;
     private email: string;
     private password: string;
     private role: Role;
-    private shoppingcarts: Shoppingcart[] = [];
+    private shoppingcarts: Shoppingcart[];
 
-    constructor(user: { id?: number; email: string; password: string; role: Role }) {
+    constructor(user: {
+        id?: number;
+        email: string;
+        password: string;
+        role: Role;
+        shoppingcarts: Shoppingcart[];
+    }) {
         this.validate(user);
         this.id = user.id;
         this.email = user.email;
         this.password = user.password;
         this.role = user.role;
+        this.shoppingcarts = user.shoppingcarts;
     }
 
     getId(): number | undefined {
@@ -66,7 +77,46 @@ export class User {
         );
     }
 
-    static from({ id, email, password, role }: UserPrisma) {
-        return new User({ id, email, password, role });
+    static from({
+        id,
+        email,
+        password,
+        role,
+        shoppingcarts,
+    }: UserPrisma & {
+        shoppingcarts: (ShoppingcartPrisma & {
+            items?: { item: ItemPrisma; quantity: number }[];
+        })[];
+    }): User {
+        return new User({
+            id,
+            email,
+            password,
+            role,
+            shoppingcarts: shoppingcarts.map((shoppingcart) =>
+                Shoppingcart.from({
+                    ...shoppingcart,
+                    items:
+                        shoppingcart.items?.map(({ item, quantity }) => ({
+                            item: {
+                                id: item.id,
+                                name: item.name,
+                                price: item.price,
+                                pathToImage: item.pathToImage,
+                                category: item.category,
+                            },
+                            quantity,
+                        })) ?? [],
+                    user: {
+                        id,
+                        email,
+                        password,
+                        role,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
+                })
+            ),
+        });
     }
 }

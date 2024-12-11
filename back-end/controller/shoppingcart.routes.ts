@@ -54,6 +54,7 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import shoppingcartService from '../service/shoppingcart.service';
+import { Role } from '../types';
 
 const shoppingcartRouter = express.Router();
 
@@ -99,6 +100,8 @@ shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFuncti
  * @swagger
  * /shoppingcarts:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new shopping cart
  *     description: Create a new shopping cart with a name and delivery date
  *     tags:
@@ -138,9 +141,24 @@ shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFuncti
  *                   example: "Internal server error occurred"
  */
 
-shoppingcartRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+shoppingcartRouter.post('/', async (req: Request, res: Response) => {
     try {
-        const shoppingcart = await shoppingcartService.createShoppingcart(req.body);
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+
+        const token = authHeader.split(' ')[1];
+        const { email, role } = JSON.parse(
+            Buffer.from(token.split('.')[1], 'base64').toString()
+        ) as {
+            email: string;
+            role: Role;
+        };
+
+        const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email, role);
         res.status(201).json(shoppingcart);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });

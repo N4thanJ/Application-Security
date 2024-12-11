@@ -14,7 +14,7 @@ const getAllItems = async (): Promise<Item[]> => {
 };
 
 const createItem = async (item: ItemInput): Promise<Item> => {
-    const createdItem = itemDb.create(new Item(item));
+    const createdItem = await itemDb.create(new Item(item));
     if (!createdItem) {
         throw new Error('Item could not be created');
     }

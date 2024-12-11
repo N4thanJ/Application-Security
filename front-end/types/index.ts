@@ -5,6 +5,7 @@ export type User = {
     id?: number;
     email: string;
     role: Role;
+    shoppingcarts: Shoppingcart[];
 };
 
 export type Item = {
@@ -26,6 +27,13 @@ export type Nutritionlabel = {
     protein: number;
     salts: number;
     item?: Item;
+};
+
+export type Shoppingcart = {
+    id?: number;
+    name: string;
+    deliveryDate: Date;
+    items: Item[];
 };
 
 export type StatusMessage = {
