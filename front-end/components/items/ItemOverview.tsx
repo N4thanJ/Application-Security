@@ -25,19 +25,9 @@ const ItemsOverview: React.FC<Props> = ({ items, selectedItem }: Props) => {
                                 />
                             </div>
 
-                            <div className="flex justify-between items-center p-4">
-                                <div>
-                                    <h2 className="text-lg font-semibold text-gray-800">
-                                        {item.name}
-                                    </h2>
-                                    <p className="text-sm text-gray-500">{item.price} €</p>
-                                </div>
-                                <button
-                                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-200"
-                                    aria-label={`Add ${item.name}`}
-                                >
-                                    <Plus size={18} />
-                                </button>
+                            <div className="grid p-4">
+                                <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
+                                <p className="text-sm text-gray-500">{item.price} €</p>
                             </div>
 
                             <button
