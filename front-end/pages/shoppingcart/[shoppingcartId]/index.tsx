@@ -12,6 +12,21 @@ const CartViewer: React.FC = () => {
 
     const [shoppingcart, setShoppingcart] = useState<Shoppingcart>();
 
+    const onDeleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number) => {
+        try {
+            const response = await ShoppingcartService.deleteItemFromShoppingcart(
+                itemId,
+                shoppingcartId
+            );
+            if (response) {
+                const updatedShoppingcart: Shoppingcart = await response.json();
+                setShoppingcart(updatedShoppingcart);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         if (!shoppingcartId) return;
 
@@ -51,7 +66,12 @@ const CartViewer: React.FC = () => {
         return <p>Loading...</p>;
     }
 
-    return <ShoppingcartCheckoutComponent shoppingcart={shoppingcart} />;
+    return (
+        <ShoppingcartCheckoutComponent
+            shoppingcart={shoppingcart}
+            onDeleteItemFromShoppingcart={onDeleteItemFromShoppingcart}
+        />
+    );
 };
 
 export default CartViewer;

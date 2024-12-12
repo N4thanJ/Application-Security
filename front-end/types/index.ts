@@ -30,10 +30,15 @@ export type Nutritionlabel = {
 };
 
 export type Shoppingcart = {
-    id?: number;
+    id: number;
     name: string;
     deliveryDate: Date;
-    items: Item[];
+    items: ShoppingcartItem[];
+};
+
+export type ShoppingcartItem = {
+    item: Item;
+    quantity: number;
 };
 
 export type StatusMessage = {

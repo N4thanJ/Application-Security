@@ -1,4 +1,5 @@
-import { Item } from '@types';
+import ShoppingcartService from '@services/ShopingcartService';
+import { Item, Shoppingcart } from '@types';
 import { ShoppingBagIcon, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { calculateTotal, calculateTotalOfItem } from 'util/item';
@@ -10,13 +11,15 @@ type ShoppingcartItem = {
 
 type Props = {
     shoppingcart: {
-        id: string;
+        id: number;
         name: string;
         items: ShoppingcartItem[];
     };
+
+    onDeleteItemFromShoppingcart: (itemId: number, shoppingcartId: number) => void;
 };
 
-const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart }: Props) => {
+const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart, onDeleteItemFromShoppingcart }: Props) => {
     return (
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 md:p-8">
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
@@ -79,9 +82,14 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart }: Props)
                                 <Link
                                     className="bg-red-500 p-2 rounded-lg text-white border-2 border-gray-600"
                                     href="#"
-                                    onClick={() =>
-                                        onDeleteItemFromShoppingcart(shoppingcart.id, item.id)
-                                    }
+                                    onClick={() => {
+                                        if (
+                                            item.id !== undefined &&
+                                            shoppingcart.id !== undefined
+                                        ) {
+                                            onDeleteItemFromShoppingcart(item.id, shoppingcart.id);
+                                        }
+                                    }}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Link>
