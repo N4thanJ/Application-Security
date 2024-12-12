@@ -66,9 +66,37 @@ const createShoppingcart = async (
     return createdShoppingcart;
 };
 
+const removeItemFromShoppingcart = async (
+    itemId: number,
+    shoppingcartId: number
+): Promise<Shoppingcart> => {
+    const item = await itemDb.getById(itemId);
+    const shoppingcart = await shoppingcartDb.getById(shoppingcartId);
+
+    if (!item || item === undefined) {
+        throw new Error('Item not found');
+    }
+
+    if (!shoppingcart || shoppingcart === undefined) {
+        throw new Error('Shoppingcart not found');
+    }
+
+    const itemRemovedFromShoppingcart = await shoppingcartDb.removeItemFromShoppingcart({
+        item,
+        shoppingcart,
+    });
+
+    if (!itemRemovedFromShoppingcart) {
+        throw new Error('Could not remove item from shoppingcart');
+    }
+
+    return itemRemovedFromShoppingcart;
+};
+
 export default {
     getAllShoppingcarts,
     getShoppingcartById,
     addItemToShoppingcart,
     createShoppingcart,
+    removeItemFromShoppingcart,
 };
