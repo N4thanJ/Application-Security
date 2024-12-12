@@ -157,7 +157,7 @@ const addItemToShoppingcart = async ({
             return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
         } else {
             // If item doesn't exist, create new relationship with quantity 1
-            const shoppingcartPrisma = await db.shoppingcart.update({
+            const updatedShoppingcart = await db.shoppingcart.update({
                 where: {
                     id: shoppingcart.getId(),
                 },
@@ -179,6 +179,17 @@ const addItemToShoppingcart = async ({
                 },
             });
 
+            const shoppingcartPrisma = await db.shoppingcart.findUnique({
+                where: { id: shoppingcart.getId()! },
+                include: {
+                    items: {
+                        include: {
+                            item: true,
+                        },
+                    },
+                    user: true,
+                },
+            });
             return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
         }
     } catch (error) {
@@ -187,7 +198,7 @@ const addItemToShoppingcart = async ({
     }
 };
 
-const removeItemFromShoppingcart = async ({
+const deleteItemFromShoppingcart = async ({
     item,
     shoppingcart,
 }: {
@@ -226,10 +237,88 @@ const removeItemFromShoppingcart = async ({
     }
 };
 
+const removeAnItemFromShoppingcart = async ({
+    item,
+    shoppingcart,
+}: {
+    item: Item;
+    shoppingcart: Shoppingcart;
+}) => {
+    try {
+        const itemId = item.getId();
+        const shoppingcartId = shoppingcart.getId();
+
+        // Fetch the current quantity of the item in the shopping cart
+        const currentItem = await db.shoppingcartItems.findUnique({
+            where: {
+                shoppingcartId_itemId: {
+                    shoppingcartId: shoppingcartId!,
+                    itemId: itemId!,
+                },
+            },
+            select: {
+                quantity: true,
+            },
+        });
+
+        if (!currentItem) {
+            throw new Error('Item not found in shoppingcart');
+        }
+
+        const shoppingcartPrisma = await db.shoppingcart.update({
+            where: {
+                id: shoppingcartId!,
+            },
+            data: {
+                items: {
+                    ...(currentItem.quantity === 1
+                        ? {
+                              delete: {
+                                  shoppingcartId_itemId: {
+                                      shoppingcartId: shoppingcartId!,
+                                      itemId: itemId!,
+                                  },
+                              },
+                          }
+                        : {
+                              update: {
+                                  where: {
+                                      shoppingcartId_itemId: {
+                                          shoppingcartId: shoppingcartId!,
+                                          itemId: itemId!,
+                                      },
+                                  },
+                                  data: {
+                                      quantity: {
+                                          decrement: 1,
+                                      },
+                                  },
+                              },
+                          }),
+                },
+            },
+            include: {
+                items: {
+                    include: {
+                        item: true,
+                    },
+                },
+                user: true,
+            },
+        });
+
+        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not remove item from shoppingcart');
+    }
+};
+
 export default {
     getAll,
     getById,
     addItemToShoppingcart,
     create,
-    removeItemFromShoppingcart,
+    deleteItemFromShoppingcart,
+    removeAnItemFromShoppingcart,
 };

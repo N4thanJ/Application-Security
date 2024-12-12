@@ -28,9 +28,11 @@ const addItemToShoppingcart = async ({
         throw new Error('Item or shoppingcart not found');
     }
 
-    await shoppingcartDb.addItemToShoppingcart({ item, shoppingcart });
-
-    return shoppingcart;
+    const updatedShoppingcart = await shoppingcartDb.addItemToShoppingcart({ item, shoppingcart });
+    if (!updatedShoppingcart) {
+        throw new Error('Could not add item to shoppingcart');
+    }
+    return updatedShoppingcart;
 };
 
 const getShoppingcartById = async (id: number): Promise<Shoppingcart> => {
@@ -81,7 +83,34 @@ const removeItemFromShoppingcart = async (
         throw new Error('Shoppingcart not found');
     }
 
-    const itemRemovedFromShoppingcart = await shoppingcartDb.removeItemFromShoppingcart({
+    const itemRemovedFromShoppingcart = await shoppingcartDb.deleteItemFromShoppingcart({
+        item,
+        shoppingcart,
+    });
+
+    if (!itemRemovedFromShoppingcart) {
+        throw new Error('Could not remove item from shoppingcart');
+    }
+
+    return itemRemovedFromShoppingcart;
+};
+
+const removeAnItemFromShoppingcart = async (
+    itemId: number,
+    shoppingcartId: number
+): Promise<Shoppingcart> => {
+    const item = await itemDb.getById(itemId);
+    const shoppingcart = await shoppingcartDb.getById(shoppingcartId);
+
+    if (!item || item === undefined) {
+        throw new Error('Item not found');
+    }
+
+    if (!shoppingcart || shoppingcart === undefined) {
+        throw new Error('Shoppingcart not found');
+    }
+
+    const itemRemovedFromShoppingcart = await shoppingcartDb.removeAnItemFromShoppingcart({
         item,
         shoppingcart,
     });
@@ -99,4 +128,5 @@ export default {
     addItemToShoppingcart,
     createShoppingcart,
     removeItemFromShoppingcart,
+    removeAnItemFromShoppingcart,
 };
