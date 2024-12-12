@@ -19,7 +19,10 @@ type Props = {
     onDeleteItemFromShoppingcart: (itemId: number, shoppingcartId: number) => void;
 };
 
-const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart, onDeleteItemFromShoppingcart }: Props) => {
+const ShoppingcartCheckoutComponent: React.FC<Props> = ({
+    shoppingcart,
+    onDeleteItemFromShoppingcart,
+}: Props) => {
     return (
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 md:p-8">
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
@@ -56,7 +59,7 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart, onDelete
                                 </div>
                             </div>
 
-                            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
+                            <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
                                 <div className="text-center">
                                     <p className="text-sm font-medium text-gray-600">Price</p>
                                     <p className="text-gray-800">${item.price.toFixed(2)}</p>
