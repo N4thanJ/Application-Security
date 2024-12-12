@@ -288,4 +288,72 @@ shoppingcartRouter.post(
     }
 );
 
+/**
+ * @swagger
+ * /shoppingcarts/removeItem/{itemId}/{shoppingcartId}:
+ *   delete:
+ *     summary: Remove an item from a shopping cart
+ *     description: Remove a specific item from an existing shopping cart
+ *     tags:
+ *       - Shoppingcarts
+ *     parameters:
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the item to remove from the cart
+ *         example: 1
+ *       - in: path
+ *         name: shoppingcartId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the shopping cart to remove the item from
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Item successfully removed from shopping cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ShoppingCart'
+ *       404:
+ *         description: Shopping cart or item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Shopping cart or item not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error occurred"
+ */
+
+shoppingcartRouter.delete(
+    '/removeItem/:itemId/:shoppingcartId',
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const itemId = parseInt(req.params.itemId, 10);
+            const shoppingcartId = parseInt(req.params.shoppingcartId);
+            const shoppingcart = await shoppingcartService.removeItemFromShoppingcart(
+                itemId,
+                shoppingcartId
+            );
+            res.status(200).json(shoppingcart);
+        } catch (error) {
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+);
 export { shoppingcartRouter };

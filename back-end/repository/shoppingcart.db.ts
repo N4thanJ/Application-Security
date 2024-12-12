@@ -187,9 +187,49 @@ const addItemToShoppingcart = async ({
     }
 };
 
+const removeItemFromShoppingcart = async ({
+    item,
+    shoppingcart,
+}: {
+    item: Item;
+    shoppingcart: Shoppingcart;
+}) => {
+    try {
+        const shoppingcartPrisma = await db.shoppingcart.update({
+            where: {
+                id: shoppingcart.getId()!,
+            },
+            data: {
+                items: {
+                    delete: {
+                        shoppingcartId_itemId: {
+                            shoppingcartId: shoppingcart.getId()!,
+                            itemId: item.getId()!,
+                        },
+                    },
+                },
+            },
+            include: {
+                items: {
+                    include: {
+                        item: true,
+                    },
+                },
+                user: true,
+            },
+        });
+
+        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not remove item from shoppingcart');
+    }
+};
+
 export default {
     getAll,
     getById,
     addItemToShoppingcart,
     create,
+    removeItemFromShoppingcart,
 };
