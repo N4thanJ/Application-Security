@@ -39,22 +39,29 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                         </div>
 
                         <div className="flex items-center justify-center space-x-2 mt-4">
-                            <button
-                                className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                onClick={() => removeAnItemFromShoppingcart(item, shoppingcart)}
-                            >
-                                <Minus size={24} />
-                            </button>
-                            <input
-                                type="text"
-                                className="w-28 text-center border border-gray-300 rounded-md"
-                                value={
-                                    shoppingcart.items.find(
-                                        (cartItem) => cartItem.item.id === item.id
-                                    )?.quantity || 0
-                                }
-                                readOnly
-                            />
+                            {(shoppingcart.items.find((cartItem) => cartItem.item.id === item.id)
+                                ?.quantity ?? 0) > 0 && (
+                                <>
+                                    <button
+                                        className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
+                                        onClick={() =>
+                                            removeAnItemFromShoppingcart(item, shoppingcart)
+                                        }
+                                    >
+                                        <Minus size={24} />
+                                    </button>
+                                    <input
+                                        type="text"
+                                        className="w-28 text-center border border-gray-300 rounded-md"
+                                        value={
+                                            shoppingcart.items.find(
+                                                (cartItem) => cartItem.item.id === item.id
+                                            )?.quantity || 0
+                                        }
+                                        readOnly
+                                    />
+                                </>
+                            )}
                             <button
                                 className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
                                 onClick={() => addItemToShoppingcart(item, shoppingcart)}
