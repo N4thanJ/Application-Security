@@ -1,5 +1,5 @@
 import { Item } from '@types';
-import { ShoppingBagIcon } from 'lucide-react';
+import { ShoppingBagIcon, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { calculateTotal, calculateTotalOfItem } from 'util/item';
 
@@ -75,6 +75,16 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({ shoppingcart }: Props)
                                         ${calculateTotalOfItem(item, quantity).toFixed(2)}
                                     </p>
                                 </div>
+
+                                <Link
+                                    className="bg-red-500 p-2 rounded-lg text-white border-2 border-gray-600"
+                                    href="#"
+                                    onClick={() =>
+                                        onDeleteItemFromShoppingcart(shoppingcart.id, item.id)
+                                    }
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Link>
                             </div>
                         </li>
                     ))}
