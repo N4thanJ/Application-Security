@@ -1,15 +1,10 @@
 import { Item, Shoppingcart } from '@types';
 import { Plus, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import { calculateTotal } from 'util/item';
 
 type Props = {
     shoppingcarts: Shoppingcart[] | [];
-};
-
-const calculateTotal = (items: { item: Item; quantity: number }[]): number => {
-    return items.reduce((total, { item, quantity }) => {
-        return total + item.price * quantity;
-    }, 0);
 };
 
 const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
@@ -44,9 +39,12 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                             </div>
                         </div>
                         <div className="bg-gray-50 px-6 py-4">
-                            <button className="w-full bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-primary/90 transition-colors duration-300">
+                            <Link
+                                href={`/shoppingcart/${shoppingcart.id}`}
+                                className="w-full bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-primary/90 transition-colors duration-300"
+                            >
                                 View Cart
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 ))}

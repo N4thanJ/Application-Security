@@ -15,8 +15,23 @@ const addShoppingcart = async (shoppingcart: Shoppingcart) => {
     }
 };
 
+const getShoppingcartById = async (shoppingcartId: string) => {
+    try {
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/shoppingcarts/${shoppingcartId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const ShoppingcartService = {
     addShoppingcart,
+    getShoppingcartById,
 };
 
 export default ShoppingcartService;

@@ -42,17 +42,7 @@ const getById = async (id: number): Promise<Shoppingcart | undefined> => {
     try {
         const shoppingcartPrisma = await db.shoppingcart.findUnique({
             where: {
-                id,
-            },
-            include: {
-                user: true,
-                items: true,
-            },
-        });
-
-        const shoppingcartWithItems = await db.shoppingcart.findUnique({
-            where: {
-                id: shoppingcartPrisma?.id,
+                id: id,
             },
             include: {
                 items: {
@@ -64,7 +54,7 @@ const getById = async (id: number): Promise<Shoppingcart | undefined> => {
             },
         });
 
-        return shoppingcartWithItems ? Shoppingcart.from(shoppingcartWithItems) : undefined;
+        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
     } catch (error) {
         console.log(error);
         throw new Error('Could not get shoppingcart by id');
