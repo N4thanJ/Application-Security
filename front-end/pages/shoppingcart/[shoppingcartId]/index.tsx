@@ -1,3 +1,4 @@
+import ShoppingcartCheckoutComponent from '@components/shoppingcart/ShoppingcartCheckoutComponent';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart, User } from '@types';
 import { useParams } from 'next/navigation';
@@ -50,7 +51,7 @@ const CartViewer: React.FC = () => {
         return <p>Loading...</p>;
     }
 
-    return <h1>{shoppingcart?.name}</h1>;
+    return <ShoppingcartCheckoutComponent shoppingcart={shoppingcart} />;
 };
 
 export default CartViewer;
