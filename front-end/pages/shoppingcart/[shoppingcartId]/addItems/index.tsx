@@ -1,11 +1,7 @@
-import AddItemToShoppingcartForm from '@components/items/AddItemToShoppingcartOverview';
-import ItemOverview from '@components/items/ItemOverview';
-import ItemsOverview from '@components/items/ItemOverview';
-import NutritionLabel from '@components/items/NutritionLabel';
+import AddItemToShoppingcartOverview from '@components/items/AddItemToShoppingcartOverview';
 import ItemsService from '@services/ItemsService';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart, User } from '@types';
-import { X } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -78,6 +74,27 @@ const addItemsToShoppingcart: React.FC = () => {
         }
     };
 
+    const handleQuantityChange = async (
+        item: Item,
+        shoppingcart: Shoppingcart,
+        quantity: number
+    ) => {
+        try {
+            const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                Number(item.id),
+                Number(shoppingcart.id),
+                quantity
+            );
+
+            if (response) {
+                const updatedShoppingcart = await response.json();
+                setShoppingcart(updatedShoppingcart);
+            }
+        } catch (error) {
+            console.error('Error fetching shoppingcart:', error);
+        }
+    };
+
     useEffect(() => {
         // Getting token & setting token
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
@@ -94,12 +111,13 @@ const addItemsToShoppingcart: React.FC = () => {
             </h1>
 
             {shoppingcart && items && shoppingcart.items && (
-                <AddItemToShoppingcartForm
+                <AddItemToShoppingcartOverview
                     items={items}
                     shoppingcart={shoppingcart}
                     selectedItem={setSelectedItem}
                     removeAnItemFromShoppingcart={removeAnItemFromShoppingcart}
                     addItemToShoppingcart={addItemToShoppingcart}
+                    handleQuantityChange={handleQuantityChange}
                 />
             )}
         </section>

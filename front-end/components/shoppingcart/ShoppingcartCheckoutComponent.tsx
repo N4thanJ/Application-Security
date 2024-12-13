@@ -2,6 +2,7 @@ import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart } from '@types';
 import { ShoppingBagIcon, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { calculateTotal, calculateTotalOfItem } from 'util/item';
 
 type ShoppingcartItem = {
@@ -10,19 +11,33 @@ type ShoppingcartItem = {
 };
 
 type Props = {
-    shoppingcart: {
-        id?: any;
-        name: string;
-        items: ShoppingcartItem[];
-    };
-
+    shoppingcart: Shoppingcart;
     onDeleteItemFromShoppingcart: (itemId: number, shoppingcartId: number) => void;
+    handleQuantityChange: (item: Item, shoppingcart: Shoppingcart, quantity: number) => void;
 };
 
 const ShoppingcartCheckoutComponent: React.FC<Props> = ({
     shoppingcart,
     onDeleteItemFromShoppingcart,
+    handleQuantityChange,
 }: Props) => {
+    const [itemQuantities, setItemQuantities] = useState<{ [key: number]: number }>({});
+
+    useEffect(() => {
+        const initialQuantities: { [key: number]: number } = {};
+        shoppingcart.items.forEach(({ item, quantity }) => {
+            if (item.id !== undefined) {
+                initialQuantities[item.id] = quantity;
+            }
+        });
+        setItemQuantities(initialQuantities);
+    }, [shoppingcart]);
+
+    const handleQuantityChangeLocal = (item: Item, quantity: number) => {
+        setItemQuantities((prev) => ({ ...prev, [item.id as number]: quantity }));
+        handleQuantityChange(item, shoppingcart, quantity);
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 md:p-8">
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
@@ -34,7 +49,6 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                         </span>
                     </Link>
                 </div>
-
                 <ShoppingBagIcon className="w-8 h-8 text-gray-600" />
             </div>
 
@@ -53,35 +67,35 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                                 />
                                 <div>
                                     <p className="font-semibold text-gray-800">{item.name}</p>
-                                    <p className="text-sm text-gray-500">
-                                        Category: {item.category}
-                                    </p>
                                 </div>
                             </div>
-
                             <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
                                 <div className="text-center">
                                     <p className="text-sm font-medium text-gray-600">Price</p>
                                     <p className="text-gray-800">${item.price.toFixed(2)}</p>
                                 </div>
-
                                 <div className="text-center">
                                     <p className="text-sm font-medium text-gray-600">Quantity</p>
                                     <input
                                         type="number"
-                                        value={quantity}
+                                        value={itemQuantities[Number(item.id)] || quantity}
+                                        onChange={(e) =>
+                                            handleQuantityChangeLocal(item, Number(e.target.value))
+                                        }
                                         className="w-16 text-center border border-gray-300 rounded-md p-1 text-gray-800"
                                         min="1"
                                     />
                                 </div>
-
                                 <div className="text-center">
                                     <p className="text-sm font-medium text-gray-600">Total</p>
                                     <p className="text-gray-800">
-                                        ${calculateTotalOfItem(item, quantity).toFixed(2)}
+                                        $
+                                        {calculateTotalOfItem(
+                                            item,
+                                            itemQuantities[Number(item.id)] || quantity
+                                        ).toFixed(2)}
                                     </p>
                                 </div>
-
                                 <Link
                                     className="bg-red-500 p-2 rounded-lg text-white border-2 border-gray-600"
                                     href="#"
