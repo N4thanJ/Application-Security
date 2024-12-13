@@ -30,7 +30,7 @@ export type Nutritionlabel = {
 };
 
 export type Shoppingcart = {
-    id: number;
+    id?: number;
     name: string;
     deliveryDate: Date;
     items: ShoppingcartItem[];

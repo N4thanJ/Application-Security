@@ -67,10 +67,14 @@ const CartViewer: React.FC = () => {
     }
 
     return (
-        <ShoppingcartCheckoutComponent
-            shoppingcart={shoppingcart}
-            onDeleteItemFromShoppingcart={onDeleteItemFromShoppingcart}
-        />
+        <>
+            {shoppingcart && (
+                <ShoppingcartCheckoutComponent
+                    shoppingcart={shoppingcart}
+                    onDeleteItemFromShoppingcart={onDeleteItemFromShoppingcart}
+                />
+            )}
+        </>
     );
 };
 

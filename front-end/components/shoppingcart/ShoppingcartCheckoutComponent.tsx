@@ -11,7 +11,7 @@ type ShoppingcartItem = {
 
 type Props = {
     shoppingcart: {
-        id: number;
+        id?: any;
         name: string;
         items: ShoppingcartItem[];
     };
