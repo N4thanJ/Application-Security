@@ -26,7 +26,7 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                 <PanelsTopLeft className="w-8 h-8 text-gray-600" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                 {shoppingcarts.map((shoppingcart) => (
                     <div
                         key={shoppingcart.id}
