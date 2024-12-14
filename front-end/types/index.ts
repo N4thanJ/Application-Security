@@ -1,5 +1,5 @@
-export type Category = 'fruits' | 'vegetables' | 'dairy';
 export type Role = 'user' | 'admin';
+export type Category = 'fruits' | 'vegetables' | 'dairy' | 'meat' | 'fish';
 
 export type User = {
     id?: number;

@@ -1,4 +1,5 @@
-import { Item, Shoppingcart } from '@types';
+import React, { useState, useMemo } from 'react';
+import { Item, Shoppingcart, Category } from '@types';
 import { ChevronDown, Minus, Plus } from 'lucide-react';
 
 type Props = {
@@ -16,62 +17,123 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
     removeAnItemFromShoppingcart,
     addItemToShoppingcart,
 }: Props) => {
-    return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {items.map((item) => (
-                <div
-                    key={item.id}
-                    onClick={() => selectedItem(item)}
-                    className="overflow-hidden transform transition-transform duration-300 cursor-pointer flex flex-col shadow-lg rounded-md bg-tertiary"
-                >
-                    <div className="h-48 w-full relative bg-gray-100">
-                        <img
-                            src={item.pathToImage}
-                            className="w-full h-full object-cover"
-                            alt={`${item.name} image`}
-                        />
-                    </div>
-                    <div className="p-3">
-                        <div>
-                            {' '}
-                            <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
-                            <p className="text-sm text-gray-500">{item.price} €</p>
-                        </div>
+    const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
+    const [nameFilter, setNameFilter] = useState('');
 
-                        <div className="flex items-center justify-center space-x-2 mt-4">
-                            {(shoppingcart.items.find((cartItem) => cartItem.item.id === item.id)
-                                ?.quantity ?? 0) > 0 && (
-                                <>
-                                    <button
-                                        className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                        onClick={() =>
-                                            removeAnItemFromShoppingcart(item, shoppingcart)
-                                        }
-                                    >
-                                        <Minus size={24} />
-                                    </button>
-                                    <input
-                                        type="text"
-                                        className="w-28 text-center border border-gray-300 rounded-md"
-                                        value={
-                                            shoppingcart.items.find(
-                                                (cartItem) => cartItem.item.id === item.id
-                                            )?.quantity || 0
-                                        }
-                                        readOnly
-                                    />
-                                </>
-                            )}
-                            <button
-                                className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                onClick={() => addItemToShoppingcart(item, shoppingcart)}
-                            >
-                                <Plus size={24} />
-                            </button>
+    const categories = useMemo(() => {
+        const uniqueCategories = new Set(items.map((item) => item.category));
+        return ['all', ...Array.from(uniqueCategories)] as (Category | 'all')[];
+    }, [items]);
+
+    const filteredItems = useMemo(() => {
+        return items.filter(
+            (item) =>
+                (categoryFilter === 'all' || item.category === categoryFilter) &&
+                item.name.toLowerCase().includes(nameFilter.toLowerCase())
+        );
+    }, [items, categoryFilter, nameFilter]);
+
+    return (
+        <div>
+            <div className="mb-4 flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                    <label
+                        htmlFor="category-filter"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                        Filter by Category
+                    </label>
+                    <select
+                        id="category-filter"
+                        className="w-full p-2 border border-gray-300 rounded-md cursor-pointer"
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value as Category | 'all')}
+                    >
+                        {categories.map((category) => (
+                            <option key={category} value={category}>
+                                {category === 'all' ? 'All Categories' : category}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex-1">
+                    <label
+                        htmlFor="name-filter"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                        Filter by Name
+                    </label>
+                    <input
+                        type="text"
+                        id="name-filter"
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        value={nameFilter}
+                        onChange={(e) => setNameFilter(e.target.value)}
+                        placeholder="Search by name..."
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {filteredItems.map((item) => (
+                    <div
+                        key={item.id}
+                        onClick={() => selectedItem(item)}
+                        className="overflow-hidden transform transition-transform duration-300 cursor-pointer flex flex-col shadow-lg rounded-md bg-tertiary"
+                    >
+                        <div className="h-48 w-full relative bg-gray-100">
+                            <img
+                                src={item.pathToImage}
+                                className="w-full h-full object-cover"
+                                alt={`${item.name} image`}
+                            />
+                        </div>
+                        <div className="p-3">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
+                                <p className="text-sm text-gray-500">{item.price} €</p>
+                            </div>
+
+                            <div className="flex items-center justify-center space-x-2 mt-4">
+                                {(shoppingcart.items.find(
+                                    (cartItem) => cartItem.item.id === item.id
+                                )?.quantity ?? 0) > 0 && (
+                                    <>
+                                        <button
+                                            className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                removeAnItemFromShoppingcart(item, shoppingcart);
+                                            }}
+                                        >
+                                            <Minus size={24} />
+                                        </button>
+                                        <input
+                                            type="text"
+                                            className="w-28 text-center border border-gray-300 rounded-md"
+                                            value={
+                                                shoppingcart.items.find(
+                                                    (cartItem) => cartItem.item.id === item.id
+                                                )?.quantity || 0
+                                            }
+                                            readOnly
+                                        />
+                                    </>
+                                )}
+                                <button
+                                    className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        addItemToShoppingcart(item, shoppingcart);
+                                    }}
+                                >
+                                    <Plus size={24} />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };

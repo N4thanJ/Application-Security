@@ -1,18 +1,16 @@
 import ItemOverview from '@components/items/ItemOverview';
-import NutritionLabel from '@components/items/NutritionLabel';
 import ItemsService from '@services/ItemsService';
 import { Item } from '@types';
-import { X } from 'lucide-react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 const ItemPage: React.FC = () => {
     const [items, setItems] = useState<Item[] | []>([]);
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-
-    useEffect(() => {
-        getItems();
-    }, []);
+    const [fruits, setFruits] = useState<Item[] | []>([]);
+    const [vegetables, setVegetables] = useState<Item[] | []>([]);
+    const [dairy, setDairy] = useState<Item[] | []>([]);
+    const [meat, setMeat] = useState<Item[] | []>([]);
+    const [fish, setFish] = useState<Item[] | []>([]);
 
     const getItems = async () => {
         const response = await ItemsService.getAllItems();
@@ -20,36 +18,54 @@ const ItemPage: React.FC = () => {
         setItems(items);
     };
 
+    useEffect(() => {
+        getItems();
+
+        const fruits = items.filter((item: Item) => String(item.category) === 'fruits');
+        setFruits(fruits);
+
+        const vegetables = items.filter((item: Item) => String(item.category) === 'vegetables');
+        setVegetables(vegetables);
+
+        const dairy = items.filter((item: Item) => String(item.category) === 'dairy');
+        setDairy(dairy);
+
+        const meat = items.filter((item: Item) => String(item.category) === 'meat');
+        setMeat(meat);
+
+        const fish = items.filter((item: Item) => String(item.category) === 'fish');
+        setFish(fish);
+    }, [items]);
+
     return (
         <>
             <Head>
                 <title>Item Overview Page</title>
             </Head>
-            <section>
-                <h1 className="text-center py-4 text-2xl font-semibold">Item Overview Page</h1>
-                <div>
-                    {items && <ItemOverview items={items} selectedItem={setSelectedItem} />}
+            <div className="my-8">
+                <h1 className="text-2xl font-semibold">Fruits</h1>
+                <div>{items && <ItemOverview items={fruits} />}</div>
+            </div>
 
-                    {selectedItem && (
-                        <div
-                            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                            onClick={() => setSelectedItem(null)}
-                        >
-                            <div
-                                className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 relative"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <X
-                                    className="absolute top-3 right-3 text-gray-500 hover:text-red-700 transition-all cursor-pointer"
-                                    onClick={() => setSelectedItem(null)}
-                                    size={32}
-                                />
-                                <NutritionLabel item={selectedItem} />
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </section>
+            <div className="mb-8">
+                <h1 className="text-2xl font-semibold">Vegetables</h1>
+                <div>{items && <ItemOverview items={vegetables} />}</div>
+            </div>
+
+            <div>
+                <h1 className="text-2xl font-semibold">dairy</h1>
+                <div>{items && <ItemOverview items={dairy} />}</div>
+            </div>
+
+            <div>
+                <h1 className="text-2xl font-semibold">meat</h1>
+                <div>{items && <ItemOverview items={meat} />}</div>
+            </div>
+
+            <div>
+                <h1 className="text-2xl font-semibold">fish</h1>
+                <div>{items && <ItemOverview items={fish} />}</div>
+            </div>
         </>
     );
 };

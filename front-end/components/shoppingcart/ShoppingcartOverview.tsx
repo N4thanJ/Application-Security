@@ -34,7 +34,13 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                                 <ShoppingCart className="w-6 h-6 text-primary" />
                             </div>
                             <div className="text-sm text-gray-600">
-                                <p>Items: {shoppingcart.items.length}</p>
+                                <p>
+                                    Items:{' '}
+                                    {shoppingcart.items.reduce(
+                                        (acc, item) => acc + item.quantity,
+                                        0
+                                    )}
+                                </p>
                                 <p>Total: ${calculateTotal(shoppingcart.items as any)}</p>
                             </div>
                         </div>

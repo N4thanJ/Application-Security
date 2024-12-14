@@ -89,8 +89,8 @@ const addItemsToShoppingcart: React.FC = () => {
 
     return (
         <section>
-            <h1 className="text-center py-4 text-2xl font-semibold">
-                Add Items to "{shoppingcart?.name}"
+            <h1 className="text-center pb-8 pt-4 text-2xl font-semibold">
+                Add Items to {shoppingcart?.name}
             </h1>
 
             {shoppingcart && items && shoppingcart.items && (
