@@ -113,7 +113,7 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 111,
+                id: 11,
                 name: 'Passion Fruit',
                 price: 5.49,
                 pathToImage:
