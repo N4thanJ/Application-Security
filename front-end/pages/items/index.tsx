@@ -45,32 +45,32 @@ const ItemPage: React.FC = () => {
             </Head>
 
             <section className="border rounded-lg shadow-lg p-8">
-                <div className="flex justify-between">
-                    <h1 className="text-2xl pb-2">Item Overview</h1>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-2xl">Item Overview</h1>
                     <Images className="w-8 h-8 text-gray-600" />
                 </div>
 
-                <div className="border-t-2 py-4">
+                <div className="border-t py-4">
                     <h2 className="text-xl font-semibold">Fruits</h2>
                     <div>{items && <ItemOverview items={fruits} />}</div>
                 </div>
 
-                <div className="border-t-2 py-4">
+                <div className="border-t py-4">
                     <h2 className="text-xl font-semibold">Vegetables</h2>
                     <div>{items && <ItemOverview items={vegetables} />}</div>
                 </div>
 
-                <div className="border-t-2 py-4">
+                <div className="border-t py-4">
                     <h2 className="text-xl font-semibold">dairy</h2>
                     <div>{items && <ItemOverview items={dairy} />}</div>
                 </div>
 
-                <div className="border-t-2 py-4">
+                <div className="border-t py-4">
                     <h2 className="text-xl font-semibold">meat</h2>
                     <div>{items && <ItemOverview items={meat} />}</div>
                 </div>
 
-                <div className="border-t-2 py-4">
+                <div className="border-t py-4">
                     <h2 className="text-xl font-semibold">fish</h2>
                     <div>{items && <ItemOverview items={fish} />}</div>
                 </div>

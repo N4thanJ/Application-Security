@@ -1,5 +1,5 @@
 import { Item, Shoppingcart } from '@types';
-import { Plus, ShoppingCart } from 'lucide-react';
+import { PanelsTopLeft, Plus, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { calculateTotal } from 'util/item';
 import { formatDate } from 'util/shoppingcart';
@@ -11,14 +11,19 @@ type Props = {
 const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
     return (
         <>
-            <div className="flex items-center gap-4 mb-4">
-                <h2>Shoppingcart Overview</h2>
-                <Link
-                    href={`/addShoppingcart`}
-                    className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
-                >
-                    <Plus size={24} />
-                </Link>
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
+                <div className="flex items-center gap-4">
+                    <h2>Shoppingcart Overview</h2>
+                    <Link
+                        href={`/addShoppingcart`}
+                        className="p-1 bg-green-400 flex gap-2 items-center rounded-lg text-white hover:bg-green-600 transition-all"
+                    >
+                        <Plus size={24} />
+                        Create shoppingcart
+                    </Link>
+                </div>
+
+                <PanelsTopLeft className="w-8 h-8 text-gray-600" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -46,7 +51,7 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                                 <p>Total: ${calculateTotal(shoppingcart.items as any)}</p>
                             </div>
                         </div>
-                        <div className="bg-gray-50 px-6 py-4 flex gap-4">
+                        <div className="bg-gray-50 p-3 flex gap-4">
                             <Link
                                 href={`/shoppingcart/${shoppingcart.id}`}
                                 className="w-full bg-primary text-white text-center font-semibold py-2 px-4 rounded hover:bg-primary/70 transition-colors duration-300"
