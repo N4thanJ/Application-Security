@@ -5,24 +5,36 @@ import db from './db';
 const getAll = async (): Promise<Shoppingcart[]> => {
     try {
         const shoppingcartPrisma = await db.shoppingcart.findMany({
-            include: {
-                items: {
-                    include: {
-                        item: true,
-                    },
-
-                    orderBy: {
-                        itemId: 'asc',
-                    },
-                },
-                user: true,
-            },
-
             orderBy: {
                 id: 'asc',
             },
+            include: {
+                items: true,
+                user: true,
+            },
         });
-        return shoppingcartPrisma.map((shopppingcart) => Shoppingcart.from(shopppingcart));
+        const shoppingcartsWithItems = await Promise.all(
+            shoppingcartPrisma.map(async (cart) => {
+                const withItems = await db.shoppingcart.findUnique({
+                    where: {
+                        id: cart.id,
+                    },
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                        user: true,
+                    },
+                });
+                return withItems;
+            })
+        );
+
+        return shoppingcartsWithItems
+            .map((cart) => (cart ? Shoppingcart.from(cart) : null))
+            .filter((cart): cart is Shoppingcart => cart !== null);
     } catch (error) {
         console.log(error);
         throw new Error('Could not get all shoppingcarts');
@@ -40,14 +52,9 @@ const getById = async (id: number): Promise<Shoppingcart | undefined> => {
                     include: {
                         item: true,
                     },
-
-                    orderBy: {
-                        itemId: 'asc',
-                    },
                 },
                 user: true,
             },
-            
         });
 
         return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
@@ -175,7 +182,18 @@ const addItemToShoppingcart = async ({
                 },
             });
 
-            return updatedShoppingcart ? Shoppingcart.from(updatedShoppingcart) : undefined;
+            const shoppingcartPrisma = await db.shoppingcart.findUnique({
+                where: { id: shoppingcart.getId()! },
+                include: {
+                    items: {
+                        include: {
+                            item: true,
+                        },
+                    },
+                    user: true,
+                },
+            });
+            return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
         }
     } catch (error) {
         console.log(error);
@@ -332,10 +350,6 @@ const updateItemQuantityInShoppingcart = async ({
                 items: {
                     include: {
                         item: true,
-                    },
-
-                    orderBy: {
-                        itemId: 'asc',
                     },
                 },
                 user: true,

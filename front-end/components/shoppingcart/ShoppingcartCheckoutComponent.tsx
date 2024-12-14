@@ -1,6 +1,5 @@
-import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart } from '@types';
-import { ShoppingBagIcon, Trash2 } from 'lucide-react';
+import { Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { calculateTotal, calculateTotalOfItem } from 'util/item';
@@ -43,13 +42,15 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
                 <div className="flex items-center gap-4">
                     <h1 className="text-2xl font-bold text-gray-800">{shoppingcart.name}</h1>
-                    <Link href={`/shoppingcart/${shoppingcart.id}/addItems`}>
-                        <span className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all">
-                            Add items
-                        </span>
+                    <Link
+                        href={`/shoppingcart/${shoppingcart.id}/addItems`}
+                        className="p-1 flex items-center bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
+                    >
+                        <Plus />
+                        Add items
                     </Link>
                 </div>
-                <ShoppingBagIcon className="w-8 h-8 text-gray-600" />
+                <ShoppingBag className="w-8 h-8 text-gray-600" />
             </div>
 
             {shoppingcart.items.length > 0 ? (

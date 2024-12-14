@@ -36,7 +36,7 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
     }, [items, categoryFilter, nameFilter]);
 
     return (
-        <div>
+        <div className="py-4">
             <div className="mb-4 flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                     <label
@@ -114,18 +114,30 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                         <input
                                             type="text"
                                             className="w-28 text-center border border-gray-300 rounded-md"
-                                            value={
+                                            defaultValue={
                                                 shoppingcart.items.find(
                                                     (cartItem) => cartItem.item.id === item.id
                                                 )?.quantity || 0
                                             }
-                                            onChange={(e) =>
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleQuantityChange(
+                                                        item,
+                                                        shoppingcart,
+                                                        parseInt(
+                                                            (e.target as HTMLInputElement).value
+                                                        ) || 0
+                                                    );
+                                                    (e.target as HTMLInputElement).blur();
+                                                }
+                                            }}
+                                            onBlur={(e) => {
                                                 handleQuantityChange(
                                                     item,
                                                     shoppingcart,
-                                                    parseInt(e.target.value)
-                                                )
-                                            }
+                                                    parseInt(e.target.value) || 0
+                                                );
+                                            }}
                                         />
                                     </>
                                 )}
