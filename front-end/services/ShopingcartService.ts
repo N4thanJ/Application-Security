@@ -82,12 +82,35 @@ const addItemToShoppingcart = async (itemId: number, shoppingcartId: number) => 
     }
 };
 
+const updateItemQuantityInShoppingcart = async (
+    itemId: number,
+    shoppingcartId: number,
+    quantity: number
+) => {
+    try {
+        return fetch(
+            process.env.NEXT_PUBLIC_API_URL +
+                `/shoppingcarts/updateQuantity/${itemId}/${shoppingcartId}/${quantity}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                },
+            }
+        );
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const ShoppingcartService = {
     addShoppingcart,
     getShoppingcartById,
     deleteItemFromShoppingcart,
     removeAnItem,
     addItemToShoppingcart,
+    updateItemQuantityInShoppingcart,
 };
 
 export default ShoppingcartService;

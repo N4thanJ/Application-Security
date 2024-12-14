@@ -7,14 +7,16 @@ type Props = {
     selectedItem: (item: Item) => void;
     removeAnItemFromShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
     addItemToShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
+    handleQuantityChange: (item: Item, shoppingcart: Shoppingcart, quantity: number) => void;
 };
 
-const AddItemToShoppingcartForm: React.FC<Props> = ({
+const AddItemToShoppingcartOverview: React.FC<Props> = ({
     items,
     shoppingcart,
     selectedItem,
     removeAnItemFromShoppingcart,
     addItemToShoppingcart,
+    handleQuantityChange,
 }: Props) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -58,7 +60,13 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                                                 (cartItem) => cartItem.item.id === item.id
                                             )?.quantity || 0
                                         }
-                                        readOnly
+                                        onChange={(e) =>
+                                            handleQuantityChange(
+                                                item,
+                                                shoppingcart,
+                                                parseInt(e.target.value)
+                                            )
+                                        }
                                     />
                                 </>
                             )}
@@ -76,4 +84,4 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
     );
 };
 
-export default AddItemToShoppingcartForm;
+export default AddItemToShoppingcartOverview;
