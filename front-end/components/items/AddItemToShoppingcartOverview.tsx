@@ -79,7 +79,7 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                     <div
                         key={item.id}
                         onClick={() => selectedItem(item)}
-                        className="overflow-hidden transform transition-transform duration-300 cursor-pointer flex flex-col shadow-lg rounded-md bg-tertiary"
+                        className="overflow-hidden cursor-pointer flex flex-col shadow-lg hover:shadow-2xl duration-300 transition-all rounded-md bg-tertiary"
                     >
                         <div className="h-48 w-full relative bg-gray-100">
                             <img
@@ -91,7 +91,9 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                         <div className="p-3">
                             <div>
                                 <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
-                                <p className="text-sm text-gray-500">{item.price} €</p>
+                                <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
+                                    {item.price} €
+                                </p>
                             </div>
 
                             <div className="flex items-center justify-center space-x-2 mt-4">

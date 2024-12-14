@@ -6,6 +6,7 @@ import ItemsService from '@services/ItemsService';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart, User } from '@types';
 import { X } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -89,9 +90,15 @@ const addItemsToShoppingcart: React.FC = () => {
 
     return (
         <section>
-            <h1 className="text-center pb-8 pt-4 text-2xl font-semibold">
-                Add Items to {shoppingcart?.name}
-            </h1>
+            <div className="pb-8 pt-4 gap-4">
+                <Link
+                    href={`/shoppingcart/${shoppingcart?.id}`}
+                    className="bg-green-500 hover:bg-green-500/70 transition-all duration-300 text-white px-2 py-1 rounded-lg"
+                >
+                    Go back
+                </Link>
+                <h1 className="text-2xl font-semibold mt-4">Add Items to {shoppingcart?.name}</h1>
+            </div>
 
             {shoppingcart && items && shoppingcart.items && (
                 <AddItemToShoppingcartForm

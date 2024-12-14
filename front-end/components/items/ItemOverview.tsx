@@ -39,30 +39,32 @@ const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
                                     <div className="h-48 bg-tertiary rounded-lg">
                                         <img
                                             src={item.pathToImage}
-                                            className="w-full h-full object-cover p-4"
+                                            className="w-full h-full object-cover rounded"
                                             alt={`${item.name} image`}
                                         />
                                     </div>
 
-                                    <div className="p-4">
+                                    <div className="py-2">
                                         <h2 className="text-lg font-semibold text-gray-700">
                                             {item.name}
                                         </h2>
-                                        <p className="text-sm text-gray-400">{item.price} €</p>
+                                        <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
+                                            {item.price} €
+                                        </p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <button
                             onClick={() => scroll('left')}
-                            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 shadow-md"
+                            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
                             aria-label="Scroll left"
                         >
                             <ChevronLeft className="w-6 h-6 text-gray-700" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 shadow-md"
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
                             aria-label="Scroll right"
                         >
                             <ChevronRight className="w-6 h-6 text-gray-700" />
