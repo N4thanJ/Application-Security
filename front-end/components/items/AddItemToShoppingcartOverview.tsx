@@ -8,14 +8,16 @@ type Props = {
     selectedItem: (item: Item) => void;
     removeAnItemFromShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
     addItemToShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
+    handleQuantityChange: (item: Item, shoppingcart: Shoppingcart, quantity: number) => void;
 };
 
-const AddItemToShoppingcartForm: React.FC<Props> = ({
+const AddItemToShoppingcartOverview: React.FC<Props> = ({
     items,
     shoppingcart,
     selectedItem,
     removeAnItemFromShoppingcart,
     addItemToShoppingcart,
+    handleQuantityChange,
 }: Props) => {
     const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
     const [nameFilter, setNameFilter] = useState('');
@@ -103,10 +105,9 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                                     <>
                                         <button
                                             className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeAnItemFromShoppingcart(item, shoppingcart);
-                                            }}
+                                            onClick={() =>
+                                                removeAnItemFromShoppingcart(item, shoppingcart)
+                                            }
                                         >
                                             <Minus size={24} />
                                         </button>
@@ -118,16 +119,19 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
                                                     (cartItem) => cartItem.item.id === item.id
                                                 )?.quantity || 0
                                             }
-                                            readOnly
+                                            onChange={(e) =>
+                                                handleQuantityChange(
+                                                    item,
+                                                    shoppingcart,
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </>
                                 )}
                                 <button
                                     className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        addItemToShoppingcart(item, shoppingcart);
-                                    }}
+                                    onClick={() => addItemToShoppingcart(item, shoppingcart)}
                                 >
                                     <Plus size={24} />
                                 </button>
@@ -140,4 +144,4 @@ const AddItemToShoppingcartForm: React.FC<Props> = ({
     );
 };
 
-export default AddItemToShoppingcartForm;
+export default AddItemToShoppingcartOverview;

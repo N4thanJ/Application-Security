@@ -1,6 +1,6 @@
 import ShoppingcartCheckoutComponent from '@components/shoppingcart/ShoppingcartCheckoutComponent';
 import ShoppingcartService from '@services/ShopingcartService';
-import { Shoppingcart, User } from '@types';
+import { Item, Shoppingcart, User } from '@types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -24,6 +24,27 @@ const CartViewer: React.FC = () => {
             }
         } catch (error) {
             console.error(error);
+        }
+    };
+
+    const handleQuantityChange = async (
+        item: Item,
+        shoppingcart: Shoppingcart,
+        quantity: number
+    ) => {
+        try {
+            const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                Number(item.id),
+                Number(shoppingcart.id),
+                quantity
+            );
+
+            if (response) {
+                const updatedShoppingcart = await response.json();
+                setShoppingcart(updatedShoppingcart);
+            }
+        } catch (error) {
+            console.error('Error fetching shoppingcart:', error);
         }
     };
 
@@ -72,6 +93,7 @@ const CartViewer: React.FC = () => {
                 <ShoppingcartCheckoutComponent
                     shoppingcart={shoppingcart}
                     onDeleteItemFromShoppingcart={onDeleteItemFromShoppingcart}
+                    handleQuantityChange={handleQuantityChange}
                 />
             )}
         </>
