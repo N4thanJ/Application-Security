@@ -5,6 +5,9 @@ import db from './db';
 const getAll = async (): Promise<Shoppingcart[]> => {
     try {
         const shoppingcartPrisma = await db.shoppingcart.findMany({
+            orderBy: {
+                id: 'asc',
+            },
             include: {
                 items: true,
                 user: true,

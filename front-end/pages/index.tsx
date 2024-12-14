@@ -48,7 +48,7 @@ const Home: React.FC = () => {
     }
 
     return (
-        <>
+        <section className="shadow-lg p-8 border rounded-lg">
             {user && user.shoppingcarts.length > 0 ? (
                 <ShoppingcartOverview shoppingcarts={user.shoppingcarts} />
             ) : (
@@ -63,7 +63,7 @@ const Home: React.FC = () => {
                     </Link>
                 </>
             )}
-        </>
+        </section>
     );
 };
 

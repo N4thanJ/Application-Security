@@ -2,6 +2,8 @@ import AddItemToShoppingcartOverview from '@components/items/AddItemToShoppingca
 import ItemsService from '@services/ItemsService';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart, User } from '@types';
+import { ArrowBigLeft, ShoppingBag, ShoppingBasket, X } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -79,6 +81,10 @@ const addItemsToShoppingcart: React.FC = () => {
         shoppingcart: Shoppingcart,
         quantity: number
     ) => {
+        if (Number.isNaN(quantity)) {
+            quantity = 0;
+        }
+
         try {
             const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
                 Number(item.id),
@@ -105,10 +111,20 @@ const addItemsToShoppingcart: React.FC = () => {
     }, [shoppingcartId]);
 
     return (
-        <section>
-            <h1 className="text-center py-4 text-2xl font-semibold">
-                Add Items to "{shoppingcart?.name}"
-            </h1>
+        <section className="border p-8 shadow-lg rounded-lg">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-2xl font-semibold">Add Items to {shoppingcart?.name}</h1>
+                    <Link
+                        href={`/shoppingcart/${shoppingcart?.id}`}
+                        className="bg-red-500 hover:bg-red-500/70 flex items-center transition-all duration-300 text-white px-2 py-1 rounded-lg"
+                    >
+                        <ArrowBigLeft />
+                        Go back
+                    </Link>
+                </div>
+                <ShoppingBag className="w-8 h-8 text-gray-600" />
+            </div>
 
             {shoppingcart && items && shoppingcart.items && (
                 <AddItemToShoppingcartOverview

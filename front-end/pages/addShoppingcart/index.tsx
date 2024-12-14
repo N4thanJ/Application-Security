@@ -25,8 +25,7 @@ const ShoppingcartForm: React.FC = () => {
                 <title>Create a new shoppingcart</title>
             </Head>
 
-            <section className="w-3/4 m-auto">
-                <h1 className="mb-8">Create a shoppingcart</h1>
+            <section className="w-1/3 mx-auto py-24">
                 {loggedInUser && <AddShoppingcartForm />}
             </section>
         </>

@@ -15,3 +15,12 @@ h6 {
 select option {
     font-family: '__Lexend_86777a', '__Lexend_Fallback_86777a', sans-serif;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
