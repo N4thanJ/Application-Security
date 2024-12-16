@@ -2,7 +2,7 @@ import userDb from '../repository/user.db';
 import { User } from '../model/user';
 
 import bcrypt from 'bcrypt';
-import { AuthenticationResponse, UserInput } from '../types';
+import { AuthenticationResponse, Role, UserInput } from '../types';
 import generateSWToken from '../util/jwt';
 
 const getAllUsers = async (): Promise<User[]> => {
@@ -69,4 +69,33 @@ const authenticate = async ({
     return authresponse;
 };
 
-export default { getAllUsers, createUser, authenticate, getByEmail };
+const updateUser = async (userId: number, user: UserInput): Promise<User> => {
+
+    // const existingUser = await userDb.getByEmail({ email: user.email });
+
+    // if (!existingUser) {
+    //     throw new Error(`User with email: ${user.email} does not exist.`);
+    // }
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    const updatedUser = new User({
+        email: user.email,
+        role: user.role,
+        password: hashedPassword,
+        shoppingcarts: [],
+    });
+
+    return userDb.updateUser(userId, updatedUser);
+};
+
+const deleteUser = async (userId: number): Promise<User> => {
+    const user = await userDb.deleteUser(userId);
+    if (!user) {
+        throw new Error('No user found');
+    }
+
+    return user;
+}
+
+export default { getAllUsers, createUser, authenticate, getByEmail, updateUser, deleteUser };

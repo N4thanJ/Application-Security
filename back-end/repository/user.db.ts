@@ -83,8 +83,67 @@ const createUser = async (user: User): Promise<User> => {
     }
 };
 
+const updateUser = async (userId: number, user: User): Promise<User> => {
+    try {
+        const userPrisma = await db.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                email: user.getEmail(),
+                password: user.getPassword(),
+                role: user.getRole(),
+            },
+            include: {
+                shoppingcarts: {
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return User.from(userPrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not update user');
+    }
+};
+
+const deleteUser = async (userId: number): Promise<User> => {
+    try {
+        const userPrisma = await db.user.delete({
+            where: {
+                id: userId,
+            },
+            include: {
+                shoppingcarts: {
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return User.from(userPrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not delete user');
+    }
+};
+
 export default {
     getAll,
     getByEmail,
     createUser,
+    updateUser,
+    deleteUser,
 };

@@ -223,4 +223,89 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
     }
 });
 
+/**
+ * @swagger
+ * /users/{userId}:
+ *   put:
+ *     summary: Update a user
+ *     description: Updates a user's information. Requires administrative privileges.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: User successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request - Invalid user data
+ *       404:
+ *         description: Not Found - User does not exist
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const userId = parseInt(req.params.userId);
+        const user = req.body as UserInput;
+        const updatedUser = await userService.updateUser(userId, user);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+/**
+ * @swagger
+ * /users/{userId}:
+ *   delete:
+ *     summary: Delete a user
+ *     description: Deletes a user from the system. Requires administrative privileges.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user to delete
+ *     responses:
+ *       200:
+ *         description: User successfully deleted
+ *       404:
+ *         description: Not Found - User does not exist
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.delete('/:userId', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        await userService.deleteUser(userId);
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export { userRouter };
