@@ -5,6 +5,9 @@ import db from './db';
 const getAll = async (): Promise<Shoppingcart[]> => {
     try {
         const shoppingcartPrisma = await db.shoppingcart.findMany({
+            orderBy: {
+                id: 'asc',
+            },
             include: {
                 items: true,
                 user: true,
@@ -314,6 +317,52 @@ const removeAnItemFromShoppingcart = async ({
     }
 };
 
+const updateItemQuantityInShoppingcart = async ({
+    item,
+    shoppingcart,
+    quantity,
+}: {
+    item: Item;
+    shoppingcart: Shoppingcart;
+    quantity: number;
+}) => {
+    try {
+        const shoppingcartPrisma = await db.shoppingcart.update({
+            where: {
+                id: shoppingcart.getId()!,
+            },
+            data: {
+                items: {
+                    update: {
+                        where: {
+                            shoppingcartId_itemId: {
+                                shoppingcartId: shoppingcart.getId()!,
+                                itemId: item.getId()!,
+                            },
+                        },
+                        data: {
+                            quantity: quantity,
+                        },
+                    },
+                },
+            },
+            include: {
+                items: {
+                    include: {
+                        item: true,
+                    },
+                },
+                user: true,
+            },
+        });
+
+        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not update item in shoppingcart');
+    }
+};
+
 export default {
     getAll,
     getById,
@@ -321,4 +370,5 @@ export default {
     create,
     deleteItemFromShoppingcart,
     removeAnItemFromShoppingcart,
+    updateItemQuantityInShoppingcart,
 };

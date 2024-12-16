@@ -1,38 +1,95 @@
 import { Item } from '@types';
-import React from 'react';
-import { Plus, ChevronDown } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import NutritionLabel from './NutritionLabel';
 
 type Props = {
     items: Item[] | [];
-    selectedItem: (item: Item) => void;
 };
 
-const ItemsOverview: React.FC<Props> = ({ items, selectedItem }: Props) => {
+const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = scrollContainerRef.current.clientWidth;
+            scrollContainerRef.current.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth',
+            });
+        }
+    };
+
     return (
         <>
-            {items && (
-                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                    {items.map((item) => (
+            <div className="relative">
+                {items && items.length > 0 && (
+                    <>
                         <div
-                            key={item.id}
-                            onClick={() => selectedItem(item)}
-                            className="overflow-hidden transform transition-transform duration-300 cursor-pointer flex flex-col shadow-lg rounded-md bg-tertiary"
+                            ref={scrollContainerRef}
+                            className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory no-scrollbar gap-3"
                         >
-                            <div className="h-48 w-full relative">
-                                <img
-                                    src={item.pathToImage}
-                                    className="w-full h-full object-cover"
-                                    alt={`${item.name} image`}
-                                />
-                            </div>
+                            {items.map((item) => (
+                                <div
+                                    key={item.id}
+                                    onClick={() => setSelectedItem(item)}
+                                    className="flex-shrink-0 snap-start overflow-hidden transform transition-transform duration-300 cursor-pointer flex flex-col"
+                                >
+                                    <div className="h-48 bg-tertiary rounded-lg">
+                                        <img
+                                            src={item.pathToImage}
+                                            className="w-full h-full object-cover rounded"
+                                            alt={`${item.name} image`}
+                                        />
+                                    </div>
 
-                            <div className="grid p-4">
-                                <h2 className="text-lg font-semibold text-gray-700">{item.name}</h2>
-                                <p className="text-sm text-gray-400">{item.price} €</p>
-                            </div>
+                                    <div className="py-2">
+                                        <h2 className="text-lg font-semibold text-gray-700">
+                                            {item.name}
+                                        </h2>
+                                        <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
+                                            {item.price} €
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </section>
+                        <button
+                            onClick={() => scroll('left')}
+                            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
+                            aria-label="Scroll left"
+                        >
+                            <ChevronLeft className="w-6 h-6 text-gray-700" />
+                        </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
+                            aria-label="Scroll right"
+                        >
+                            <ChevronRight className="w-6 h-6 text-gray-700" />
+                        </button>
+                    </>
+                )}
+            </div>
+
+            {selectedItem && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    onClick={() => setSelectedItem(null)}
+                >
+                    <div
+                        className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <X
+                            className="absolute top-3 right-3 text-gray-500 hover:text-red-700 transition-all cursor-pointer"
+                            onClick={() => setSelectedItem(null)}
+                            size={32}
+                        />
+                        <NutritionLabel item={selectedItem} />
+                    </div>
+                </div>
             )}
         </>
     );

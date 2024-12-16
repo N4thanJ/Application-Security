@@ -275,7 +275,7 @@ shoppingcartRouter.post(
     '/addItem/:itemId/:shoppingcartId',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const itemId = parseInt(req.params.itemId, 10);
+            const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
             const shoppingcart = await shoppingcartService.addItemToShoppingcart({
                 itemId,
@@ -344,7 +344,7 @@ shoppingcartRouter.delete(
     '/deleteItem/:itemId/:shoppingcartId',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const itemId = parseInt(req.params.itemId, 10);
+            const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
             const shoppingcart = await shoppingcartService.removeItemFromShoppingcart(
                 itemId,
@@ -413,12 +413,92 @@ shoppingcartRouter.delete(
     '/removeAnItem/:itemId/:shoppingcartId',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const itemId = parseInt(req.params.itemId, 10);
+            const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
             const shoppingcart = await shoppingcartService.removeAnItemFromShoppingcart(
                 itemId,
                 shoppingcartId
             );
+            res.status(200).json(shoppingcart);
+        } catch (error) {
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+);
+
+/**
+ * @swagger
+ * /shoppingcarts/updateQuantity/{itemId}/{shoppingcartId}/{quantity}:
+ *   put:
+ *     summary: Update the quantity of an item in a shopping cart
+ *     description: Update the quantity of a specific item in an existing shopping cart
+ *     tags:
+ *       - Shoppingcarts
+ *     parameters:
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the item to update the quantity
+ *         example: 1
+ *       - in: path
+ *         name: shoppingcartId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the shopping cart to update the item quantity
+ *         example: 1
+ *       - in: path
+ *         name: quantity
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: New quantity of the item
+ *         example: 5
+ *     responses:
+ *       200:
+ *         description: Item quantity successfully updated in shopping cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ShoppingCart'
+ *       404:
+ *         description: Shopping cart or item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Shopping cart or item not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error occurred"
+ */
+
+shoppingcartRouter.put(
+    '/updateQuantity/:itemId/:shoppingcartId/:quantity',
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const itemId = parseInt(req.params.itemId);
+            const shoppingcartId = parseInt(req.params.shoppingcartId);
+            const quantity = parseInt(req.params.quantity);
+
+            const shoppingcart = await shoppingcartService.updateItemQuantityInShoppingcart(
+                itemId,
+                shoppingcartId,
+                quantity
+            );
+
             res.status(200).json(shoppingcart);
         } catch (error) {
             res.status(500).json({ message: (error as Error).message });

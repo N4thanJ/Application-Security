@@ -13,7 +13,7 @@ const ShoppingcartForm: React.FC = () => {
 
     if (!loggedInUser) {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
                 Please log in to view this page.
             </p>
         );
@@ -25,8 +25,7 @@ const ShoppingcartForm: React.FC = () => {
                 <title>Create a new shoppingcart</title>
             </Head>
 
-            <section className="w-3/4 m-auto">
-                <h1 className="mb-8">Create a shoppingcart</h1>
+            <section className="w-1/3 mx-auto py-24">
                 {loggedInUser && <AddShoppingcartForm />}
             </section>
         </>

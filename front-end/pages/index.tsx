@@ -41,14 +41,14 @@ const Home: React.FC = () => {
 
     if (!loggedInUser) {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
                 Please log in to view this page.
             </p>
         );
     }
 
     return (
-        <>
+        <section className="shadow-lg p-8 border rounded-lg">
             {user && user.shoppingcarts.length > 0 ? (
                 <ShoppingcartOverview shoppingcarts={user.shoppingcarts} />
             ) : (
@@ -63,7 +63,7 @@ const Home: React.FC = () => {
                     </Link>
                 </>
             )}
-        </>
+        </section>
     );
 };
 
