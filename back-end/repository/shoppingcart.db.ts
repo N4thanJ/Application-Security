@@ -52,6 +52,9 @@ const getById = async (id: number): Promise<Shoppingcart | undefined> => {
                     include: {
                         item: true,
                     },
+                    orderBy: {
+                        itemId: 'asc',
+                    },
                 },
                 user: true,
             },
@@ -350,6 +353,9 @@ const updateItemQuantityInShoppingcart = async ({
                 items: {
                     include: {
                         item: true,
+                    },
+                    orderBy: {
+                        itemId: 'asc',
                     },
                 },
                 user: true,
