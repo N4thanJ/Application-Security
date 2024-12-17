@@ -1,7 +1,7 @@
 import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();
@@ -31,6 +31,30 @@ const AddShoppingcartForm: React.FC = () => {
         }
     };
 
+    const handleDateClick = () => {
+        if (dateInputRef.current) {
+            dateInputRef.current.showPicker();
+        }
+    };
+    useEffect(() => {
+        if (dateInputRef.current) {
+            dateInputRef.current.addEventListener('click', handleDateClick);
+        }
+        return () => {
+            if (dateInputRef.current) {
+                dateInputRef.current.removeEventListener('click', handleDateClick);
+            }
+        };
+    }, []);
+
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 1);
+    const minDateString = minDate.toISOString().split('T')[0];
+
+    const valueDate = shoppingcart.deliveryDate
+        ? shoppingcart.deliveryDate.toISOString().split('T')[0]
+        : minDateString;
+
     return (
         <>
             <h1>Create a shoppingcart</h1>
@@ -50,6 +74,7 @@ const AddShoppingcartForm: React.FC = () => {
                         placeholder="Enter a name for the shoppingcart..."
                     />
                 </div>
+
                 <div>
                     <label htmlFor="deliveryDate" className="text-sm font-medium text-gray-700">
                         Delivery Date:
@@ -61,19 +86,10 @@ const AddShoppingcartForm: React.FC = () => {
                             ref={dateInputRef}
                             required
                             name="deliveryDate"
-                            value={
-                                new Date(new Date().setDate(new Date().getDate() + 1))
-                                    .toISOString()
-                                    .split('T')[0] ||
-                                shoppingcart.deliveryDate.toISOString().split('T')[0]
-                            }
+                            value={valueDate}
                             onChange={handleInputChange}
                             className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-                            min={
-                                new Date(new Date().setDate(new Date().getDate() + 1))
-                                    .toISOString()
-                                    .split('T')[0]
-                            }
+                            min={minDateString}
                         />
                     </div>
                 </div>
