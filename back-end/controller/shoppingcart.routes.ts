@@ -506,4 +506,66 @@ shoppingcartRouter.put(
     }
 );
 
+/**
+ * @swagger
+ * /shoppingcarts/{shoppingcartId}:
+ *   delete:
+ *     summary: Delete a shopping cart by ID
+ *     description: Delete a specific shopping cart by its unique ID
+ *     tags:
+ *       - Shoppingcarts
+ *     parameters:
+ *       - in: path
+ *         name: shoppingcartId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the shopping cart to delete
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Shopping cart deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Shopping cart deleted successfully"
+ *       404:
+ *         description: Shopping cart not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Shopping cart not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error occurred"
+ */
+
+shoppingcartRouter.delete(
+    '/:shoppingcartId',
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const shoppingcartId = parseInt(req.params.shoppingcartId);
+            await shoppingcartService.deleteShoppingcart(shoppingcartId);
+            res.status(200).json({ message: 'Shopping cart deleted successfully' });
+        } catch (error) {
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+);
+
 export { shoppingcartRouter };
