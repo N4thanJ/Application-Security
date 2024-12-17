@@ -48,7 +48,7 @@ const AddShoppingcartForm: React.FC = () => {
     }, []);
 
     const minDate = new Date();
-    minDate.setDate(minDate.getDate() + 1);
+    minDate.setDate(minDate.getDate());
     const minDateString = minDate.toISOString().split('T')[0];
 
     const valueDate = shoppingcart.deliveryDate
