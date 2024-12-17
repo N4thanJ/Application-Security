@@ -140,10 +140,41 @@ const deleteUser = async (userId: number): Promise<User> => {
     }
 };
 
+const getById = async (id: number): Promise<User> => {
+    try {
+        const userPrisma = await db.user.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                shoppingcarts: {
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!userPrisma) {
+            throw new Error('No user found');
+        }
+
+        return User.from(userPrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not get user by id');
+    }
+};
+
 export default {
     getAll,
     getByEmail,
     createUser,
     updateUser,
     deleteUser,
+    getById,
 };

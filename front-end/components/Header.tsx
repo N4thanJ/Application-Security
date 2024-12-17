@@ -44,7 +44,12 @@ const Header: React.FC = () => {
 
                                 {loggedInUser.role === 'admin' && (
                                     <li>
-                                        <Link href="/itemOverview">Admin overview</Link>
+                                        <Link href="/itemOverview">Admin items overview</Link>
+                                    </li>
+                                )}
+                                {loggedInUser.role === 'admin' && (
+                                    <li>
+                                        <Link href="/adminUsersOverview">Admin users overview</Link>
                                     </li>
                                 )}
                             </>

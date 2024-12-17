@@ -98,4 +98,13 @@ const deleteUser = async (userId: number): Promise<User> => {
     return user;
 }
 
-export default { getAllUsers, createUser, authenticate, getByEmail, updateUser, deleteUser };
+const getById = async (id: number): Promise<User> => {
+    const user = await userDb.getById(id);
+    if (!user) {
+        throw new Error('No user found');
+    }
+
+    return user;
+};
+
+export default { getAllUsers, createUser, authenticate, getByEmail, updateUser, deleteUser, getById };
