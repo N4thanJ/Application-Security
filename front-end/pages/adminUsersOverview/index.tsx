@@ -51,7 +51,7 @@ const AdminUserPage: React.FC = () => {
             <div className="flex items-center gap-4 mb-4">
                 <h1>Admin User Overview Page</h1>
                 <Link
-                    href={`userOverview/addUser`}
+                    href={`adminUsersOverview/addUser`}
                     className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
                 >
                     <Plus size={24} />

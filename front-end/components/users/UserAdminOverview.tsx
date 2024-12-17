@@ -1,8 +1,7 @@
 import { User } from '@types';
 import { EllipsisVertical } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import UserService from '@services/userService';
+import React, { useState } from 'react';
 
 type Props = {
     users: User[];
@@ -19,9 +18,9 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
     return (
         <>
             {users && (
-                <div className="overflow-x-auto rounded-lg border border-gray-300 shadow-lg">
-                    <table className="min-w-full bg-white text-left rounded-lg">
-                        <thead>
+                <div className="border border-gray-300 shadow-lg">
+                    <table className="min-w-full bg-white text-left">
+                        <thead className="rounded-t-lg">
                             <tr className="bg-gray-100 text-gray-700 text-center">
                                 <th className="px-6 py-4 font-semibold text-sm">Email</th>
                                 <th className="px-6 py-4 font-semibold text-sm">Role</th>
@@ -55,16 +54,19 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 transition-opacity duration-200 ease-out opacity-100">
                                                 <Link
                                                     href={`/adminUsersOverview/${user.id}/editUser`}
-                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-700 hover:text-white hover:rounded-t-lg transition-all duration-200"
+                                                    className="block px-4 py-2 text-sm text-gray-700 rounded-t-lg hover:bg-blue-700 hover:text-white transition-all duration-200"
                                                 >
                                                     Edit User
                                                 </Link>
-                                                <a
-                                                    className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
-                                                    onClick={() => handleDeleteUser(user.id)}
-                                                >
-                                                    Delete User
-                                                </a>
+
+                                                {user?.role !== 'admin' && (
+                                                    <a
+                                                        className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
+                                                        onClick={() => handleDeleteUser(user.id)}
+                                                    >
+                                                        Delete User
+                                                    </a>
+                                                )}
                                             </div>
                                         )}
                                     </td>
