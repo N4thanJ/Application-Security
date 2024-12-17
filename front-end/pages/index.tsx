@@ -1,4 +1,5 @@
 import ShoppingcartOverview from '@components/shoppingcart/ShoppingcartOverview';
+import ShoppingcartService from '@services/ShopingcartService';
 import UserService from '@services/userService';
 import { User } from '@types';
 import Link from 'next/link';
@@ -28,6 +29,18 @@ const Home: React.FC = () => {
         }
     };
 
+    const deleteShoppingcartById = async (id: number) => {
+        try {
+            const deletedShoppingcart = await ShoppingcartService.deleteShoppingcartById(id);
+            if (!deletedShoppingcart || !deletedShoppingcart.ok) {
+                throw new Error('Shoppingcart not found');
+            }
+            fetchUser();
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    };
+
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
@@ -50,7 +63,10 @@ const Home: React.FC = () => {
     return (
         <section className="shadow-lg p-8 border rounded-lg">
             {user && user.shoppingcarts.length > 0 ? (
-                <ShoppingcartOverview shoppingcarts={user.shoppingcarts} />
+                <ShoppingcartOverview
+                    shoppingcarts={user.shoppingcarts}
+                    deleteShoppingcartById={deleteShoppingcartById}
+                />
             ) : (
                 <>
                     <h3>You currently don't have any shoppingcarts :(</h3>

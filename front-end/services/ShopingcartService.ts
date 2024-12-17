@@ -104,6 +104,20 @@ const updateItemQuantityInShoppingcart = async (
     }
 };
 
+const deleteShoppingcartById = async (id: number) => {
+    try {
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/shoppingcarts/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const ShoppingcartService = {
     addShoppingcart,
     getShoppingcartById,
@@ -111,6 +125,7 @@ const ShoppingcartService = {
     removeAnItem,
     addItemToShoppingcart,
     updateItemQuantityInShoppingcart,
+    deleteShoppingcartById,
 };
 
 export default ShoppingcartService;
