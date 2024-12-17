@@ -53,51 +53,46 @@ const AddShoppingcartForm: React.FC = () => {
         <>
             <h1>Create a shoppingcart</h1>
             <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Name:
-                        </label>
+                <div>
+                    <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                        Name:
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        required
+                        name="name"
+                        value={shoppingcart.name}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter a name for the shoppingcart..."
+                    />
+                </div>
+                <div>
+                    <label htmlFor="deliveryDate" className="text-sm font-medium text-gray-700">
+                        Delivery Date:
+                    </label>
+                    <div className="mt-1 relative">
                         <input
-                            type="text"
-                            id="name"
+                            type="date"
+                            id="deliveryDate"
+                            ref={dateInputRef}
                             required
-                            name="name"
-                            value={shoppingcart.name}
+                            name="deliveryDate"
+                            value={
+                                new Date(new Date().setDate(new Date().getDate() + 1))
+                                    .toISOString()
+                                    .split('T')[0] ||
+                                shoppingcart.deliveryDate.toISOString().split('T')[0]
+                            }
                             onChange={handleInputChange}
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter a name for the shoppingcart..."
+                            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                            min={
+                                new Date(new Date().setDate(new Date().getDate() + 1))
+                                    .toISOString()
+                                    .split('T')[0]
+                            }
                         />
-                    </div>
-                    <div>
-                        <label
-                            htmlFor="deliveryDate"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Delivery Date:
-                        </label>
-                        <div className="mt-1 relative">
-                            <input
-                                type="date"
-                                id="deliveryDate"
-                                ref={dateInputRef}
-                                required
-                                name="deliveryDate"
-                                value={
-                                    new Date(new Date().setDate(new Date().getDate() + 1))
-                                        .toISOString()
-                                        .split('T')[0] ||
-                                    shoppingcart.deliveryDate.toISOString().split('T')[0]
-                                }
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-                                min={
-                                    new Date(new Date().setDate(new Date().getDate() + 1))
-                                        .toISOString()
-                                        .split('T')[0]
-                                }
-                            />
-                        </div>
                     </div>
                 </div>
 

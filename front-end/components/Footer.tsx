@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-primary text-white py-8 w-full absolute bottom-0">
+        <footer className="bg-primary text-white py-8 w-full">
             <div className="max-w-5xl px-8 mx-auto flex justify-between items-center w-full">
                 <p className="text-sm">&copy; {new Date().getFullYear()} Shoppingcart app</p>
                 <nav className="">

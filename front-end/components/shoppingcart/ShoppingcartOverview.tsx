@@ -51,16 +51,16 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                                 <p>Total: ${calculateTotal(shoppingcart.items as any)}</p>
                             </div>
                         </div>
-                        <div className="bg-gray-50 p-3 flex gap-4">
+                        <div className="bg-gray-50 p-4 flex gap-4">
                             <Link
                                 href={`/shoppingcart/${shoppingcart.id}`}
-                                className="w-full bg-primary text-white text-center font-semibold py-2 px-4 rounded hover:bg-primary/70 transition-colors duration-300"
+                                className="bg-primary text-white text-center font-semibold py-3 px-4 rounded hover:bg-primary/70 transition-colors duration-300"
                             >
                                 View Cart
                             </Link>
                             <Link
                                 href={`/shoppingcart/${shoppingcart.id}/addItems`}
-                                className="w-full bg-green-500 text-center text-white font-semibold py-2 px-4 rounded hover:bg-green-500/70 transition-colors duration-300"
+                                className="bg-green-500 text-center text-white font-semibold py-3 px-4 rounded hover:bg-green-500/70 transition-colors duration-300"
                             >
                                 Add Items
                             </Link>

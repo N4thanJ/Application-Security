@@ -22,7 +22,7 @@ const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header />
-            <main className={'max-w-5xl mt-4 mx-auto px-8 min-h-[calc(100dvh-236px)]'}>
+            <main className={'max-w-5xl py-8 mx-auto px-8 min-h-[calc(100dvh-164px)]'}>
                 {children}
             </main>
             <Footer />
