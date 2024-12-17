@@ -4,11 +4,33 @@ import UserAdminOverview from '@components/users/UserAdminOverview';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { User } from '@types';
+import UserService from '@services/userService';
 
 const AdminUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const [users, setUsers] = useState<User[]>([]);
+
+    const handleDeleteUser = async (id: number | undefined): Promise<void> => {
+        try {
+            id && (await UserService.deleteUser(id));
+            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await UserService.getAllUsers();
+                const fetchedUsers: User[] = await response.json();
+                setUsers(fetchedUsers);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchUsers();
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
     }, []);
@@ -37,22 +59,10 @@ const AdminUserPage: React.FC = () => {
             </div>
 
             <section>
-                <UserAdminOverview />
+                <UserAdminOverview users={users} handleDeleteUser={handleDeleteUser} />
             </section>
         </>
     );
 };
 
 export default AdminUserPage;
-
-
-
-
-
-
-
-
-
-
-
-

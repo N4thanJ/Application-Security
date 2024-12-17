@@ -1,4 +1,4 @@
-import { User } from "@types";
+import { User } from '@types';
 
 const login = async (email: string, password: string) => {
     return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/login', {
@@ -21,7 +21,7 @@ const register = async (email: string, password: string) => {
 };
 
 const getUserByEmail = async (email: string) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + email, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/email/' + email, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const updateUser = async (userId: number, user: User) => {
 };
 
 const getUserById = async (userId: string) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + userId, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/id/' + userId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

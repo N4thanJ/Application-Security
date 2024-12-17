@@ -62,7 +62,7 @@ const Home: React.FC = () => {
 
     return (
         <section className="shadow-lg p-8 border rounded-lg">
-            {user && user.shoppingcarts.length > 0 ? (
+            {user && user?.shoppingcarts && user.shoppingcarts.length > 0 ? (
                 <ShoppingcartOverview
                     shoppingcarts={user.shoppingcarts}
                     deleteShoppingcartById={deleteShoppingcartById}

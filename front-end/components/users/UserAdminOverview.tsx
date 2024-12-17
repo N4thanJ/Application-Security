@@ -4,36 +4,17 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import UserService from '@services/userService';
 
-const UserAdminOverview: React.FC = () => {
-    const [users, setUsers] = useState<User[]>([]);
+type Props = {
+    users: User[];
+    handleDeleteUser: (id: number | undefined) => Promise<void>;
+};
+
+const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) => {
     const [menuOpenId, setMenuOpenId] = useState<number | undefined>(undefined);
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await UserService.getAllUsers();
-                const fetchedUsers: User[] = await response.json();
-                setUsers(fetchedUsers);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchUsers();
-    }, []);
 
     const toggleMenu = (userId: number | undefined) => {
         setMenuOpenId(menuOpenId === userId ? undefined : userId);
     };
-
-    async function handleDeleteUser(id: number | undefined): Promise<void> {
-        try {
-            id && (await UserService.deleteUser(id));
-            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     return (
         <>
@@ -42,7 +23,6 @@ const UserAdminOverview: React.FC = () => {
                     <table className="min-w-full bg-white text-left rounded-lg">
                         <thead>
                             <tr className="bg-gray-100 text-gray-700 text-center">
-                                {/* <th className="px-6 py-4 font-semibold text-sm">Name</th> */}
                                 <th className="px-6 py-4 font-semibold text-sm">Email</th>
                                 <th className="px-6 py-4 font-semibold text-sm">Role</th>
                                 <th className="px-6 py-4 font-semibold text-sm">Actions</th>
@@ -52,12 +32,10 @@ const UserAdminOverview: React.FC = () => {
                             {users.map((user) => (
                                 <tr
                                     key={user.id}
-                                    className={`${user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                                        } hover:bg-gray-100 transition-colors duration-200 text-center`}
+                                    className={`${
+                                        user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                    } hover:bg-gray-100 transition-colors duration-200 text-center`}
                                 >
-                                    {/* <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
-                                        {user.name}
-                                    </td> */}
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
                                         {user.email}
                                     </td>

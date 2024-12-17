@@ -116,6 +116,12 @@ const updateUser = async (userId: number, user: User): Promise<User> => {
 
 const deleteUser = async (userId: number): Promise<User> => {
     try {
+        await db.shoppingcart.deleteMany({
+            where: {
+                userId: userId,
+            },
+        });
+
         const userPrisma = await db.user.delete({
             where: {
                 id: userId,

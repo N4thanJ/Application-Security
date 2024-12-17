@@ -77,7 +77,7 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /users/{email}:
+ * /users/email/{email}:
  *   get:
  *     summary: Get user by email
  *     description: Retrieves a user by their email address. Requires administrative privileges.
@@ -108,7 +108,7 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  *       500:
  *         description: Internal server error
  */
-userRouter.get('/:email', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get('/email/:email', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const email = req.params.email;
         const user = await userService.getByEmail(email);
@@ -120,7 +120,7 @@ userRouter.get('/:email', async (req: Request, res: Response, next: NextFunction
 
 /**
  * @swagger
- * /users/{id}:
+ * /users/id/{id}:
  *   get:
  *     summary: Get user by ID
  *     description: Retrieves a user by their unique identifier. Requires administrative privileges.
@@ -151,7 +151,7 @@ userRouter.get('/:email', async (req: Request, res: Response, next: NextFunction
  *       500:
  *         description: Internal server error
  */
-userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get('/id/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = parseInt(req.params.id);
         const user = await userService.getById(id);
@@ -304,7 +304,6 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
  *         description: Internal server error
  */
 userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunction) => {
-
     try {
         const userId = parseInt(req.params.userId);
         const user = req.body as UserInput;
@@ -314,7 +313,6 @@ userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 });
-
 
 /**
  * @swagger
