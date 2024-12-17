@@ -1,7 +1,7 @@
 import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();
@@ -30,24 +30,6 @@ const AddShoppingcartForm: React.FC = () => {
             console.error('Error adding shoppingcart:', error);
         }
     };
-
-    const handleDateClick = () => {
-        if (dateInputRef.current) {
-            dateInputRef.current.showPicker();
-        }
-    };
-
-    useEffect(() => {
-        if (dateInputRef.current) {
-            dateInputRef.current.addEventListener('click', handleDateClick);
-        }
-
-        return () => {
-            if (dateInputRef.current) {
-                dateInputRef.current.removeEventListener('click', handleDateClick);
-            }
-        };
-    }, []);
 
     return (
         <>
