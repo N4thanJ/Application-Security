@@ -1,7 +1,7 @@
 import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();
@@ -31,55 +31,66 @@ const AddShoppingcartForm: React.FC = () => {
         }
     };
 
+    const handleDateClick = () => {
+        if (dateInputRef.current) {
+            dateInputRef.current.showPicker();
+        }
+    };
+    useEffect(() => {
+        if (dateInputRef.current) {
+            dateInputRef.current.addEventListener('click', handleDateClick);
+        }
+        return () => {
+            if (dateInputRef.current) {
+                dateInputRef.current.removeEventListener('click', handleDateClick);
+            }
+        };
+    }, []);
+
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate());
+    const minDateString = minDate.toISOString().split('T')[0];
+
+    const valueDate = shoppingcart.deliveryDate
+        ? shoppingcart.deliveryDate.toISOString().split('T')[0]
+        : minDateString;
+
     return (
         <>
             <h1>Create a shoppingcart</h1>
             <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Name:
-                        </label>
+                <div>
+                    <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                        Name:
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        required
+                        name="name"
+                        value={shoppingcart.name}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter a name for the shoppingcart..."
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="deliveryDate" className="text-sm font-medium text-gray-700">
+                        Delivery Date:
+                    </label>
+                    <div className="mt-1 relative">
                         <input
-                            type="text"
-                            id="name"
+                            type="date"
+                            id="deliveryDate"
+                            ref={dateInputRef}
                             required
-                            name="name"
-                            value={shoppingcart.name}
+                            name="deliveryDate"
+                            value={valueDate}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter a name for the shoppingcart..."
+                            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                            min={minDateString}
                         />
-                    </div>
-                    <div>
-                        <label
-                            htmlFor="deliveryDate"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Delivery Date:
-                        </label>
-                        <div className="mt-1 relative">
-                            <input
-                                type="date"
-                                id="deliveryDate"
-                                ref={dateInputRef}
-                                required
-                                name="deliveryDate"
-                                value={
-                                    new Date(new Date().setDate(new Date().getDate() + 1))
-                                        .toISOString()
-                                        .split('T')[0] ||
-                                    shoppingcart.deliveryDate.toISOString().split('T')[0]
-                                }
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-                                min={
-                                    new Date(new Date().setDate(new Date().getDate() + 1))
-                                        .toISOString()
-                                        .split('T')[0]
-                                }
-                            />
-                        </div>
                     </div>
                 </div>
 

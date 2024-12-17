@@ -52,6 +52,9 @@ const getById = async (id: number): Promise<Shoppingcart | undefined> => {
                     include: {
                         item: true,
                     },
+                    orderBy: {
+                        itemId: 'asc',
+                    },
                 },
                 user: true,
             },
@@ -351,6 +354,9 @@ const updateItemQuantityInShoppingcart = async ({
                     include: {
                         item: true,
                     },
+                    orderBy: {
+                        itemId: 'asc',
+                    },
                 },
                 user: true,
             },
@@ -363,6 +369,35 @@ const updateItemQuantityInShoppingcart = async ({
     }
 };
 
+const deleteShoppingcart = async ({ shoppingcart }: { shoppingcart: Shoppingcart }) => {
+    try {
+        await db.shoppingcartItems.deleteMany({
+            where: {
+                shoppingcartId: shoppingcart.getId(),
+            },
+        });
+
+        const shoppingcartPrisma = await db.shoppingcart.delete({
+            where: {
+                id: shoppingcart.getId(),
+            },
+            include: {
+                items: {
+                    include: {
+                        item: true,
+                    },
+                },
+                user: true,
+            },
+        });
+
+        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not delete shoppingcart');
+    }
+};
+
 export default {
     getAll,
     getById,
@@ -371,4 +406,5 @@ export default {
     deleteItemFromShoppingcart,
     removeAnItemFromShoppingcart,
     updateItemQuantityInShoppingcart,
+    deleteShoppingcart,
 };

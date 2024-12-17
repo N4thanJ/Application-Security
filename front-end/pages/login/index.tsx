@@ -7,7 +7,7 @@ const Login: React.FC = () => {
             <Head>
                 <title>Login</title>
             </Head>
-            <section className="flex flex-col items-center py-24">
+            <section className="flex flex-col items-center py-16">
                 <UserLoginForm />
             </section>
         </>
