@@ -151,6 +151,22 @@ const updateItemQuantityInShoppingcart = async (
     return updatedShoppingcart;
 };
 
+const deleteShoppingcart = async (id: number): Promise<Shoppingcart> => {
+    const shoppingcart = await shoppingcartDb.getById(id);
+
+    if (!shoppingcart) {
+        throw new Error('Shoppingcart not found');
+    }
+
+    const deletedShoppingcart = await shoppingcartDb.deleteShoppingcart({ shoppingcart });
+
+    if (!deletedShoppingcart) {
+        throw new Error('Could not delete shoppingcart');
+    }
+
+    return deletedShoppingcart;
+};
+
 export default {
     getAllShoppingcarts,
     getShoppingcartById,
@@ -159,4 +175,5 @@ export default {
     removeItemFromShoppingcart,
     removeAnItemFromShoppingcart,
     updateItemQuantityInShoppingcart,
+    deleteShoppingcart,
 };

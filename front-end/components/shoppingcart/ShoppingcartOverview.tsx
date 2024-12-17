@@ -6,9 +6,13 @@ import { formatDate } from 'util/shoppingcart';
 
 type Props = {
     shoppingcarts: Shoppingcart[] | [];
+    deleteShoppingcartById: (id: number) => void;
 };
 
-const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
+const ShoppingcartOverview: React.FC<Props> = ({
+    shoppingcarts,
+    deleteShoppingcartById,
+}: Props) => {
     return (
         <>
             <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
@@ -51,19 +55,28 @@ const ShoppingcartOverview: React.FC<Props> = ({ shoppingcarts }: Props) => {
                                 <p>Total: ${calculateTotal(shoppingcart.items as any)}</p>
                             </div>
                         </div>
-                        <div className="bg-gray-50 p-4 flex gap-4">
-                            <Link
-                                href={`/shoppingcart/${shoppingcart.id}`}
-                                className="bg-primary text-white text-center font-semibold py-3 px-4 rounded hover:bg-primary/70 transition-colors duration-300"
+                        <div className="bg-gray-50 grid gap-4 p-4">
+                            <div className="flex justify-between">
+                                <Link
+                                    href={`/shoppingcart/${shoppingcart.id}`}
+                                    className="bg-primary text-white text-center font-semibold py-3 px-4 rounded hover:bg-primary/70 transition-colors duration-300"
+                                >
+                                    View Cart
+                                </Link>
+                                <Link
+                                    href={`/shoppingcart/${shoppingcart.id}/addItems`}
+                                    className="bg-green-500 text-center text-white font-semibold py-3 px-4 rounded hover:bg-green-500/70 transition-colors duration-300"
+                                >
+                                    Add Items
+                                </Link>
+                            </div>
+
+                            <button
+                                onClick={() => deleteShoppingcartById(Number(shoppingcart.id))}
+                                className="bg-red-500 text-center text-white font-semibold py-3 px-4 rounded hover:bg-red-500/70 transition-colors duration-300"
                             >
-                                View Cart
-                            </Link>
-                            <Link
-                                href={`/shoppingcart/${shoppingcart.id}/addItems`}
-                                className="bg-green-500 text-center text-white font-semibold py-3 px-4 rounded hover:bg-green-500/70 transition-colors duration-300"
-                            >
-                                Add Items
-                            </Link>
+                                Delete
+                            </button>
                         </div>
                     </div>
                 ))}
