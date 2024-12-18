@@ -21,6 +21,13 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
 }: Props) => {
     const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
     const [nameFilter, setNameFilter] = useState('');
+    const [quantities, setQuantities] = useState<{ [key: string]: number }>(() => {
+        const initialQuantities: { [key: string]: number } = {};
+        shoppingcart.items.forEach((cartItem) => {
+            initialQuantities[Number(cartItem.item.id)] = cartItem.quantity;
+        });
+        return initialQuantities;
+    });
 
     const categories = useMemo(() => {
         const uniqueCategories = new Set(items.map((item) => item.category));
@@ -34,6 +41,11 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                 item.name.toLowerCase().includes(nameFilter.toLowerCase())
         );
     }, [items, categoryFilter, nameFilter]);
+
+    const handleQuantityInputChange = (item: Item, quantity: number) => {
+        setQuantities((prev) => ({ ...prev, [Number(item.id)]: quantity }));
+        handleQuantityChange(item, shoppingcart, quantity);
+    };
 
     return (
         <div className="py-4">
@@ -105,25 +117,38 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                     <>
                                         <button
                                             className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                            onClick={() =>
-                                                removeAnItemFromShoppingcart(item, shoppingcart)
-                                            }
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                removeAnItemFromShoppingcart(item, shoppingcart);
+                                                handleQuantityInputChange(
+                                                    item,
+                                                    (quantities[Number(item.id)] || 0) - 1
+                                                );
+                                            }}
                                         >
                                             <Minus size={24} />
                                         </button>
                                         <input
-                                            type="text"
+                                            type="number"
                                             className="w-28 text-center border border-gray-300 rounded-md"
                                             value={
-                                                shoppingcart.items.find(
-                                                    (cartItem) => cartItem.item.id === item.id
-                                                )?.quantity || 0
+                                                (quantities[Number(item.id)] ??
+                                                    shoppingcart.items.find(
+                                                        (cartItem) => cartItem.item.id === item.id
+                                                    )?.quantity) ||
+                                                undefined
+                                            }
+                                            onChange={(e) =>
+                                                setQuantities((prev) => ({
+                                                    ...prev,
+                                                    [Number(item.id)]:
+                                                        parseInt(e.target.value) || 0,
+                                                }))
                                             }
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
-                                                    handleQuantityChange(
+                                                    handleQuantityInputChange(
                                                         item,
-                                                        shoppingcart,
                                                         parseInt(
                                                             (e.target as HTMLInputElement).value
                                                         ) || 0
@@ -132,9 +157,8 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                                 }
                                             }}
                                             onBlur={(e) => {
-                                                handleQuantityChange(
+                                                handleQuantityInputChange(
                                                     item,
-                                                    shoppingcart,
                                                     parseInt(e.target.value) || 0
                                                 );
                                             }}
@@ -143,7 +167,14 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                 )}
                                 <button
                                     className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                    onClick={() => addItemToShoppingcart(item, shoppingcart)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        addItemToShoppingcart(item, shoppingcart);
+                                        handleQuantityInputChange(
+                                            item,
+                                            (quantities[Number(item.id)] || 0) + 1
+                                        );
+                                    }}
                                 >
                                     <Plus size={24} />
                                 </button>
