@@ -1,8 +1,5 @@
 import { User } from '@types';
 
-const loggedInUser = sessionStorage.getItem('loggedInUser');
-const token = loggedInUser ? JSON.parse(loggedInUser).token : null;
-
 const login = async (token: string, email: string, password: string) => {
     return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/login', {
         method: 'POST',

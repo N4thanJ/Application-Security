@@ -1,8 +1,5 @@
 import { Shoppingcart } from '@types';
 
-const loggedInUser = sessionStorage.getItem('loggedInUser');
-const token = loggedInUser ? JSON.parse(loggedInUser).token : null;
-
 const addShoppingcart = async (token: string, shoppingcart: Shoppingcart) => {
     try {
         return fetch(process.env.NEXT_PUBLIC_API_URL + '/shoppingcarts', {
