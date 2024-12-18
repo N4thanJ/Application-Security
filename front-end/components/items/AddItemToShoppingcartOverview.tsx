@@ -119,7 +119,6 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                             className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                removeAnItemFromShoppingcart(item, shoppingcart);
                                                 handleQuantityInputChange(
                                                     item,
                                                     (quantities[Number(item.id)] || 0) - 1
@@ -170,10 +169,6 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         addItemToShoppingcart(item, shoppingcart);
-                                        handleQuantityInputChange(
-                                            item,
-                                            (quantities[Number(item.id)] || 0) + 1
-                                        );
                                     }}
                                 >
                                     <Plus size={24} />

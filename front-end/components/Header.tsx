@@ -39,7 +39,7 @@ const Header: React.FC = () => {
                                     <Link href="/">Home</Link>
                                 </li>
                                 <li>
-                                    <Link href="/items">Items</Link>
+                                    <Link href="/shoppingcarts">Shoppingcarts</Link>
                                 </li>
 
                                 {loggedInUser.role === 'admin' && (
