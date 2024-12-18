@@ -16,7 +16,8 @@ const Home: React.FC = () => {
                 return;
             }
 
-            const response = await UserService.getUserByEmail(loggedInUser.email);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const response = await UserService.getUserByEmail(token, loggedInUser.email);
 
             if (!response.ok) {
                 throw new Error('User not found');
@@ -31,7 +32,8 @@ const Home: React.FC = () => {
 
     const deleteShoppingcartById = async (id: number) => {
         try {
-            const deletedShoppingcart = await ShoppingcartService.deleteShoppingcartById(id);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const deletedShoppingcart = await ShoppingcartService.deleteShoppingcartById(token, id);
             if (!deletedShoppingcart || !deletedShoppingcart.ok) {
                 throw new Error('Shoppingcart not found');
             }

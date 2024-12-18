@@ -14,7 +14,9 @@ const CartViewer: React.FC = () => {
 
     const onDeleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.deleteItemFromShoppingcart(
+                token,
                 itemId,
                 shoppingcartId
             );
@@ -33,7 +35,9 @@ const CartViewer: React.FC = () => {
         quantity: number
     ) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id),
                 quantity
@@ -53,7 +57,9 @@ const CartViewer: React.FC = () => {
 
         const fetchShoppingcart = async () => {
             try {
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
                 const response = await ShoppingcartService.getShoppingcartById(
+                    token,
                     String(shoppingcartId)
                 );
 

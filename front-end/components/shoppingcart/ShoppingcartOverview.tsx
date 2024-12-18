@@ -19,7 +19,7 @@ const ShoppingcartOverview: React.FC<Props> = ({
                 <div className="flex items-center gap-4">
                     <h2>Shoppingcart Overview</h2>
                     <Link
-                        href={`/addShoppingcart`}
+                        href={`/shoppingcarts/addShoppingcart`}
                         className="p-1 bg-green-400 flex gap-2 items-center rounded-lg text-white hover:bg-green-600 transition-all"
                     >
                         <Plus size={24} />

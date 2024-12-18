@@ -36,7 +36,12 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                 throw new Error('Item id is missing in form');
             }
 
-            const response = await ItemService.addNutritionlabelToItem(item.id, nutritionlabel);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const response = await ItemService.addNutritionlabelToItem(
+                token,
+                item.id,
+                nutritionlabel
+            );
             console.log('Service response:', response);
 
             router.push('/itemOverview');

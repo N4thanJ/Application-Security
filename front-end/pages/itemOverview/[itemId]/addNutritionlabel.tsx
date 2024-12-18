@@ -16,7 +16,8 @@ const NutritionlabelForm: React.FC = () => {
         if (!itemId) return;
         const fetchItem = async () => {
             try {
-                const response = await ItemService.getItemById(String(itemId));
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                const response = await ItemService.getItemById(token, String(itemId));
                 const fetchedItem = await response.json();
                 setItem(fetchedItem);
             } catch (error) {

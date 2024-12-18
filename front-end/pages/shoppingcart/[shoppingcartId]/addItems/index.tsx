@@ -30,7 +30,11 @@ const addItemsToShoppingcart: React.FC = () => {
 
     const fetchShoppingcart = async () => {
         try {
-            const response = await ShoppingcartService.getShoppingcartById(String(shoppingcartId));
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const response = await ShoppingcartService.getShoppingcartById(
+                token,
+                String(shoppingcartId)
+            );
 
             if (response) {
                 const fetchedShoppingcart = await response.json();
@@ -46,7 +50,9 @@ const addItemsToShoppingcart: React.FC = () => {
 
     const addItemToShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.addItemToShoppingcart(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id)
             );
@@ -62,7 +68,9 @@ const addItemsToShoppingcart: React.FC = () => {
 
     const removeAnItemFromShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.removeAnItem(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id)
             );
@@ -82,7 +90,9 @@ const addItemsToShoppingcart: React.FC = () => {
         quantity: number
     ) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id),
                 quantity

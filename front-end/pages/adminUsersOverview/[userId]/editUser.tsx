@@ -16,7 +16,8 @@ const EditUserPage: React.FC = () => {
 
         const fetchUser = async () => {
             try {
-                const response = await UserService.getUserById(String(userId));
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                const response = await UserService.getUserById(token, String(userId));
                 const fetchedUser = await response.json();
                 setUser(fetchedUser);
             } catch (error) {

@@ -28,7 +28,12 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
         event.preventDefault();
         try {
             if (user.id !== undefined) {
-                await UserService.updateUser(user.id, { email: user.email, password: user.password, role: user.role }); // Pass user id and updated data
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                await UserService.updateUser(token, user.id, {
+                    email: user.email,
+                    password: user.password,
+                    role: user.role,
+                }); // Pass user id and updated data
             } else {
                 console.error('User ID is undefined');
             }

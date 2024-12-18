@@ -12,7 +12,8 @@ const AdminUserPage: React.FC = () => {
 
     const handleDeleteUser = async (id: number | undefined): Promise<void> => {
         try {
-            id && (await UserService.deleteUser(id));
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            id && (await UserService.deleteUser(token, id));
             setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
         } catch (error) {
             console.error(error);
@@ -22,7 +23,8 @@ const AdminUserPage: React.FC = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await UserService.getAllUsers();
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                const response = await UserService.getAllUsers(token);
                 const fetchedUsers: User[] = await response.json();
                 setUsers(fetchedUsers);
             } catch (error) {
