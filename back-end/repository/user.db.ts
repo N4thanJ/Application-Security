@@ -16,7 +16,6 @@ const getAll = async (): Promise<User[]> => {
                 },
             },
         });
-        console.log('Raw userPrisma:', JSON.stringify(userPrisma, null, 2));
 
         return userPrisma.map((userPrisma) => User.from(userPrisma));
     } catch (error) {

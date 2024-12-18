@@ -55,7 +55,11 @@ const authenticate = async ({
         throw new Error(`User with email: ${email} does not exist.`);
     }
 
-    await bcrypt.compare(password, foundUser.getPassword());
+    const bcryprRes = await bcrypt.compare(password, foundUser.getPassword());
+
+    if (!bcryprRes) {
+        throw new Error('Combination of username and password is not correct');
+    }
 
     const jwt = generateSWToken({ email, role: foundUser.getRole() });
 
@@ -70,7 +74,6 @@ const authenticate = async ({
 };
 
 const updateUser = async (userId: number, user: UserInput): Promise<User> => {
-
     // const existingUser = await userDb.getByEmail({ email: user.email });
 
     // if (!existingUser) {
@@ -96,7 +99,7 @@ const deleteUser = async (userId: number): Promise<User> => {
     }
 
     return user;
-}
+};
 
 const getById = async (id: number): Promise<User> => {
     const user = await userDb.getById(id);
@@ -107,4 +110,12 @@ const getById = async (id: number): Promise<User> => {
     return user;
 };
 
-export default { getAllUsers, createUser, authenticate, getByEmail, updateUser, deleteUser, getById };
+export default {
+    getAllUsers,
+    createUser,
+    authenticate,
+    getByEmail,
+    updateUser,
+    deleteUser,
+    getById,
+};

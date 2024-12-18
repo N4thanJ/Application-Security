@@ -24,7 +24,7 @@
  *         email:
  *           type: string
  *           description: User's email address used for authentication and communication
- *           example: john.doe@example.com
+ *           example: john.doe@mail.com
  *         password:
  *           type: string
  *           description: User's hashed password for authentication
@@ -186,7 +186,7 @@ userRouter.get('/id/:id', async (req: Request, res: Response, next: NextFunction
  *               email:
  *                 type: string
  *                 description: User's email address
- *                 example: john.doe@example.com
+ *                 example: john.doe@mail.com
  *               password:
  *                 type: string
  *                 description: User's password
@@ -237,7 +237,7 @@ userRouter.post('/signup', async (req: Request, res: Response, next: NextFunctio
  *               email:
  *                 type: string
  *                 description: User's email address
- *                 example: john.doe@example.com
+ *                 example: john.doe@mail.com
  *               password:
  *                 type: string
  *                 description: User's password
