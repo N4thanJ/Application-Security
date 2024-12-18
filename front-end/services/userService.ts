@@ -5,6 +5,7 @@ const login = async (email: string, password: string) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
         body: JSON.stringify({ email, password }),
     });
@@ -15,6 +16,7 @@ const register = async (email: string, password: string) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
         body: JSON.stringify({ email, password }),
     });
@@ -25,6 +27,7 @@ const getUserByEmail = async (email: string) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };
@@ -34,6 +37,7 @@ const getAllUsers = async () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };
@@ -43,6 +47,7 @@ const deleteUser = async (id: number) => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };
@@ -52,6 +57,7 @@ const updateUser = async (userId: number, user: User) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
         body: JSON.stringify(user),
     });
@@ -62,6 +68,7 @@ const getUserById = async (userId: string) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };

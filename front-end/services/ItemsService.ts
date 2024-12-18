@@ -5,6 +5,7 @@ const getAllItems = async () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };
@@ -14,6 +15,7 @@ const getItemById = async (itemId: string) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
     });
 };
@@ -23,6 +25,7 @@ const addItemToCart = async (itemId: string) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
         },
         body: JSON.stringify({ itemId }),
     });
