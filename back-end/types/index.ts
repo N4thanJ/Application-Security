@@ -1,4 +1,4 @@
-type Role = 'user' | 'admin';
+type Role = 'user' | 'admin' | 'manager';
 type Category = 'fruits' | 'vegetables' | 'dairy' | 'meat' | 'fish';
 
 type ItemInput = {

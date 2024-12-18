@@ -22,7 +22,7 @@ const PrivacyPolicy: React.FC = () => {
         if (decision === null) {
             setAccepted(false);
         }
-    }, 300);
+    }, 100);
 
     return (
         <>
@@ -118,7 +118,12 @@ const PrivacyPolicy: React.FC = () => {
                 </p>
                 <p>
                     At any point you can choose to{' '}
-                    <span onClick={() => removeDecision()} className="text-red-500 cursor-pointer">
+                    <span
+                        onClick={() => {
+                            removeDecision(), !setAccepted;
+                        }}
+                        className="text-red-500 cursor-pointer"
+                    >
                         revoke
                     </span>{' '}
                     your consent for data collection and use.

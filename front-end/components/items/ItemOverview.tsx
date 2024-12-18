@@ -44,7 +44,7 @@ const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
                                         />
                                     </div>
 
-                                    <div className="py-2">
+                                    <div className="pt-2">
                                         <h2 className="text-lg font-semibold text-gray-700">
                                             {item.name}
                                         </h2>

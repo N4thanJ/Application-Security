@@ -564,6 +564,14 @@ const main = async () => {
                 },
             },
         }),
+        prisma.user.create({
+            data: {
+                id: 2,
+                email: 'josh.doe@mail.com',
+                password: await bcrypt.hash('Josh123!', 12),
+                role: 'manager',
+            },
+        }),
     ]);
 
     const shoppingcartItems = await Promise.all([

@@ -105,7 +105,7 @@ const ItemPage: React.FC = () => {
                     <div>{items && <ItemOverview items={meat} />}</div>
                 </div>
 
-                <div className="border-t py-4">
+                <div className="border-t pt-4">
                     <h2 className="text-xl font-semibold">fish</h2>
                     <div>{items && <ItemOverview items={fish} />}</div>
                 </div>
