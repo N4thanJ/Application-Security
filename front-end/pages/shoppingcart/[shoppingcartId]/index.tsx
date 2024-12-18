@@ -77,8 +77,8 @@ const CartViewer: React.FC = () => {
 
     if (!loggedInUser) {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
-                Unauthorized to access this page!
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
             </p>
         );
     }

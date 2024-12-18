@@ -1,12 +1,15 @@
 import { Shoppingcart } from '@types';
 
-const addShoppingcart = async (shoppingcart: Shoppingcart) => {
+const loggedInUser = sessionStorage.getItem('loggedInUser');
+const token = loggedInUser ? JSON.parse(loggedInUser).token : null;
+
+const addShoppingcart = async (token: string, shoppingcart: Shoppingcart) => {
     try {
         return fetch(process.env.NEXT_PUBLIC_API_URL + '/shoppingcarts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(shoppingcart),
         });
@@ -15,13 +18,13 @@ const addShoppingcart = async (shoppingcart: Shoppingcart) => {
     }
 };
 
-const getShoppingcartById = async (shoppingcartId: string) => {
+const getShoppingcartById = async (token: string, shoppingcartId: string) => {
     try {
         return fetch(process.env.NEXT_PUBLIC_API_URL + `/shoppingcarts/${shoppingcartId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                Authorization: `Bearer ${token}`,
             },
         });
     } catch (error) {
@@ -29,7 +32,11 @@ const getShoppingcartById = async (shoppingcartId: string) => {
     }
 };
 
-const deleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number) => {
+const deleteItemFromShoppingcart = async (
+    token: string,
+    itemId: number,
+    shoppingcartId: number
+) => {
     try {
         return fetch(
             process.env.NEXT_PUBLIC_API_URL +
@@ -38,7 +45,7 @@ const deleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -47,7 +54,7 @@ const deleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number
     }
 };
 
-const removeAnItem = async (itemId: number, shoppingcartId: number) => {
+const removeAnItem = async (token: string, itemId: number, shoppingcartId: number) => {
     try {
         return fetch(
             process.env.NEXT_PUBLIC_API_URL +
@@ -56,7 +63,7 @@ const removeAnItem = async (itemId: number, shoppingcartId: number) => {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -65,7 +72,7 @@ const removeAnItem = async (itemId: number, shoppingcartId: number) => {
     }
 };
 
-const addItemToShoppingcart = async (itemId: number, shoppingcartId: number) => {
+const addItemToShoppingcart = async (token: string, itemId: number, shoppingcartId: number) => {
     try {
         return fetch(
             process.env.NEXT_PUBLIC_API_URL + `/shoppingcarts/addItem/${itemId}/${shoppingcartId}`,
@@ -73,7 +80,7 @@ const addItemToShoppingcart = async (itemId: number, shoppingcartId: number) => 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -83,6 +90,7 @@ const addItemToShoppingcart = async (itemId: number, shoppingcartId: number) => 
 };
 
 const updateItemQuantityInShoppingcart = async (
+    token: string,
     itemId: number,
     shoppingcartId: number,
     quantity: number
@@ -95,7 +103,7 @@ const updateItemQuantityInShoppingcart = async (
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -104,13 +112,13 @@ const updateItemQuantityInShoppingcart = async (
     }
 };
 
-const deleteShoppingcartById = async (id: number) => {
+const deleteShoppingcartById = async (token: string, id: number) => {
     try {
         return fetch(process.env.NEXT_PUBLIC_API_URL + `/shoppingcarts/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${sessionStorage.getItem('loggedInUser')}`,
+                Authorization: `Bearer ${token}`,
             },
         });
     } catch (error) {

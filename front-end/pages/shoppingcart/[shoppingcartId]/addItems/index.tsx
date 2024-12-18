@@ -98,13 +98,20 @@ const addItemsToShoppingcart: React.FC = () => {
     };
 
     useEffect(() => {
-        // Getting token & setting token
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
 
         fetchItems();
         fetchShoppingcart();
     }, [shoppingcartId]);
+
+    if (!loggedInUser) {
+        return (
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
+            </p>
+        );
+    }
 
     return (
         <section>
