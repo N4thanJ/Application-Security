@@ -1,0 +1,31 @@
+{
+    "item_page": {
+        "title": "Page de Vue d'Ensemble des Articles",
+        "welcome_message": "Bienvenue chez Shop & Go",
+        "intro_paragraph_1": "Ici, vous pouvez acheter et partir ! Notre magasin est dédié à vous offrir commodité et simplicité, que vous recherchiez des produits essentiels quotidiens ou une petite gourmandise. Avec une sélection soignée de produits de haute qualité, nous visons à rendre votre expérience d'achat rapide, facile et agréable.",
+        "intro_paragraph_2": "Chez Shop & Go, nous croyons en l'économie de temps sans compromettre la qualité. Nous sommes fiers de notre excellent service, de nos valeurs imbattables et d'une expérience sans tracas à chaque visite. Venez découvrir une nouvelle façon de faire vos courses !",
+        "view_offers_button": "Voir nos offres",
+        "user_table_title": "Table des Utilisateurs",
+        "item_overview_title": "Vue d'Ensemble des Articles",
+        "categories": {
+            "fruits": "Fruits",
+            "vegetables": "Légumes",
+            "dairy": "Produits Laitiers",
+            "meat": "Viande",
+            "fish": "Poisson"
+        }
+    },
+    "header": {
+        "title": "Application du panier d'achat",
+        "home": "Accueil",
+        "shoppingcarts": "Paniers d'achat",
+        "admin_items_overview": "Vue d'ensemble des articles administrateur",
+        "admin_users_overview": "Vue d'ensemble des utilisateurs administrateur",
+        "login": "Connexion",
+        "register": "S'inscrire",
+        "logout": "Se déconnecter"
+    },
+    "language_selector": {
+        "label": "Langue"
+    }
+}

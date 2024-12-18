@@ -1,0 +1,31 @@
+{
+    "item_page": {
+        "title": "Item Overview Page",
+        "welcome_message": "Welcome to Shop & Go",
+        "intro_paragraph_1": "Here you can shop and go! Our store is dedicated to bringing you convenience and simplicity, whether you're looking for daily essentials or a special treat. With a curated selection of top-quality products, we aim to make your shopping experience quick, easy, and enjoyable.",
+        "intro_paragraph_2": "At Shop & Go, we believe in saving you time without compromising on quality. We pride ourselves on excellent service, unbeatable value, and a hassle-free experience every time you visit. Come explore a new way to shop!",
+        "view_offers_button": "View our offers",
+        "user_table_title": "User Table",
+        "item_overview_title": "Item Overview",
+        "categories": {
+            "fruits": "Fruits",
+            "vegetables": "Vegetables",
+            "dairy": "Dairy",
+            "meat": "Meat",
+            "fish": "Fish"
+        }
+    },
+    "header": {
+        "title": "Shoppingcart app",
+        "home": "Home",
+        "shoppingcarts": "Shoppingcarts",
+        "admin_items_overview": "Admin items overview",
+        "admin_users_overview": "Admin users overview",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout"
+    },
+    "language_selector": {
+        "label": "Language"
+    }
+}
