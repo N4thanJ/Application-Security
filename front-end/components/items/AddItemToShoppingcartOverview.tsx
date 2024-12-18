@@ -114,7 +114,7 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                         <input
                                             type="text"
                                             className="w-28 text-center border border-gray-300 rounded-md"
-                                            defaultValue={
+                                            value={
                                                 shoppingcart.items.find(
                                                     (cartItem) => cartItem.item.id === item.id
                                                 )?.quantity || 0
