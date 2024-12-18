@@ -1,11 +1,10 @@
 import { Item, Nutritionlabel } from '@types';
 
-const getAllItems = async (token: string) => {
+const getAllItems = async () => {
     return fetch(process.env.NEXT_PUBLIC_API_URL + '/items', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
         },
     });
 };
@@ -41,6 +40,7 @@ const addNutritionlabelToItem = async (
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(nutritionLabel),
         });
@@ -55,6 +55,7 @@ const addItem = async (token: string, item: Item) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(item),
         });
@@ -69,6 +70,7 @@ const deleteItem = async (token: string, itemId: number) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
         });
     } catch (error) {

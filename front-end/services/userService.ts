@@ -1,22 +1,20 @@
 import { User } from '@types';
 
-const login = async (token: string, email: string, password: string) => {
+const login = async (email: string, password: string) => {
     return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ email, password }),
     });
 };
 
-const register = async (token: string, email: string, password: string) => {
+const register = async (email: string, password: string) => {
     return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ email, password }),
     });
