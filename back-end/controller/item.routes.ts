@@ -3,8 +3,12 @@
  * tags:
  *   - name: Items
  *     description: Operations for managing items in the store
- *
  * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *    schemas:
  *      Category:
  *        type: string
@@ -124,6 +128,8 @@ const itemRouter = express.Router();
  *   get:
  *     summary: Get a list of all items
  *     description: Retrieve a list of all grocery items available in the store
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Items
  *     responses:
@@ -162,6 +168,8 @@ itemRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  *   get:
  *     summary: Get an item by ID
  *     description: Retrieve detailed information about a specific item using its ID
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Items
  *     parameters:
@@ -216,6 +224,8 @@ itemRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunctio
  *   post:
  *     summary: Create a new item
  *     description: Add a new item to the store's inventory
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Items
  *     requestBody:
@@ -267,6 +277,8 @@ itemRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
  *   post:
  *     summary: Add a nutritionlabel to an item
  *     description: Add or update nutritional information for a specific item
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Items
  *     parameters:
@@ -342,6 +354,8 @@ itemRouter.post(
  *   delete:
  *     summary: Delete an item by ID
  *     description: Remove a specific item from the store's inventory
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Items
  *     parameters:

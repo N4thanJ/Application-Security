@@ -84,7 +84,7 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                                             handleQuantityChangeLocal(item, Number(e.target.value))
                                         }
                                         className="w-16 text-center border border-gray-300 rounded-md p-1 text-gray-800"
-                                        min="1"
+                                        min="0"
                                     />
                                 </div>
                                 <div className="text-center">

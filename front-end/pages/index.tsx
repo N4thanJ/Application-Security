@@ -15,35 +15,35 @@ const ItemPage: React.FC = () => {
     const [meat, setMeat] = useState<Item[] | []>([]);
     const [fish, setFish] = useState<Item[] | []>([]);
 
-    const getItems = async () => {
-        const response = await ItemsService.getAllItems();
-        const items = await response.json();
-        setItems(items);
-    };
-
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
     }, []);
 
     useEffect(() => {
+        const getItems = async () => {
+            const response = await ItemsService.getAllItems();
+            const items = await response.json();
+            setItems(items);
+
+            const fruits = items.filter((item: Item) => String(item.category) === 'fruits');
+            setFruits(fruits);
+
+            const vegetables = items.filter((item: Item) => String(item.category) === 'vegetables');
+            setVegetables(vegetables);
+
+            const dairy = items.filter((item: Item) => String(item.category) === 'dairy');
+            setDairy(dairy);
+
+            const meat = items.filter((item: Item) => String(item.category) === 'meat');
+            setMeat(meat);
+
+            const fish = items.filter((item: Item) => String(item.category) === 'fish');
+            setFish(fish);
+        };
+
         getItems();
-
-        const fruits = items.filter((item: Item) => String(item.category) === 'fruits');
-        setFruits(fruits);
-
-        const vegetables = items.filter((item: Item) => String(item.category) === 'vegetables');
-        setVegetables(vegetables);
-
-        const dairy = items.filter((item: Item) => String(item.category) === 'dairy');
-        setDairy(dairy);
-
-        const meat = items.filter((item: Item) => String(item.category) === 'meat');
-        setMeat(meat);
-
-        const fish = items.filter((item: Item) => String(item.category) === 'fish');
-        setFish(fish);
-    }, [items]);
+    }, []);
 
     return (
         <>

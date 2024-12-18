@@ -2,7 +2,6 @@ import shoppingcartDb from '../repository/shoppingcart.db';
 import { Shoppingcart } from '../model/shoppingcart';
 import itemDb from '../repository/item.db';
 import { Role, ShoppingcartInput } from '../types';
-import { User } from '../model/user';
 import userDb from '../repository/user.db';
 
 const getAllShoppingcarts = async (): Promise<Shoppingcart[]> => {
@@ -46,8 +45,7 @@ const getShoppingcartById = async (id: number): Promise<Shoppingcart> => {
 
 const createShoppingcart = async (
     shoppingcart: ShoppingcartInput,
-    email: string,
-    role: Role
+    email: string
 ): Promise<Shoppingcart> => {
     const newShoppingcart = new Shoppingcart(shoppingcart);
 

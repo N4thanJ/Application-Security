@@ -16,7 +16,8 @@ const EditUserPage: React.FC = () => {
 
         const fetchUser = async () => {
             try {
-                const response = await UserService.getUserById(String(userId));
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                const response = await UserService.getUserById(token, String(userId));
                 const fetchedUser = await response.json();
                 setUser(fetchedUser);
             } catch (error) {
@@ -32,8 +33,8 @@ const EditUserPage: React.FC = () => {
 
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
-                Unauthorized to access this page!
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
             </p>
         );
     }

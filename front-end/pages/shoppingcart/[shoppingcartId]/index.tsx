@@ -14,7 +14,9 @@ const CartViewer: React.FC = () => {
 
     const onDeleteItemFromShoppingcart = async (itemId: number, shoppingcartId: number) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.deleteItemFromShoppingcart(
+                token,
                 itemId,
                 shoppingcartId
             );
@@ -33,7 +35,9 @@ const CartViewer: React.FC = () => {
         quantity: number
     ) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id),
                 quantity
@@ -53,7 +57,9 @@ const CartViewer: React.FC = () => {
 
         const fetchShoppingcart = async () => {
             try {
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
                 const response = await ShoppingcartService.getShoppingcartById(
+                    token,
                     String(shoppingcartId)
                 );
 
@@ -77,8 +83,8 @@ const CartViewer: React.FC = () => {
 
     if (!loggedInUser) {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
-                Unauthorized to access this page!
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
             </p>
         );
     }

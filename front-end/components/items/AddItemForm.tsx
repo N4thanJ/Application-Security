@@ -24,7 +24,8 @@ const AddItemForm: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            await ItemService.addItem(item);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            await ItemService.addItem(token, item);
         } catch (error) {
             console.error('Error adding nutrition label:', error);
         }

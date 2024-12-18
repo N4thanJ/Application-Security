@@ -24,8 +24,9 @@ const AddShoppingcartForm: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            await ShoppingcartService.addShoppingcart(shoppingcart);
-            router.push('/');
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            await ShoppingcartService.addShoppingcart(token, shoppingcart);
+            router.push('/shoppingcarts');
         } catch (error) {
             console.error('Error adding shoppingcart:', error);
         }

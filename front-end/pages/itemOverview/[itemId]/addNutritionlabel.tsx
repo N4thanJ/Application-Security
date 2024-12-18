@@ -16,7 +16,8 @@ const NutritionlabelForm: React.FC = () => {
         if (!itemId) return;
         const fetchItem = async () => {
             try {
-                const response = await ItemService.getItemById(String(itemId));
+                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+                const response = await ItemService.getItemById(token, String(itemId));
                 const fetchedItem = await response.json();
                 setItem(fetchedItem);
             } catch (error) {
@@ -32,8 +33,8 @@ const NutritionlabelForm: React.FC = () => {
 
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
-            <p className="pt-4 text-lg text-red-600 text-center italic font-bold">
-                Unauthorized to access this page!
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
             </p>
         );
     }

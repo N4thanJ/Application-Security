@@ -30,7 +30,11 @@ const addItemsToShoppingcart: React.FC = () => {
 
     const fetchShoppingcart = async () => {
         try {
-            const response = await ShoppingcartService.getShoppingcartById(String(shoppingcartId));
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const response = await ShoppingcartService.getShoppingcartById(
+                token,
+                String(shoppingcartId)
+            );
 
             if (response) {
                 const fetchedShoppingcart = await response.json();
@@ -46,23 +50,9 @@ const addItemsToShoppingcart: React.FC = () => {
 
     const addItemToShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.addItemToShoppingcart(
-                Number(item.id),
-                Number(shoppingcart.id)
-            );
-
-            if (response) {
-                const updatedShoppingcart = await response.json();
-                setShoppingcart(updatedShoppingcart);
-            }
-        } catch (error) {
-            console.error('Error fetching shoppingcart:', error);
-        }
-    };
-
-    const removeAnItemFromShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
-        try {
-            const response = await ShoppingcartService.removeAnItem(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id)
             );
@@ -82,7 +72,9 @@ const addItemsToShoppingcart: React.FC = () => {
         quantity: number
     ) => {
         try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
             const response = await ShoppingcartService.updateItemQuantityInShoppingcart(
+                token,
                 Number(item.id),
                 Number(shoppingcart.id),
                 quantity
@@ -98,13 +90,20 @@ const addItemsToShoppingcart: React.FC = () => {
     };
 
     useEffect(() => {
-        // Getting token & setting token
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
 
         fetchItems();
         fetchShoppingcart();
     }, [shoppingcartId]);
+
+    if (!loggedInUser) {
+        return (
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
+            </p>
+        );
+    }
 
     return (
         <section>
@@ -123,7 +122,6 @@ const addItemsToShoppingcart: React.FC = () => {
                     items={items}
                     shoppingcart={shoppingcart}
                     selectedItem={setSelectedItem}
-                    removeAnItemFromShoppingcart={removeAnItemFromShoppingcart}
                     addItemToShoppingcart={addItemToShoppingcart}
                     handleQuantityChange={handleQuantityChange}
                 />

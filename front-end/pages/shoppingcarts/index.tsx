@@ -16,7 +16,8 @@ const Home: React.FC = () => {
                 return;
             }
 
-            const response = await UserService.getUserByEmail(loggedInUser.email);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const response = await UserService.getUserByEmail(token, loggedInUser.email);
 
             if (!response.ok) {
                 throw new Error('User not found');
@@ -31,7 +32,8 @@ const Home: React.FC = () => {
 
     const deleteShoppingcartById = async (id: number) => {
         try {
-            const deletedShoppingcart = await ShoppingcartService.deleteShoppingcartById(id);
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            const deletedShoppingcart = await ShoppingcartService.deleteShoppingcartById(token, id);
             if (!deletedShoppingcart || !deletedShoppingcart.ok) {
                 throw new Error('Shoppingcart not found');
             }
@@ -52,9 +54,17 @@ const Home: React.FC = () => {
         }
     }, [loggedInUser]);
 
+    if (!loggedInUser) {
+        return (
+            <p className="py-56 text-lg text-red-600 text-center italic font-bold">
+                Please log in to view this page.
+            </p>
+        );
+    }
+
     return (
         <section className="shadow-lg p-8 border rounded-lg">
-            {user && user.shoppingcarts.length > 0 ? (
+            {user?.shoppingcarts && user.shoppingcarts.length > 0 ? (
                 <ShoppingcartOverview
                     shoppingcarts={user.shoppingcarts}
                     deleteShoppingcartById={deleteShoppingcartById}
@@ -63,7 +73,7 @@ const Home: React.FC = () => {
                 <>
                     <h3>You currently don't have any shoppingcarts :(</h3>
                     <Link
-                        href={'/addShoppingcart'}
+                        href={'/shoppingcarts/addShoppingcart'}
                         className="inline-block mt-6 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                         type="submit"
                     >
