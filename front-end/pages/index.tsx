@@ -1,4 +1,5 @@
 import ItemOverview from '@components/items/ItemOverview';
+import UserTable from '@components/users/UserTable';
 import ItemsService from '@services/ItemsService';
 import { Item, User } from '@types';
 import { Images } from 'lucide-react';
@@ -73,24 +74,9 @@ const ItemPage: React.FC = () => {
                 </a>
             </section>
 
-            <section className="border rounded-lg shadow-lg p-8 my-8">
-                <h1>Create your shoppingcart</h1>
-
-                {loggedInUser ? (
-                    <Link
-                        href={'/shoppingcarts'}
-                        className="bg-blue-600 text-white p-2 mt-4 inline-block rounded-lg shadow-lg hover:bg-blue-700/80 transition-all duration-300"
-                    >
-                        View your shoppingcarts
-                    </Link>
-                ) : (
-                    <Link
-                        href={'/login'}
-                        className="bg-blue-600 text-white p-2 mt-4 inline-block rounded-lg shadow-lg hover:bg-blue-700/80 transition-all duration-300"
-                    >
-                        Log in to view your shoppingcarts
-                    </Link>
-                )}
+            <section className="border rounded-lg shadow-lg p-8 mb-8">
+                <h1>User Table</h1>
+                <UserTable />
             </section>
 
             <section className="border rounded-lg shadow-lg p-8" id="offers">

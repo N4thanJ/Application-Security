@@ -68,6 +68,9 @@ const UserLoginForm: React.FC = () => {
                 }, 2000); // Redirect after a delay
             } else {
                 const errorResponse = await response.json();
+
+                setPassword('');
+
                 setStatusMessages([
                     {
                         message:
