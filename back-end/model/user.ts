@@ -62,6 +62,10 @@ export class User {
             throw new Error('Email is required');
         }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+            throw new Error('Email is not valid');
+        }
+
         if (!user.password?.trim()) {
             throw new Error('Password is required');
         }

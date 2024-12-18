@@ -9,58 +9,65 @@ const UserRegisterForm: React.FC = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [nameError, setNameError] = useState<string | null>(null);
+    const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
     const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
 
     const clearErrors = () => {
-        setNameError(null);
+        setEmailError(null);
         setPasswordError(null);
         setStatusMessages([]);
     };
 
     const validate = (): boolean => {
-        let result = true;
+        let isValid = true;
+        clearErrors();
 
-        if (!email && email.trim() === '') {
-            setNameError('Email is required');
-            result = false;
+        if (!email.trim()) {
+            setEmailError('Email is required');
+            isValid = false;
         }
-
-        if (!password && password.trim() === '') {
+        if (!password.trim()) {
             setPasswordError('Password is required');
-            result = false;
+            isValid = false;
         }
 
-        return result;
+        return isValid;
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        clearErrors();
-        if (!validate()) {
-            return;
-        }
+
+        if (!validate()) return;
 
         try {
             const response = await userService.register(email, password);
-            await response.json();
 
-            setStatusMessages([
-                {
-                    message: 'Register successful. Redirecting to homepage...',
-                    type: 'success',
-                },
-            ]);
+            if (response.ok) {
+                setStatusMessages([
+                    {
+                        message: 'Registration successful. Redirecting to login...',
+                        type: 'success',
+                    },
+                ]);
 
-            setTimeout(() => {
-                router.push('/login');
-            }, 2000);
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
+            } else {
+                const errorResponse = await response.json();
+                setStatusMessages([
+                    {
+                        message: errorResponse?.message || 'Registration failed. Please try again.',
+                        type: 'error',
+                    },
+                ]);
+            }
         } catch (error) {
             setStatusMessages([
                 {
-                    message: 'Please try again.',
+                    message: 'An unexpected error occurred. Please try again later.',
                     type: 'error',
                 },
             ]);
@@ -82,14 +89,14 @@ const UserRegisterForm: React.FC = () => {
                         placeholder="Enter your email..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    {nameError && <span className="text-red-700 font-bold">{nameError}</span>}
+                    {emailError && <span className="text-red-700 font-bold">{emailError}</span>}
                 </div>
 
                 <div className="mt-4">
                     <label htmlFor="passwordInput">Password:</label>
                     <input
                         id="passwordInput"
-                        type="text"
+                        type="password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Enter a password..."
@@ -101,7 +108,7 @@ const UserRegisterForm: React.FC = () => {
                 </div>
 
                 {statusMessages && (
-                    <div>
+                    <div className="mt-4">
                         <ul>
                             {statusMessages.map(({ message, type }, index) => (
                                 <li

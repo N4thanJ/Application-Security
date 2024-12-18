@@ -1,9 +1,9 @@
 import userService from '@services/userService';
 import { StatusMessage } from '@types';
-import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import classNames from 'classnames';
 
 const UserLoginForm: React.FC = () => {
     const router = useRouter();
@@ -21,55 +21,66 @@ const UserLoginForm: React.FC = () => {
     };
 
     const validate = (): boolean => {
-        let result = true;
+        let isValid = true;
+        clearErrors();
 
-        if (!email && email.trim() === '') {
+        if (!email.trim()) {
             setNameError('Email is required');
-            result = false;
+            isValid = false;
         }
-
-        if (!password && password.trim() === '') {
+        if (!password.trim()) {
             setPasswordError('Password is required');
-            result = false;
+            isValid = false;
         }
 
-        return result;
+        return isValid;
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        clearErrors();
-        if (!validate()) {
-            return;
-        }
+
+        if (!validate()) return;
 
         try {
             const response = await userService.login(email, password);
-            const loggedInUser = await response.json();
 
-            setStatusMessages([
-                {
-                    message: 'Login successful. Redirecting to homepage...',
-                    type: 'success',
-                },
-            ]);
+            if (response.ok) {
+                const loggedInUser = await response.json();
 
-            sessionStorage.setItem(
-                'loggedInUser',
-                JSON.stringify({
-                    token: loggedInUser.token,
-                    email: loggedInUser.email,
-                    role: loggedInUser.role,
-                })
-            );
+                setStatusMessages([
+                    {
+                        message: 'Login successful. Redirecting to homepage...',
+                        type: 'success',
+                    },
+                ]);
 
-            setTimeout(() => {
-                router.push('/');
-            }, 2000);
+                sessionStorage.setItem(
+                    'loggedInUser',
+                    JSON.stringify({
+                        token: loggedInUser.token,
+                        email: loggedInUser.email,
+                        role: loggedInUser.role,
+                    })
+                );
+
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000); // Redirect after a delay
+            } else {
+                const errorResponse = await response.json();
+                setStatusMessages([
+                    {
+                        message:
+                            errorResponse?.message ||
+                            'Invalid email or password. Please try again.',
+                        type: 'error',
+                    },
+                ]);
+            }
         } catch (error) {
             setStatusMessages([
                 {
-                    message: 'Combination of email and password is incorrect. Please try again.',
+                    message: 'An unexpected error occurred. Please try again later.',
                     type: 'error',
                 },
             ]);
@@ -98,7 +109,7 @@ const UserLoginForm: React.FC = () => {
                     <label htmlFor="passwordInput">Password:</label>
                     <input
                         id="passwordInput"
-                        type="text"
+                        type="password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Enter your password..."
