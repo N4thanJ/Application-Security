@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Item, Shoppingcart, Category } from '@types';
 import { ChevronDown, Minus, Plus } from 'lucide-react';
 
@@ -6,7 +6,6 @@ type Props = {
     items: Item[];
     shoppingcart: Shoppingcart;
     selectedItem: (item: Item) => void;
-    removeAnItemFromShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
     addItemToShoppingcart: (item: Item, shoppingcart: Shoppingcart) => void;
     handleQuantityChange: (item: Item, shoppingcart: Shoppingcart, quantity: number) => void;
 };
@@ -15,19 +14,20 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
     items,
     shoppingcart,
     selectedItem,
-    removeAnItemFromShoppingcart,
     addItemToShoppingcart,
     handleQuantityChange,
 }: Props) => {
     const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
     const [nameFilter, setNameFilter] = useState('');
-    const [quantities, setQuantities] = useState<{ [key: string]: number }>(() => {
-        const initialQuantities: { [key: string]: number } = {};
+    const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+
+    useEffect(() => {
+        const updatedQuantities: { [key: string]: number } = {};
         shoppingcart.items.forEach((cartItem) => {
-            initialQuantities[Number(cartItem.item.id)] = cartItem.quantity;
+            updatedQuantities[Number(cartItem.item.id)] = cartItem.quantity;
         });
-        return initialQuantities;
-    });
+        setQuantities(updatedQuantities);
+    }, [shoppingcart]);
 
     const categories = useMemo(() => {
         const uniqueCategories = new Set(items.map((item) => item.category));
@@ -130,18 +130,12 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                                         <input
                                             type="number"
                                             className="w-28 text-center border border-gray-300 rounded-md"
-                                            value={
-                                                (quantities[Number(item.id)] ??
-                                                    shoppingcart.items.find(
-                                                        (cartItem) => cartItem.item.id === item.id
-                                                    )?.quantity) ||
-                                                undefined
-                                            }
+                                            value={quantities[Number(item.id)] ?? 0}
                                             onChange={(e) =>
                                                 setQuantities((prev) => ({
                                                     ...prev,
                                                     [Number(item.id)]:
-                                                        parseInt(e.target.value) || 0,
+                                                        parseInt(e.target.value) || undefined,
                                                 }))
                                             }
                                             onKeyDown={(e) => {

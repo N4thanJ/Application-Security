@@ -66,24 +66,6 @@ const addItemsToShoppingcart: React.FC = () => {
         }
     };
 
-    const removeAnItemFromShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
-        try {
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            const response = await ShoppingcartService.removeAnItem(
-                token,
-                Number(item.id),
-                Number(shoppingcart.id)
-            );
-
-            if (response) {
-                const updatedShoppingcart = await response.json();
-                setShoppingcart(updatedShoppingcart);
-            }
-        } catch (error) {
-            console.error('Error fetching shoppingcart:', error);
-        }
-    };
-
     const handleQuantityChange = async (
         item: Item,
         shoppingcart: Shoppingcart,
@@ -140,7 +122,6 @@ const addItemsToShoppingcart: React.FC = () => {
                     items={items}
                     shoppingcart={shoppingcart}
                     selectedItem={setSelectedItem}
-                    removeAnItemFromShoppingcart={removeAnItemFromShoppingcart}
                     addItemToShoppingcart={addItemToShoppingcart}
                     handleQuantityChange={handleQuantityChange}
                 />

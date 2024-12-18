@@ -330,39 +330,63 @@ const updateItemQuantityInShoppingcart = async ({
     quantity: number;
 }) => {
     try {
-        const shoppingcartPrisma = await db.shoppingcart.update({
-            where: {
-                id: shoppingcart.getId()!,
-            },
-            data: {
-                items: {
-                    update: {
-                        where: {
+        if (quantity <= 0) {
+            const shoppingcartPrisma = await db.shoppingcart.update({
+                where: { id: shoppingcart.getId()! },
+                data: {
+                    items: {
+                        delete: {
                             shoppingcartId_itemId: {
                                 shoppingcartId: shoppingcart.getId()!,
                                 itemId: item.getId()!,
                             },
                         },
-                        data: {
-                            quantity: quantity,
+                    },
+                },
+                include: {
+                    items: {
+                        include: { item: true },
+                        orderBy: { itemId: 'asc' },
+                    },
+                    user: true,
+                },
+            });
+
+            return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+        } else {
+            const shoppingcartPrisma = await db.shoppingcart.update({
+                where: {
+                    id: shoppingcart.getId()!,
+                },
+                data: {
+                    items: {
+                        update: {
+                            where: {
+                                shoppingcartId_itemId: {
+                                    shoppingcartId: shoppingcart.getId()!,
+                                    itemId: item.getId()!,
+                                },
+                            },
+                            data: {
+                                quantity: quantity,
+                            },
                         },
                     },
                 },
-            },
-            include: {
-                items: {
-                    include: {
-                        item: true,
+                include: {
+                    items: {
+                        include: {
+                            item: true,
+                        },
+                        orderBy: {
+                            itemId: 'asc',
+                        },
                     },
-                    orderBy: {
-                        itemId: 'asc',
-                    },
+                    user: true,
                 },
-                user: true,
-            },
-        });
-
-        return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+            });
+            return shoppingcartPrisma ? Shoppingcart.from(shoppingcartPrisma) : undefined;
+        }
     } catch (error) {
         console.log(error);
         throw new Error('Could not update item in shoppingcart');
