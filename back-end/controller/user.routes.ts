@@ -5,6 +5,11 @@
  *     description: Operations related to user management and authentication
  *
  * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *   schemas:
  *     Role:
  *       type: string

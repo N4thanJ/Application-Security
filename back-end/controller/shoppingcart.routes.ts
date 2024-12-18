@@ -5,6 +5,11 @@
  *     description: Operations for managing shopping carts
  *
  * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *    schemas:
  *      ShoppingCart:
  *        type: object
@@ -199,15 +204,21 @@ shoppingcartRouter.post('/', async (req: Request, res: Response) => {
     try {
         const authHeader = req.headers.authorization;
 
-        if (!authHeader) {
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(401).json({ message: 'Unauthorized' });
             return;
         }
 
         const token = authHeader.split(' ')[1];
-        const { email, role } = JSON.parse(
-            Buffer.from(token.split('.')[1], 'base64').toString()
-        ) as {
+        let decodedToken;
+        try {
+            decodedToken = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        } catch (error) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+
+        const { email, role } = decodedToken as {
             email: string;
             role: Role;
         };

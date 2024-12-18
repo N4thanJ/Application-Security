@@ -5,6 +5,11 @@
  *     description: Operations for managing nutrition labels
  *
  * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *    schemas:
  *      NutritionLabel:
  *        type: object

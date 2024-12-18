@@ -5,6 +5,11 @@
  *     description: Operations for managing items in the store
  *
  * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *    schemas:
  *      Category:
  *        type: string
