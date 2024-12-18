@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
                             <Link href="/">Home</Link>
                         </li>
                         <li>
-                            <Link href="/items">Items</Link>
+                            <Link href="/shoppingcarts">Shoppingcarts</Link>
                         </li>
                         <li>
                             <Link href="/itemOverview">Admin overview</Link>
