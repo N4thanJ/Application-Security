@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 import { useEffect } from 'react';
 import Footer from './Footer';
+import CookiePolicy from './CookiePolicy';
 
 const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children, className }) => {
     useEffect(() => {
@@ -26,6 +27,7 @@ const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children
                 {children}
             </main>
             <Footer />
+            <CookiePolicy />
         </>
     );
 };
