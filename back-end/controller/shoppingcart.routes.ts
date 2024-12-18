@@ -3,7 +3,6 @@
  * tags:
  *   - name: Shoppingcarts
  *     description: Operations for managing shopping carts
- *
  * components:
  *    securitySchemes:
  *     bearerAuth:
@@ -59,9 +58,15 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import shoppingcartService from '../service/shoppingcart.service';
-import { Role } from '../types';
 
 const shoppingcartRouter = express.Router();
+
+interface AuthenticatedRequest extends Request {
+    auth?: {
+        email: string;
+        role: string;
+    };
+}
 
 /**
  * @swagger
@@ -69,6 +74,8 @@ const shoppingcartRouter = express.Router();
  *   get:
  *     summary: Get a list of all shopping carts
  *     description: Retrieve a list of all shopping carts with their items and delivery dates
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     responses:
@@ -101,21 +108,14 @@ shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFuncti
     }
 });
 
-shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const shoppingcartId = parseInt(req.params.itemId);
-        const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
-        res.status(200).json(shoppingcart);
-    } catch (error) {
-        res.status(500).json({ message: (error as Error).message });
-    }
-});
 /**
  * @swagger
  * /shoppingcarts/{id}:
  *   get:
  *     summary: Get a shopping cart by ID
  *     description: Retrieve a specific shopping cart by its unique ID
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:
@@ -154,6 +154,16 @@ shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: Nex
  *                   type: string
  *                   example: "Internal server error occurred"
  */
+
+shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const shoppingcartId = parseInt(req.params.itemId);
+        const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
+        res.status(200).json(shoppingcart);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+});
 
 /**
  * @swagger
@@ -200,35 +210,22 @@ shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: Nex
  *                   example: "Internal server error occurred"
  */
 
-shoppingcartRouter.post('/', async (req: Request, res: Response) => {
-    try {
-        const authHeader = req.headers.authorization;
-
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Unauthorized' });
-            return;
-        }
-
-        const token = authHeader.split(' ')[1];
-        let decodedToken;
+shoppingcartRouter.post(
+    '/',
+    async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
-            decodedToken = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+            const { email, role } = req.auth || {};
+            if (!email || !role) {
+                res.status(401).json({ message: 'Unauthorized' });
+                return;
+            }
+            const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email);
+            res.status(201).json(shoppingcart);
         } catch (error) {
-            res.status(401).json({ message: 'Unauthorized' });
-            return;
+            res.status(500).json({ message: (error as Error).message });
         }
-
-        const { email, role } = decodedToken as {
-            email: string;
-            role: Role;
-        };
-
-        const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email, role);
-        res.status(201).json(shoppingcart);
-    } catch (error) {
-        res.status(500).json({ message: (error as Error).message });
     }
-});
+);
 
 /**
  * @swagger
@@ -236,6 +233,8 @@ shoppingcartRouter.post('/', async (req: Request, res: Response) => {
  *   post:
  *     summary: Add an item to a shopping cart
  *     description: Add a specific item to an existing shopping cart
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:
@@ -305,6 +304,8 @@ shoppingcartRouter.post(
  *   delete:
  *     summary: Remove a complete item from a shopping cart
  *     description: Remove a complete specific item from an existing shopping cart
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:
@@ -374,6 +375,8 @@ shoppingcartRouter.delete(
  *   delete:
  *     summary: Remove a single item from a shopping cart
  *     description: Remove a specific item from an existing shopping cart
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:
@@ -443,6 +446,8 @@ shoppingcartRouter.delete(
  *   put:
  *     summary: Update the quantity of an item in a shopping cart
  *     description: Update the quantity of a specific item in an existing shopping cart
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:
@@ -523,6 +528,8 @@ shoppingcartRouter.put(
  *   delete:
  *     summary: Delete a shopping cart by ID
  *     description: Delete a specific shopping cart by its unique ID
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Shoppingcarts
  *     parameters:

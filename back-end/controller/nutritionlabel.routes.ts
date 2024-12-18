@@ -3,7 +3,6 @@
  * tags:
  *   - name: Nutritionlabels
  *     description: Operations for managing nutrition labels
- *
  * components:
  *    securitySchemes:
  *     bearerAuth:
@@ -115,6 +114,8 @@ const nutritionlabelRouter = express.Router();
  *   get:
  *     summary: Get a list of all nutrition labels
  *     description: Retrieve a list of all nutrition labels in the system
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Nutritionlabels
  *     responses:
@@ -153,6 +154,8 @@ nutritionlabelRouter.get('/', async (req: Request, res: Response, next: NextFunc
  *   post:
  *     summary: Create a new nutritionlabel
  *     description: Create a new nutritionlabel with detailed nutritional information
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Nutritionlabels
  *     requestBody:
