@@ -4,31 +4,33 @@ import { useEffect, useState } from 'react';
 import UserService from '@services/userService';
 import UserEditForm from '@components/users/UserEditForm';
 import Head from 'next/head';
+import useSWR, { mutate } from 'swr';
+import useInterval from 'use-interval';
 
 const EditUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const params = useParams<{ userId?: string }>();
     const userId = params?.userId;
-    const [user, setUser] = useState<User | null>(null);
+
+    const getUserById = async (id: string) => {
+        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+        const response = await UserService.getUserById(token, id);
+
+        const user = await response.json();
+        return user;
+    };
+
+    const { data, isLoading, error } = useSWR(userId ? ['user', userId] : null, () =>
+        getUserById(userId as string)
+    );
+
+    useInterval(() => {
+        userId && mutate('users', getUserById(userId));
+    }, 1000);
 
     useEffect(() => {
-        if (!userId) return;
-
-        const fetchUser = async () => {
-            try {
-                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-                const response = await UserService.getUserById(token, String(userId));
-                const fetchedUser = await response.json();
-                setUser(fetchedUser);
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            }
-        };
-
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
-
-        fetchUser();
     }, [userId]);
 
     if (!loggedInUser || loggedInUser.role !== 'admin') {
@@ -45,10 +47,13 @@ const EditUserPage: React.FC = () => {
                 <title>Edit User</title>
             </Head>
             <section>
-                {user ? (
-                    <UserEditForm initialUser={user} />
-                ) : (
+                {isLoading ? (
                     <p className="text-center text-gray-600">Loading user information...</p>
+                ) : (
+                    <div>
+                        {error && <p className="text-center text-red-600">{error}</p>}
+                        {data && <UserEditForm initialUser={data} />}
+                    </div>
                 )}
             </section>
         </>

@@ -115,6 +115,23 @@ const updateUser = async (userId: number, user: User): Promise<User> => {
 
 const deleteUser = async (userId: number): Promise<User> => {
     try {
+        const shoppingCarts = await db.shoppingcart.findMany({
+            where: {
+                userId: userId,
+            },
+            include: {
+                items: true,
+            },
+        });
+
+        for (const cart of shoppingCarts) {
+            await db.shoppingcartItems.deleteMany({
+                where: {
+                    shoppingcartId: cart.id,
+                },
+            });
+        }
+
         await db.shoppingcart.deleteMany({
             where: {
                 userId: userId,

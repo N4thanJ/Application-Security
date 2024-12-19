@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 type Props = {
     users: User[];
-    handleDeleteUser: (id: number | undefined) => Promise<void>;
+    handleDeleteUser: (id: number) => Promise<void>;
 };
 
 const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) => {
@@ -62,7 +62,9 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                                                 {user?.role !== 'admin' && (
                                                     <a
                                                         className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
-                                                        onClick={() => handleDeleteUser(user.id)}
+                                                        onClick={() =>
+                                                            handleDeleteUser(Number(user.id))
+                                                        }
                                                     >
                                                         Delete User
                                                     </a>

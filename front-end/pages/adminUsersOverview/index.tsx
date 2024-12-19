@@ -5,34 +5,37 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { User } from '@types';
 import UserService from '@services/userService';
+import useSWR, { mutate } from 'swr';
+import useInterval from 'use-interval';
 
 const AdminUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-    const [users, setUsers] = useState<User[]>([]);
 
-    const handleDeleteUser = async (id: number | undefined): Promise<void> => {
+    const handleDeleteUser = async (id: number): Promise<void> => {
         try {
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            id && (await UserService.deleteUser(token, id));
-            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+            await UserService.deleteUser(token, id);
+            mutate('users', getAllUsers());
         } catch (error) {
             console.error(error);
         }
     };
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-                const response = await UserService.getAllUsers(token);
-                const fetchedUsers: User[] = await response.json();
-                setUsers(fetchedUsers);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    const getAllUsers = async () => {
+        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+        const response = await UserService.getAllUsers(token);
 
-        fetchUsers();
+        const users = await response.json();
+        return users;
+    };
+
+    const { data, isLoading, error } = useSWR('users', getAllUsers);
+
+    useInterval(() => {
+        mutate('users', getAllUsers());
+    }, 1000);
+
+    useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
     }, []);
@@ -61,7 +64,14 @@ const AdminUserPage: React.FC = () => {
             </div>
 
             <section>
-                <UserAdminOverview users={users} handleDeleteUser={handleDeleteUser} />
+                {isLoading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <div>
+                        {error && <p>{error}</p>}
+                        <UserAdminOverview users={data} handleDeleteUser={handleDeleteUser} />
+                    </div>
+                )}
             </section>
         </>
     );
