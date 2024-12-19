@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import classNames from 'classnames';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 const UserLoginForm: React.FC = () => {
     const router = useRouter();
+    const { t } = useTranslation(); // Initialize translation function
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nameError, setNameError] = useState<string | null>(null);
@@ -25,11 +27,11 @@ const UserLoginForm: React.FC = () => {
         clearErrors();
 
         if (!email.trim()) {
-            setNameError('Email is required');
+            setNameError(t('UserLoginForm.emailLabel') + ' ' + t('validation.required'));
             isValid = false;
         }
         if (!password.trim()) {
-            setPasswordError('Password is required');
+            setPasswordError(t('UserLoginForm.passwordLabel') + ' ' + t('validation.required'));
             isValid = false;
         }
 
@@ -49,7 +51,7 @@ const UserLoginForm: React.FC = () => {
 
                 setStatusMessages([
                     {
-                        message: 'Login successful. Redirecting to homepage...',
+                        message: t('UserLoginForm.loginSuccess'),
                         type: 'success',
                     },
                 ]);
@@ -75,7 +77,7 @@ const UserLoginForm: React.FC = () => {
                     {
                         message:
                             errorResponse?.message ||
-                            'Invalid email or password. Please try again.',
+                            t('UserLoginForm.invalidCredentials'),
                         type: 'error',
                     },
                 ]);
@@ -84,7 +86,7 @@ const UserLoginForm: React.FC = () => {
             console.log(error);
             setStatusMessages([
                 {
-                    message: 'An unexpected error occurred. Please try again later.',
+                    message: t('UserLoginForm.unexpectedError'),
                     type: 'error',
                 },
             ]);
@@ -93,30 +95,30 @@ const UserLoginForm: React.FC = () => {
 
     return (
         <>
-            <h3>Login</h3>
+            <h3>{t('UserLoginForm.title')}</h3>
 
             <form onSubmit={handleSubmit} className="w-1/3">
                 <div>
-                    <label htmlFor="emailInput">Email:</label>
+                    <label htmlFor="emailInput">{t('UserLoginForm.emailLabel')}</label>
                     <input
                         id="emailInput"
                         type="text"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
-                        placeholder="Enter your email..."
+                        placeholder={t('UserLoginForm.emailPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {nameError && <span className="text-red-700 font-bold">{nameError}</span>}
                 </div>
 
                 <div className="mt-4">
-                    <label htmlFor="passwordInput">Password:</label>
+                    <label htmlFor="passwordInput">{t('UserLoginForm.passwordLabel')}</label>
                     <input
                         id="passwordInput"
                         type="password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        placeholder="Enter your password..."
+                        placeholder={t('UserLoginForm.passwordPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {passwordError && (
@@ -146,7 +148,7 @@ const UserLoginForm: React.FC = () => {
                     className="mt-6 w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                     type="submit"
                 >
-                    Login
+                    {t('UserLoginForm.loginButton')}
                 </button>
             </form>
 
@@ -154,7 +156,7 @@ const UserLoginForm: React.FC = () => {
                 href="/register"
                 className="mt-6 w-1/3 py-3 text-center bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-400 transition duration-300 cursor-pointer"
             >
-                Register
+                {t('UserLoginForm.registerButton')}
             </Link>
         </>
     );

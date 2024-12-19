@@ -2,6 +2,7 @@ import { User } from '@types';
 import { EllipsisVertical } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 type Props = {
     users: User[];
@@ -10,6 +11,7 @@ type Props = {
 
 const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) => {
     const [menuOpenId, setMenuOpenId] = useState<number | undefined>(undefined);
+    const { t } = useTranslation(); // Initialize translation function
 
     const toggleMenu = (userId: number | undefined) => {
         setMenuOpenId(menuOpenId === userId ? undefined : userId);
@@ -22,18 +24,17 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                     <table className="min-w-full bg-white text-left">
                         <thead className="rounded-t-lg">
                             <tr className="bg-gray-100 text-gray-700 text-center">
-                                <th className="px-6 py-4 font-semibold text-sm">Email</th>
-                                <th className="px-6 py-4 font-semibold text-sm">Role</th>
-                                <th className="px-6 py-4 font-semibold text-sm">Actions</th>
+                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.email')}</th>
+                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.role')}</th>
+                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {users.map((user) => (
                                 <tr
                                     key={user.id}
-                                    className={`${
-                                        user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                                    } hover:bg-gray-100 transition-colors duration-200 text-center`}
+                                    className={`${user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                        } hover:bg-gray-100 transition-colors duration-200 text-center`}
                                 >
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
                                         {user.email}
@@ -56,7 +57,7 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                                                     href={`/adminUsersOverview/${user.id}/editUser`}
                                                     className="block px-4 py-2 text-sm text-gray-700 rounded-t-lg hover:bg-blue-700 hover:text-white transition-all duration-200"
                                                 >
-                                                    Edit User
+                                                    {t('UserAdminOverview.editUser')}
                                                 </Link>
 
                                                 {user?.role !== 'admin' && (
@@ -64,7 +65,7 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                                                         className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
                                                         onClick={() => handleDeleteUser(user.id)}
                                                     >
-                                                        Delete User
+                                                        {t('UserAdminOverview.deleteUser')}
                                                     </a>
                                                 )}
                                             </div>

@@ -1,4 +1,5 @@
 {
+    "apptitle": "Shoppingcart app",
     "item_page": {
         "title": "Item Overview Page",
         "welcome_message": "Welcome to Shop & Go",
@@ -27,5 +28,225 @@
     },
     "language_selector": {
         "label": "Language"
+    },
+    "addItemForm": {
+        "title": "Add An Item",
+        "labels": {
+            "name": "Name",
+            "price": "Price",
+            "imageUrl": "Image URL",
+            "category": "Category"
+        },
+        "placeholders": {
+            "selectCategory": "Select Category"
+        },
+        "categories": {
+            "fruits": "Fruits",
+            "vegetables": "Vegetables",
+            "dairy": "Dairy"
+        },
+        "buttons": {
+            "addItem": "Add Item"
+        }
+    },
+    "itemOverview": {
+        "title": "Item Overview",
+        "labels": {
+            "search": "Search Items"
+        },
+        "buttons": {
+            "addNew": "Add New Item"
+        }
+    },
+    "addItemToShoppingcartOverview": {
+        "filters": {
+            "category": "Filter by Category",
+            "name": "Filter by Name",
+            "placeholderName": "Search by name...",
+            "allCategories": "All Categories"
+        },
+        "itemCard": {
+            "price": "{price} €",
+            "altText": "{itemName} image",
+            "buttons": {
+                "addItem": "Add Item",
+                "decreaseQuantity": "Decrease Quantity",
+                "increaseQuantity": "Increase Quantity"
+            }
+        }
+    },
+    "itemsOverview": {
+        "itemCard": {
+            "price": "{price} €",
+            "altText": "{itemName} image"
+        },
+        "buttons": {
+            "scrollLeft": "Scroll left",
+            "scrollRight": "Scroll right"
+        },
+        "modal": {
+            "close": "Close"
+        }
+    },
+    "ItemAdminOverview": {
+        "table": {
+            "name": "Name",
+            "price": "Price",
+            "category": "Category",
+            "image": "Image",
+            "actions": "Actions"
+        },
+        "nutritionLabel": {
+            "add": "Add Nutrition Label",
+            "update": "Update Nutrition Label"
+        },
+        "actions": {
+            "deleteItem": "Delete Item"
+        },
+        "image": {
+            "alt": "Image of {{name}}"
+        }
+    },
+    "NutritionLabel": {
+        "title": "Nutrition Label",
+        "noLabel": "{{name}} has no nutrition label yet",
+        "nutrients": {
+            "energy": "Energy",
+            "fats": "Fats",
+            "saturatedFats": "Saturated Fats",
+            "carbohydrates": "Carbohydrates",
+            "sugar": "Sugar",
+            "protein": "Protein",
+            "salts": "Salts"
+        },
+        "units": {
+            "grams": "g"
+        }
+    },
+    "Language": {
+        "label": "Language",
+        "options": {
+            "english": "English",
+            "french": "French"
+        }
+    },
+    "AddNutritionLabelForm": {
+        "title": "Add A Nutrition Label",
+        "labels": {
+            "energy": "Energy",
+            "fat": "Fat",
+            "saturatedFats": "Saturated Fats",
+            "carbohydrates": "Carbohydrates",
+            "sugar": "Sugar",
+            "protein": "Protein",
+            "salts": "Salts"
+        },
+        "buttons": {
+            "submit": "Submit"
+        },
+        "errors": {
+            "missingId": "Item id is missing in form"
+        }
+    },
+    "AddShoppingcartForm": {
+        "title": "Create a shoppingcart",
+        "labels": {
+            "name": "Name",
+            "deliveryDate": "Delivery Date"
+        },
+        "placeholders": {
+            "name": "Enter a name for the shoppingcart..."
+        },
+        "buttons": {
+            "create": "Create"
+        }
+    },
+    "ShoppingcartCheckoutComponent": {
+        "title": "Shopping Cart",
+        "addItems": "Add items",
+        "noItems": "No items found",
+        "price": "Price",
+        "quantity": "Quantity",
+        "total": "Total",
+        "totalItems": "Total Items:",
+        "totalPrice": "Total Price:"
+    },
+    "ShoppingcartOverview": {
+        "title": "Shoppingcart Overview",
+        "createShoppingcart": "Create shoppingcart",
+        "due": "Due:",
+        "items": "Items:",
+        "total": "Total:",
+        "viewCart": "View Cart",
+        "addItems": "Add Items",
+        "delete": "Delete"
+    },
+    "CreateUserForm": {
+        "title": "Create a user",
+        "emailLabel": "Email:",
+        "passwordLabel": "Password:",
+        "emailPlaceholder": "Enter your email...",
+        "passwordPlaceholder": "Enter a password...",
+        "emailError": "Email is required",
+        "passwordError": "Password is required",
+        "registerSuccess": "Register successful. Redirecting to homepage...",
+        "tryAgain": "Please try again.",
+        "createButton": "Create"
+    },
+    "UserAdminOverview": {
+        "email": "Email",
+        "role": "Role",
+        "actions": "Actions",
+        "editUser": "Edit User",
+        "deleteUser": "Delete User"
+    },
+    "UpdateUserForm": {
+        "title": "Update User",
+        "emailLabel": "Email:",
+        "passwordLabel": "Password:",
+        "roleLabel": "Role:",
+        "roleUser": "User",
+        "roleAdmin": "Admin",
+        "updateButton": "Update User"
+    },
+    "UserLoginForm": {
+        "title": "Login",
+        "emailLabel": "Email:",
+        "passwordLabel": "Password:",
+        "emailPlaceholder": "Enter your email...",
+        "passwordPlaceholder": "Enter your password...",
+        "loginButton": "Login",
+        "registerButton": "Register",
+        "invalidCredentials": "Invalid email or password. Please try again.",
+        "unexpectedError": "An unexpected error occurred. Please try again later.",
+        "loginSuccess": "Login successful. Redirecting to homepage..."
+    },
+    "UserRegisterForm": {
+        "title": "Register",
+        "emailLabel": "Email:",
+        "passwordLabel": "Password:",
+        "emailPlaceholder": "Enter your email...",
+        "passwordPlaceholder": "Enter a password...",
+        "registerButton": "Register",
+        "alreadyHaveAccount": "Already have an account?",
+        "registrationSuccess": "Registration successful. Redirecting to login...",
+        "registrationFailed": "Registration failed. Please try again.",
+        "unexpectedError": "An unexpected error occurred. Please try again later."
+    },
+    "UserTable": {
+        "emailHeader": "Email",
+        "passwordHeader": "Password",
+        "roleHeader": "Role"
+    },
+    "CookiePolicy": {
+        "message": "We use cookies to enhance your experience. By accepting, you agree to our use of cookies. ",
+        "learnMore": "Learn more",
+        "decline": "Decline",
+        "accept": "Accept"
+    },
+    "Footer": {
+        "home": "Home",
+        "shoppingcarts": "Shoppingcarts",
+        "adminOverview": "Admin overview"
     }
 }

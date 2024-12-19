@@ -5,8 +5,10 @@ import { ReactNode } from 'react';
 import { useEffect } from 'react';
 import Footer from './Footer';
 import CookiePolicy from './CookiePolicy';
+import { useTranslation } from 'next-i18next';
 
 const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children, className }) => {
+    const { t } = useTranslation('common');
     useEffect(() => {
         document.body.className = className;
         return () => {
@@ -17,7 +19,7 @@ const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children
     return (
         <>
             <Head>
-                <title>Shoppingcart app</title>
+                <title>{t('apptitle')}</title>
                 <meta name="description" content="Shoppingcart app" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />

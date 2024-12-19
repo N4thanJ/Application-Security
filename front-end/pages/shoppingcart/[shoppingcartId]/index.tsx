@@ -1,6 +1,7 @@
 import ShoppingcartCheckoutComponent from '@components/shoppingcart/ShoppingcartCheckoutComponent';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart, User } from '@types';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -104,6 +105,15 @@ const CartViewer: React.FC = () => {
             )}
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default CartViewer;

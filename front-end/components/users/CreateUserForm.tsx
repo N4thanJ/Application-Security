@@ -3,9 +3,12 @@ import { StatusMessage } from '@types';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 const CreateUserForm: React.FC = () => {
     const router = useRouter();
+    const { t } = useTranslation(); // Initialize translation function
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nameError, setNameError] = useState<string | null>(null);
@@ -23,12 +26,12 @@ const CreateUserForm: React.FC = () => {
         let result = true;
 
         if (!email && email.trim() === '') {
-            setNameError('Email is required');
+            setNameError(t('CreateUserForm.emailError'));
             result = false;
         }
 
         if (!password && password.trim() === '') {
-            setPasswordError('Password is required');
+            setPasswordError(t('CreateUserForm.passwordError'));
             result = false;
         }
 
@@ -48,7 +51,7 @@ const CreateUserForm: React.FC = () => {
 
             setStatusMessages([
                 {
-                    message: 'Register successful. Redirecting to homepage...',
+                    message: t('CreateUserForm.registerSuccess'),
                     type: 'success',
                 },
             ]);
@@ -59,7 +62,7 @@ const CreateUserForm: React.FC = () => {
         } catch (error) {
             setStatusMessages([
                 {
-                    message: 'Please try again.',
+                    message: t('CreateUserForm.tryAgain'),
                     type: 'error',
                 },
             ]);
@@ -68,30 +71,30 @@ const CreateUserForm: React.FC = () => {
 
     return (
         <>
-            <h3>Create a user</h3>
+            <h3>{t('CreateUserForm.title')}</h3>
 
             <form onSubmit={handleSubmit} className="w-1/3">
                 <div>
-                    <label htmlFor="emailInput">Email:</label>
+                    <label htmlFor="emailInput">{t('CreateUserForm.emailLabel')}</label>
                     <input
                         id="emailInput"
                         type="text"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
-                        placeholder="Enter your email..."
+                        placeholder={t('CreateUserForm.emailPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {nameError && <span className="text-red-700 font-bold">{nameError}</span>}
                 </div>
 
                 <div className="mt-4">
-                    <label htmlFor="passwordInput">Password:</label>
+                    <label htmlFor="passwordInput">{t('CreateUserForm.passwordLabel')}</label>
                     <input
                         id="passwordInput"
                         type="text"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        placeholder="Enter a password..."
+                        placeholder={t('CreateUserForm.passwordPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {passwordError && (
@@ -121,7 +124,7 @@ const CreateUserForm: React.FC = () => {
                     className="mt-6 w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                     type="submit"
                 >
-                    Create
+                    {t('CreateUserForm.createButton')}
                 </button>
             </form>
         </>

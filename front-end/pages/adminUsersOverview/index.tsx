@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { User } from '@types';
 import UserService from '@services/userService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const AdminUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -65,6 +66,15 @@ const AdminUserPage: React.FC = () => {
             </section>
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default AdminUserPage;

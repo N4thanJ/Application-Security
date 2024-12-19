@@ -1,4 +1,5 @@
 {
+    "apptitle": "Application de panier d'achat",
     "item_page": {
         "title": "Page de Vue d'Ensemble des Articles",
         "welcome_message": "Bienvenue chez Shop & Go",
@@ -27,5 +28,225 @@
     },
     "language_selector": {
         "label": "Langue"
+    },
+    "addItemForm": {
+        "title": "Ajouter un article",
+        "labels": {
+            "name": "Nom",
+            "price": "Prix",
+            "imageUrl": "URL de l'image",
+            "category": "Catégorie"
+        },
+        "placeholders": {
+            "selectCategory": "Sélectionnez une catégorie"
+        },
+        "categories": {
+            "fruits": "Fruits",
+            "vegetables": "Légumes",
+            "dairy": "Produits laitiers"
+        },
+        "buttons": {
+            "addItem": "Ajouter un article"
+        }
+    },
+    "itemOverview": {
+        "title": "Aperçu des articles",
+        "labels": {
+            "search": "Rechercher des articles"
+        },
+        "buttons": {
+            "addNew": "Ajouter un nouvel article"
+        }
+    },
+    "addItemToShoppingcartOverview": {
+        "filters": {
+            "category": "Filtrer par catégorie",
+            "name": "Filtrer par nom",
+            "placeholderName": "Rechercher par nom...",
+            "allCategories": "Toutes les catégories"
+        },
+        "itemCard": {
+            "price": "{price} €",
+            "altText": "Image de {itemName}",
+            "buttons": {
+                "addItem": "Ajouter un article",
+                "decreaseQuantity": "Diminuer la quantité",
+                "increaseQuantity": "Augmenter la quantité"
+            }
+        }
+    },
+    "itemsOverview": {
+        "itemCard": {
+            "price": "{price} €",
+            "altText": "Image de {itemName}"
+        },
+        "buttons": {
+            "scrollLeft": "Faire défiler vers la gauche",
+            "scrollRight": "Faire défiler vers la droite"
+        },
+        "modal": {
+            "close": "Fermer"
+        }
+    },
+    "ItemAdminOverview": {
+        "table": {
+            "name": "Nom",
+            "price": "Prix",
+            "category": "Catégorie",
+            "image": "Image",
+            "actions": "Actions"
+        },
+        "nutritionLabel": {
+            "add": "Ajouter l'étiquette nutritionnelle",
+            "update": "Mettre à jour l'étiquette nutritionnelle"
+        },
+        "actions": {
+            "deleteItem": "Supprimer l'article"
+        },
+        "image": {
+            "alt": "Image de {{name}}"
+        }
+    },
+    "NutritionLabel": {
+        "title": "Étiquette nutritionnelle",
+        "noLabel": "{{name}} n'a pas encore d'étiquette nutritionnelle",
+        "nutrients": {
+            "energy": "Énergie",
+            "fats": "Matières grasses",
+            "saturatedFats": "Graisses saturées",
+            "carbohydrates": "Glucides",
+            "sugar": "Sucre",
+            "protein": "Protéines",
+            "salts": "Sels"
+        },
+        "units": {
+            "grams": "g"
+        }
+    },
+    "Language": {
+        "label": "Langue",
+        "options": {
+            "english": "Anglais",
+            "french": "Français"
+        }
+    },
+    "AddNutritionLabelForm": {
+        "title": "Ajouter une étiquette nutritionnelle",
+        "labels": {
+            "energy": "Énergie",
+            "fat": "Matières grasses",
+            "saturatedFats": "Graisses saturées",
+            "carbohydrates": "Glucides",
+            "sugar": "Sucre",
+            "protein": "Protéines",
+            "salts": "Sels"
+        },
+        "buttons": {
+            "submit": "Soumettre"
+        },
+        "errors": {
+            "missingId": "L'identifiant de l'article est manquant dans le formulaire"
+        }
+    },
+    "AddShoppingcartForm": {
+        "title": "Créer un panier",
+        "labels": {
+            "name": "Nom",
+            "deliveryDate": "Date de livraison"
+        },
+        "placeholders": {
+            "name": "Entrez un nom pour le panier..."
+        },
+        "buttons": {
+            "create": "Créer"
+        }
+    },
+    "ShoppingcartCheckoutComponent": {
+        "title": "Panier",
+        "addItems": "Ajouter des articles",
+        "noItems": "Aucun article trouvé",
+        "price": "Prix",
+        "quantity": "Quantité",
+        "total": "Total",
+        "totalItems": "Total des articles:",
+        "totalPrice": "Prix total:"
+    },
+    "ShoppingcartOverview": {
+        "title": "Aperçu du panier",
+        "createShoppingcart": "Créer un panier",
+        "due": "Échéance:",
+        "items": "Articles:",
+        "total": "Total:",
+        "viewCart": "Voir le panier",
+        "addItems": "Ajouter des articles",
+        "delete": "Supprimer"
+    },
+    "CreateUserForm": {
+        "title": "Créer un utilisateur",
+        "emailLabel": "Email:",
+        "passwordLabel": "Mot de passe:",
+        "emailPlaceholder": "Entrez votre email...",
+        "passwordPlaceholder": "Entrez un mot de passe...",
+        "emailError": "L'email est requis",
+        "passwordError": "Le mot de passe est requis",
+        "registerSuccess": "Enregistrement réussi. Redirection vers la page d'accueil...",
+        "tryAgain": "Veuillez réessayer.",
+        "createButton": "Créer"
+    },
+    "UserAdminOverview": {
+        "email": "Email",
+        "role": "Rôle",
+        "actions": "Actions",
+        "editUser": "Modifier l'utilisateur",
+        "deleteUser": "Supprimer l'utilisateur"
+    },
+    "UpdateUserForm": {
+        "title": "Mettre à jour l'utilisateur",
+        "emailLabel": "E-mail:",
+        "passwordLabel": "Mot de passe:",
+        "roleLabel": "Rôle:",
+        "roleUser": "Utilisateur",
+        "roleAdmin": "Administrateur",
+        "updateButton": "Mettre à jour l'utilisateur"
+    },
+    "UserLoginForm": {
+        "title": "Se connecter",
+        "emailLabel": "E-mail :",
+        "passwordLabel": "Mot de passe :",
+        "emailPlaceholder": "Entrez votre e-mail...",
+        "passwordPlaceholder": "Entrez votre mot de passe...",
+        "loginButton": "Se connecter",
+        "registerButton": "S'inscrire",
+        "invalidCredentials": "E-mail ou mot de passe invalide. Veuillez réessayer.",
+        "unexpectedError": "Une erreur imprévue est survenue. Veuillez réessayer plus tard.",
+        "loginSuccess": "Connexion réussie. Redirection vers la page d'accueil..."
+    },
+    "UserRegisterForm": {
+        "title": "S'inscrire",
+        "emailLabel": "E-mail :",
+        "passwordLabel": "Mot de passe :",
+        "emailPlaceholder": "Entrez votre e-mail...",
+        "passwordPlaceholder": "Entrez un mot de passe...",
+        "registerButton": "S'inscrire",
+        "alreadyHaveAccount": "Vous avez déjà un compte ?",
+        "registrationSuccess": "Inscription réussie. Redirection vers la page de connexion...",
+        "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+        "unexpectedError": "Une erreur imprévue est survenue. Veuillez réessayer plus tard."
+    },
+    "UserTable": {
+        "emailHeader": "E-mail",
+        "passwordHeader": "Mot de passe",
+        "roleHeader": "Rôle"
+    },
+    "CookiePolicy": {
+        "message": "Nous utilisons des cookies pour améliorer votre expérience. En acceptant, vous consentez à notre utilisation des cookies. ",
+        "learnMore": "En savoir plus",
+        "decline": "Refuser",
+        "accept": "Accepter"
+    },
+    "Footer": {
+        "home": "Accueil",
+        "shoppingcarts": "Paniers d'achat",
+        "adminOverview": "Vue d'ensemble de l'administrateur"
     }
 }
