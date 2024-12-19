@@ -4,9 +4,11 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 const UserRegisterForm: React.FC = () => {
     const router = useRouter();
+    const { t } = useTranslation(); // Initialize translation function
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState<string | null>(null);
@@ -25,11 +27,11 @@ const UserRegisterForm: React.FC = () => {
         clearErrors();
 
         if (!email.trim()) {
-            setEmailError('Email is required');
+            setEmailError(t('UserRegisterForm.emailLabel') + ' ' + t('validation.required'));
             isValid = false;
         }
         if (!password.trim()) {
-            setPasswordError('Password is required');
+            setPasswordError(t('UserRegisterForm.passwordLabel') + ' ' + t('validation.required'));
             isValid = false;
         }
 
@@ -47,7 +49,7 @@ const UserRegisterForm: React.FC = () => {
             if (response.ok) {
                 setStatusMessages([
                     {
-                        message: 'Registration successful. Redirecting to login...',
+                        message: t('UserRegisterForm.registrationSuccess'),
                         type: 'success',
                     },
                 ]);
@@ -59,7 +61,7 @@ const UserRegisterForm: React.FC = () => {
                 const errorResponse = await response.json();
                 setStatusMessages([
                     {
-                        message: errorResponse?.message || 'Registration failed. Please try again.',
+                        message: errorResponse?.message || t('UserRegisterForm.registrationFailed'),
                         type: 'error',
                     },
                 ]);
@@ -67,7 +69,7 @@ const UserRegisterForm: React.FC = () => {
         } catch (error) {
             setStatusMessages([
                 {
-                    message: 'An unexpected error occurred. Please try again later.',
+                    message: t('UserRegisterForm.unexpectedError'),
                     type: 'error',
                 },
             ]);
@@ -76,30 +78,30 @@ const UserRegisterForm: React.FC = () => {
 
     return (
         <>
-            <h3>Register</h3>
+            <h3>{t('UserRegisterForm.title')}</h3>
 
             <form onSubmit={handleSubmit} className="w-1/3">
                 <div>
-                    <label htmlFor="emailInput">Email:</label>
+                    <label htmlFor="emailInput">{t('UserRegisterForm.emailLabel')}</label>
                     <input
                         id="emailInput"
                         type="text"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
-                        placeholder="Enter your email..."
+                        placeholder={t('UserRegisterForm.emailPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {emailError && <span className="text-red-700 font-bold">{emailError}</span>}
                 </div>
 
                 <div className="mt-4">
-                    <label htmlFor="passwordInput">Password:</label>
+                    <label htmlFor="passwordInput">{t('UserRegisterForm.passwordLabel')}</label>
                     <input
                         id="passwordInput"
                         type="password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        placeholder="Enter a password..."
+                        placeholder={t('UserRegisterForm.passwordPlaceholder')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                     {passwordError && (
@@ -129,7 +131,7 @@ const UserRegisterForm: React.FC = () => {
                     className="mt-6 w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                     type="submit"
                 >
-                    Register
+                    {t('UserRegisterForm.registerButton')}
                 </button>
             </form>
 
@@ -137,7 +139,7 @@ const UserRegisterForm: React.FC = () => {
                 href="/login"
                 className="mt-6 w-1/3 py-3 text-center bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-400 transition duration-300 cursor-pointer"
             >
-                Already have an account?
+                {t('UserRegisterForm.alreadyHaveAccount')}
             </Link>
         </>
     );

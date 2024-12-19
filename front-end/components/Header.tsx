@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
+import Language from './language/Language';
+import { useTranslation } from 'next-i18next';
 
 const Header: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
@@ -30,26 +33,26 @@ const Header: React.FC = () => {
     return (
         <header className="bg-primary text-white flex justify-between uppercase py-6">
             <div className="max-w-7xl px-8 mx-auto flex justify-between w-full">
-                <h1 className="text-lg font-bold">Shoppingcart app</h1>
+                <h1 className="text-lg font-bold">{t('header.title')}</h1>
                 <nav className="">
                     <ul className="flex gap-4">
                         {loggedInUser && (
                             <>
                                 <li>
-                                    <Link href="/">Home</Link>
+                                    <Link href="/">{t('header.home')}</Link>
                                 </li>
                                 <li>
-                                    <Link href="/shoppingcarts">Shoppingcarts</Link>
+                                    <Link href="/shoppingcarts">{t('header.shoppingcarts')}</Link>
                                 </li>
 
                                 {loggedInUser.role === 'admin' && (
                                     <li>
-                                        <Link href="/itemOverview">Admin items overview</Link>
+                                        <Link href="/itemOverview">{t('header.admin_items_overview')}</Link>
                                     </li>
                                 )}
                                 {loggedInUser.role === 'admin' && (
                                     <li>
-                                        <Link href="/adminUsersOverview">Admin users overview</Link>
+                                        <Link href="/adminUsersOverview">{t('header.admin_users_overview')}</Link>
                                     </li>
                                 )}
                             </>
@@ -58,19 +61,22 @@ const Header: React.FC = () => {
                         {loggedInUser ? (
                             <li>
                                 <Link onClick={logOut} href={'/login'}>
-                                    Logout
+                                    {t('header.logout')}
                                 </Link>
                             </li>
                         ) : (
                             <>
                                 <li>
-                                    <Link href="/login">Login</Link>
+                                    <Link href="/login">{t('header.login')}</Link>
                                 </li>
                                 <li>
-                                    <Link href="/register">Register</Link>
+                                    <Link href="/register">{t('header.register')}</Link>
                                 </li>
                             </>
                         )}
+                        <li>
+                            <Language />
+                        </li>
                     </ul>
                 </nav>
             </div>

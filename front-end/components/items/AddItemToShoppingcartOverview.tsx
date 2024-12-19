@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Item, Shoppingcart, Category } from '@types';
 import { ChevronDown, Minus, Plus } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
     items: Item[];
@@ -17,6 +18,7 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
     addItemToShoppingcart,
     handleQuantityChange,
 }: Props) => {
+    const { t } = useTranslation('common');
     const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
     const [nameFilter, setNameFilter] = useState('');
     const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
@@ -49,13 +51,11 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
 
     return (
         <div className="py-4">
+            {/* Filters */}
             <div className="mb-4 flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
-                    <label
-                        htmlFor="category-filter"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                        Filter by Category
+                    <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('addItemToShoppingcartOverview.filters.category')}
                     </label>
                     <select
                         id="category-filter"
@@ -65,17 +65,16 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                     >
                         {categories.map((category) => (
                             <option key={category} value={category}>
-                                {category === 'all' ? 'All Categories' : category}
+                                {category === 'all'
+                                    ? t('addItemToShoppingcartOverview.filters.allCategories')
+                                    : category}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div className="flex-1">
-                    <label
-                        htmlFor="name-filter"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                        Filter by Name
+                    <label htmlFor="name-filter" className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('addItemToShoppingcartOverview.filters.name')}
                     </label>
                     <input
                         type="text"
@@ -83,11 +82,12 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                         className="w-full p-2 border border-gray-300 rounded-md"
                         value={nameFilter}
                         onChange={(e) => setNameFilter(e.target.value)}
-                        placeholder="Search by name..."
+                        placeholder={t('addItemToShoppingcartOverview.filters.placeholderName') as string}
                     />
                 </div>
             </div>
 
+            {/* Item Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredItems.map((item) => (
                     <div
@@ -99,65 +99,57 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                             <img
                                 src={item.pathToImage}
                                 className="w-full h-full object-cover"
-                                alt={`${item.name} image`}
+                                alt={t('addItemToShoppingcartOverview.itemCard.altText', {
+                                    itemName: item.name,
+                                })}
                             />
                         </div>
                         <div className="p-3">
                             <div>
                                 <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
                                 <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
-                                    {item.price} €
+                                    {t('addItemToShoppingcartOverview.itemCard.price', { price: item.price })}
                                 </p>
                             </div>
 
                             <div className="flex items-center justify-center space-x-2 mt-4">
-                                {(shoppingcart.items.find(
-                                    (cartItem) => cartItem.item.id === item.id
-                                )?.quantity ?? 0) > 0 && (
-                                    <>
-                                        <button
-                                            className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleQuantityInputChange(
-                                                    item,
-                                                    (quantities[Number(item.id)] || 0) - 1
-                                                );
-                                            }}
-                                        >
-                                            <Minus size={24} />
-                                        </button>
-                                        <input
-                                            type="number"
-                                            className="w-28 text-center border border-gray-300 rounded-md"
-                                            value={quantities[Number(item.id)] ?? 0}
-                                            onChange={(e) =>
-                                                setQuantities((prev) => ({
-                                                    ...prev,
-                                                    [Number(item.id)]:
-                                                        parseInt(e.target.value) || undefined,
-                                                }))
-                                            }
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    handleQuantityInputChange(
-                                                        item,
-                                                        parseInt(
-                                                            (e.target as HTMLInputElement).value
-                                                        ) || 0
-                                                    );
-                                                    (e.target as HTMLInputElement).blur();
+                                {(shoppingcart.items.find((cartItem) => cartItem.item.id === item.id)?.quantity ??
+                                    0) > 0 && (
+                                        <>
+                                            <button
+                                                className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleQuantityInputChange(item, (quantities[Number(item.id)] || 0) - 1);
+                                                }}
+                                            >
+                                                <Minus size={24} />
+                                            </button>
+                                            <input
+                                                type="number"
+                                                className="w-28 text-center border border-gray-300 rounded-md"
+                                                value={quantities[Number(item.id)] ?? 0}
+                                                onChange={(e) =>
+                                                    setQuantities((prev) => ({
+                                                        ...prev,
+                                                        [Number(item.id)]: parseInt(e.target.value) || undefined,
+                                                    }))
                                                 }
-                                            }}
-                                            onBlur={(e) => {
-                                                handleQuantityInputChange(
-                                                    item,
-                                                    parseInt(e.target.value) || 0
-                                                );
-                                            }}
-                                        />
-                                    </>
-                                )}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleQuantityInputChange(
+                                                            item,
+                                                            parseInt((e.target as HTMLInputElement).value) || 0
+                                                        );
+                                                        (e.target as HTMLInputElement).blur();
+                                                    }
+                                                }}
+                                                onBlur={(e) => {
+                                                    handleQuantityInputChange(item, parseInt(e.target.value) || 0);
+                                                }}
+                                            />
+                                        </>
+                                    )}
                                 <button
                                     className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
                                     onClick={(e) => {

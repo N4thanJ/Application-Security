@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ItemService from '@services/ItemsService';
 import { Item, Nutritionlabel } from '@types';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
     item: Item;
@@ -9,6 +10,7 @@ type Props = {
 
 const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
     const router = useRouter();
+    const { t } = useTranslation('common');
     const [nutritionlabel, setNutritionlabel] = useState<Nutritionlabel>({
         id: item.nutritionlabel?.id,
         energy: item.nutritionlabel?.energy || 0,
@@ -33,7 +35,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
         event.preventDefault();
         try {
             if (item.id === undefined || item.id === null) {
-                throw new Error('Item id is missing in form');
+                throw new Error(t('AddNutritionLabelForm.errors.missingId'));
             }
 
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
@@ -60,12 +62,12 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
             className="flex flex-col p-6 w-full max-w-lg mx-auto mb-8 bg-tertiary shadow-md rounded-lg border-2 border-gray-200"
         >
             <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-                Add A Nutrition Label
+                {t('AddNutritionLabelForm.title')}
             </h2>
             <div className="space-y-2">
                 <div>
                     <label htmlFor="energy" className="block text-gray-700 font-medium mb-1">
-                        Energy:
+                        {t('AddNutritionLabelForm.labels.energy')}:
                     </label>
                     <input
                         type="number"
@@ -82,7 +84,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                 <div className="flex gap-8 flex-wrap">
                     <div className="flex-1 min-w-0">
                         <label htmlFor="fat" className="block text-gray-700 font-medium mb-1">
-                            Fat:
+                            {t('AddNutritionLabelForm.labels.fat')}:
                         </label>
                         <input
                             type="number"
@@ -101,7 +103,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                             htmlFor="saturatedFats"
                             className="block text-gray-700 font-medium mb-1"
                         >
-                            Saturated Fats:
+                            {t('AddNutritionLabelForm.labels.saturatedFats')}:
                         </label>
                         <input
                             type="number"
@@ -122,7 +124,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                             htmlFor="carbohydrates"
                             className="block text-gray-700 font-medium mb-1"
                         >
-                            Carbohydrates:
+                            {t('AddNutritionLabelForm.labels.carbohydrates')}:
                         </label>
                         <input
                             type="number"
@@ -137,7 +139,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                     </div>
                     <div className="flex-1 min-w-0">
                         <label htmlFor="sugar" className="block text-gray-700 font-medium mb-1">
-                            Sugar:
+                            {t('AddNutritionLabelForm.labels.sugar')}:
                         </label>
                         <input
                             type="number"
@@ -154,7 +156,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
 
                 <div>
                     <label htmlFor="protein" className="block text-gray-700 font-medium mb-1">
-                        Protein:
+                        {t('AddNutritionLabelForm.labels.protein')}:
                     </label>
                     <input
                         type="number"
@@ -170,7 +172,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
 
                 <div>
                     <label htmlFor="salts" className="block text-gray-700 font-medium mb-1">
-                        Salts:
+                        {t('AddNutritionLabelForm.labels.salts')}:
                     </label>
                     <input
                         type="number"
@@ -190,8 +192,7 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
                         value="Submit"
                         className="mt-6 w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                     >
-                        {' '}
-                        Submit{' '}
+                        {t('AddNutritionLabelForm.buttons.submit')}
                     </button>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import UserService from '@services/userService';
 import UserEditForm from '@components/users/UserEditForm';
 import Head from 'next/head';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const EditUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -53,6 +54,15 @@ const EditUserPage: React.FC = () => {
             </section>
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default EditUserPage;

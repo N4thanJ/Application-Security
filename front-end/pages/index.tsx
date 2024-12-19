@@ -4,10 +4,12 @@ import ItemsService from '@services/ItemsService';
 import { Item, User } from '@types';
 import { Images } from 'lucide-react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const ItemPage: React.FC = () => {
+    const { t } = useTranslation();
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const [items, setItems] = useState<Item[] | []>([]);
     const [fruits, setFruits] = useState<Item[] | []>([]);
@@ -49,69 +51,69 @@ const ItemPage: React.FC = () => {
     return (
         <>
             <Head>
-                <title>Item Overview Page</title>
+                <title>{t('item_page.title')}</title>
             </Head>
 
             <section className="border rounded-lg shadow-lg p-8 mb-8">
-                <h1>Welcome to Shop & Go</h1>
-                <p>
-                    Here you can shop and go! Our store is dedicated to bringing you convenience and
-                    simplicity, whether you're looking for daily essentials or a special treat. With
-                    a curated selection of top-quality products, we aim to make your shopping
-                    experience quick, easy, and enjoyable.
-                </p>
-                <p>
-                    At Shop & Go, we believe in saving you time without compromising on quality. We
-                    pride ourselves on excellent service, unbeatable value, and a hassle-free
-                    experience every time you visit. Come explore a new way to shop!
-                </p>
-
+                <h1>{t('item_page.welcome_message')}</h1>
+                <p>{t('item_page.intro_paragraph_1')}</p>
+                <p>{t('item_page.intro_paragraph_2')}</p>
                 <a
                     href="#offers"
                     className="bg-blue-600 text-white p-2 mt-4 inline-block rounded-lg shadow-lg hover:bg-blue-700/80 transition-all duration-300"
                 >
-                    View our offers
+                    {t('item_page.view_offers_button')}
                 </a>
             </section>
 
             <section className="border rounded-lg shadow-lg p-8 mb-8">
-                <h1>User Table</h1>
+                <h1>{t('item_page.user_table_title')}</h1>
                 <UserTable />
             </section>
 
             <section className="border rounded-lg shadow-lg p-8" id="offers">
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-2xl">Item Overview</h1>
+                    <h1 className="text-2xl">{t('item_page.item_overview_title')}</h1>
                     <Images className="w-8 h-8 text-gray-600" />
                 </div>
 
                 <div className="border-t py-4">
-                    <h2 className="text-xl font-semibold">Fruits</h2>
+                    <h2 className="text-xl font-semibold">{t('item_page.categories.fruits')}</h2>
                     <div>{items && <ItemOverview items={fruits} />}</div>
                 </div>
 
                 <div className="border-t py-4">
-                    <h2 className="text-xl font-semibold">Vegetables</h2>
+                    <h2 className="text-xl font-semibold">{t('item_page.categories.vegetables')}</h2>
                     <div>{items && <ItemOverview items={vegetables} />}</div>
                 </div>
 
                 <div className="border-t py-4">
-                    <h2 className="text-xl font-semibold">dairy</h2>
+                    <h2 className="text-xl font-semibold">{t('item_page.categories.dairy')}</h2>
                     <div>{items && <ItemOverview items={dairy} />}</div>
                 </div>
 
                 <div className="border-t py-4">
-                    <h2 className="text-xl font-semibold">meat</h2>
+                    <h2 className="text-xl font-semibold">{t('item_page.categories.meat')}</h2>
                     <div>{items && <ItemOverview items={meat} />}</div>
                 </div>
 
                 <div className="border-t pt-4">
-                    <h2 className="text-xl font-semibold">fish</h2>
+                    <h2 className="text-xl font-semibold">{t('item_page.categories.fish')}</h2>
                     <div>{items && <ItemOverview items={fish} />}</div>
                 </div>
             </section>
         </>
     );
+};
+
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default ItemPage;

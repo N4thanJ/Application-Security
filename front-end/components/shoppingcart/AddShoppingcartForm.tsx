@@ -2,10 +2,12 @@ import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'next-i18next';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();
     const dateInputRef = useRef<HTMLInputElement>(null);
+    const { t } = useTranslation('common');
 
     const [shoppingcart, setShoppingcart] = useState<Shoppingcart>({
         name: '',
@@ -37,6 +39,7 @@ const AddShoppingcartForm: React.FC = () => {
             dateInputRef.current.showPicker();
         }
     };
+
     useEffect(() => {
         if (dateInputRef.current) {
             dateInputRef.current.addEventListener('click', handleDateClick);
@@ -58,11 +61,11 @@ const AddShoppingcartForm: React.FC = () => {
 
     return (
         <>
-            <h1>Create a shoppingcart</h1>
+            <h1>{t('AddShoppingcartForm.title')}</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name" className="text-sm font-medium text-gray-700">
-                        Name:
+                        {t('AddShoppingcartForm.labels.name')}:
                     </label>
                     <input
                         type="text"
@@ -72,13 +75,13 @@ const AddShoppingcartForm: React.FC = () => {
                         value={shoppingcart.name}
                         onChange={handleInputChange}
                         className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter a name for the shoppingcart..."
+                        placeholder={t('AddShoppingcartForm.placeholders.name')}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="deliveryDate" className="text-sm font-medium text-gray-700">
-                        Delivery Date:
+                        {t('AddShoppingcartForm.labels.deliveryDate')}:
                     </label>
                     <div className="mt-1 relative">
                         <input
@@ -99,7 +102,7 @@ const AddShoppingcartForm: React.FC = () => {
                     type="submit"
                     className="mt-6 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                    Create
+                    {t('AddShoppingcartForm.buttons.create')}
                 </button>
             </form>
         </>

@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { User } from '@types';
 import AddShoppingcartForm from '@components/shoppingcart/AddShoppingcartForm';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const ShoppingcartForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -30,6 +31,15 @@ const ShoppingcartForm: React.FC = () => {
             </section>
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default ShoppingcartForm;

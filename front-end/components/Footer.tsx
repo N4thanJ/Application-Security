@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 const Footer: React.FC = () => {
+    const { t } = useTranslation(); // Initialize translation function
+
     return (
         <footer className="bg-primary text-white py-8 w-full">
             <div className="max-w-5xl px-8 mx-auto flex justify-between items-center w-full">
@@ -8,13 +11,13 @@ const Footer: React.FC = () => {
                 <nav className="">
                     <ul className="flex gap-6">
                         <li>
-                            <Link href="/">Home</Link>
+                            <Link href="/">{t('Footer.home')}</Link>
                         </li>
                         <li>
-                            <Link href="/shoppingcarts">Shoppingcarts</Link>
+                            <Link href="/shoppingcarts">{t('Footer.shoppingcarts')}</Link>
                         </li>
                         <li>
-                            <Link href="/itemOverview">Admin overview</Link>
+                            <Link href="/itemOverview">{t('Footer.adminOverview')}</Link>
                         </li>
                     </ul>
                 </nav>

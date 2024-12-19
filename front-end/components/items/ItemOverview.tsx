@@ -1,6 +1,7 @@
 import { Item } from '@types';
 import React, { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
 import NutritionLabel from './NutritionLabel';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 };
 
 const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
+    const { t } = useTranslation('common');
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
@@ -40,32 +42,31 @@ const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
                                         <img
                                             src={item.pathToImage}
                                             className="w-full h-full object-cover rounded"
-                                            alt={`${item.name} image`}
+                                            alt={t('itemsOverview.itemCard.altText', { itemName: item.name })}
                                         />
                                     </div>
 
                                     <div className="pt-2">
-                                        <h2 className="text-lg font-semibold text-gray-700">
-                                            {item.name}
-                                        </h2>
+                                        <h2 className="text-lg font-semibold text-gray-700">{item.name}</h2>
                                         <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
-                                            {item.price} €
+                                            {t('itemsOverview.itemCard.price', { price: item.price })}
                                         </p>
                                     </div>
                                 </div>
                             ))}
                         </div>
+
                         <button
                             onClick={() => scroll('left')}
                             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
-                            aria-label="Scroll left"
+                            aria-label={t('itemsOverview.buttons.scrollLeft')}
                         >
                             <ChevronLeft className="w-6 h-6 text-gray-700" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
                             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 border border-black hover:bg-opacity-80 transition-all"
-                            aria-label="Scroll right"
+                            aria-label={t('itemsOverview.buttons.scrollRight')}
                         >
                             <ChevronRight className="w-6 h-6 text-gray-700" />
                         </button>
@@ -86,6 +87,7 @@ const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
                             className="absolute top-3 right-3 text-gray-500 hover:text-red-700 transition-all cursor-pointer"
                             onClick={() => setSelectedItem(null)}
                             size={32}
+                            aria-label={t('itemsOverview.modal.close')}
                         />
                         <NutritionLabel item={selectedItem} />
                     </div>

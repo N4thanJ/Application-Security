@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -142,6 +143,15 @@ const PrivacyPolicy: React.FC = () => {
             </section>
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default PrivacyPolicy;
