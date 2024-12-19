@@ -23,7 +23,7 @@ beforeEach(() => {
     mockItemDbDeleteItem = jest.fn();
 });
 
-test('given: a filled itemDb, when: getting all items from itemService, then: all items are returned', () => {
+test('given: a filled itemDb, when: getting all items from itemService, then: all items are returned', async () => {
     // given a filled userDB
     const item1: ItemInput = {
         name: 'Banana',
@@ -37,14 +37,14 @@ test('given: a filled itemDb, when: getting all items from itemService, then: al
     itemDb.getAll = mockItemDbGetAllItems.mockReturnValue(items);
 
     // when getting all users from userService
-    itemService.getAllItems();
+    await itemService.getAllItems();
 
     // then all users are returned
     expect(mockItemDbGetAllItems).toHaveBeenCalled();
     expect(mockItemDbGetAllItems).toHaveReturnedWith(items);
 });
 
-test('given: an a valid item, when: creating a item, then: the item is created and returned', () => {
+test('given: an a valid item, when: creating a item, then: the item is created and returned', async () => {
     // given a valid item
     const item: ItemInput = {
         name: 'Tomato',
@@ -56,14 +56,14 @@ test('given: an a valid item, when: creating a item, then: the item is created a
     itemDb.create = createItemMock.mockReturnValue(item);
 
     // when adding an item to the itemDb
-    itemService.createItem(item);
+    await itemService.createItem(item);
 
     // then the item is added
     expect(createItemMock).toHaveBeenCalled();
     expect(createItemMock).toHaveBeenCalledWith(item);
 });
 
-test('given: a valid nutritionlabel, when: adding a nutritionlabel to a item, then: the nutritionlabel is added to the item and the item is returned', () => {
+test('given: a valid nutritionlabel, when: adding a nutritionlabel to a item, then: the nutritionlabel is added to the item and the item is returned', async () => {
     // given a valid nutritionlabel
     const item: ItemInput = {
         id: 0,
@@ -81,6 +81,7 @@ test('given: a valid nutritionlabel, when: adding a nutritionlabel to a item, th
         sugar: 14,
         protein: 1.3,
         salts: 0.01,
+        itemId: 0,
     };
 
     itemDb.getById = mockItemDbGetById.mockReturnValue(item);
@@ -90,7 +91,7 @@ test('given: a valid nutritionlabel, when: adding a nutritionlabel to a item, th
 
     // when adding a nutritionlabel to a item
     if (item.id !== undefined) {
-        itemService.addNutritionLabelToItem(item.id, nutritionlabel);
+        await itemService.addNutritionLabelToItem(item.id, nutritionlabel);
     }
 
     // then the nutritionlabel is added to the item and the item is returned
@@ -98,7 +99,7 @@ test('given: a valid nutritionlabel, when: adding a nutritionlabel to a item, th
     expect(addNutritionlabelMock).toHaveBeenCalledWith(item, nutritionlabel);
 });
 
-test('given a filled itemDb and an id of an item, when: deleting a item, then: the item with that id is deleted', () => {
+test('given a filled itemDb and an id of an item, when: deleting a item, then: the item with that id is deleted', async () => {
     // given a filled itemDb and a id of an item
     const item: ItemInput = {
         id: 0,
@@ -114,7 +115,7 @@ test('given a filled itemDb and an id of an item, when: deleting a item, then: t
 
     // when deleting a item
     if (item.id !== undefined) {
-        itemService.deleteItemById(item.id);
+        await itemService.deleteItemById(item.id);
     }
 
     // then the item with that id is deleted

@@ -76,13 +76,30 @@ export class Nutritionlabel {
         protein: number;
         salts: number;
     }) {
-        if (nutritionlabel.energy == null) throw new Error('Energy is required');
-        if (nutritionlabel.fat == null) throw new Error('Fat is required');
-        if (nutritionlabel.saturatedFats == null) throw new Error('Saturated fats are required'); // Update here if optional
-        if (nutritionlabel.carbohydrates == null) throw new Error('Carbohydrates are required');
-        if (nutritionlabel.sugar == null) throw new Error('Sugar is required');
-        if (nutritionlabel.protein == null) throw new Error('Protein is required');
-        if (nutritionlabel.salts == null) throw new Error('Salts are required');
+        if (nutritionlabel.energy === null || isNaN(nutritionlabel.energy))
+            throw new Error('Energy is required');
+        if (nutritionlabel.fat == null || isNaN(nutritionlabel.fat))
+            throw new Error('Fat is required');
+        if (nutritionlabel.saturatedFats == null || isNaN(nutritionlabel.saturatedFats))
+            throw new Error('Saturated fats are required');
+        if (nutritionlabel.carbohydrates == null || isNaN(nutritionlabel.carbohydrates))
+            throw new Error('Carbohydrates are required');
+        if (nutritionlabel.sugar == null || isNaN(nutritionlabel.sugar))
+            throw new Error('Sugar is required');
+        if (nutritionlabel.protein == null || isNaN(nutritionlabel.protein))
+            throw new Error('Protein is required');
+        if (nutritionlabel.salts == null || isNaN(nutritionlabel.salts))
+            throw new Error('Salts are required');
+
+        if (nutritionlabel.energy < 0) throw new Error('Energy must be a positive value');
+        if (nutritionlabel.fat < 0) throw new Error('Fat must be a positive value');
+        if (nutritionlabel.saturatedFats < 0)
+            throw new Error('Saturated fats must be a positive value');
+        if (nutritionlabel.carbohydrates < 0)
+            throw new Error('Carbohydrates must be a positive value');
+        if (nutritionlabel.sugar < 0) throw new Error('Sugar must be a positive value');
+        if (nutritionlabel.protein < 0) throw new Error('Protein must be a positive value');
+        if (nutritionlabel.salts < 0) throw new Error('Salts must be a positive value');
     }
 
     equals(nutritionlabel: Nutritionlabel): boolean {

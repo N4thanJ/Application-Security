@@ -8,7 +8,7 @@ beforeEach(() => {
     mockUserDbGetAllUsers = jest.fn();
 });
 
-test('given: a filled userDb, when: getting all users from userService, then: all users are returned', () => {
+test('given: a filled userDb, when: getting all users from userService, then: all users are returned', async () => {
     // given a filled userDB
     const user1: UserInput = {
         email: 'john.doe@mail.com',
@@ -21,7 +21,7 @@ test('given: a filled userDb, when: getting all users from userService, then: al
     userDb.getAll = mockUserDbGetAllUsers.mockReturnValue(users);
 
     // when getting all users from userService
-    userService.getAllUsers();
+    await userService.getAllUsers();
 
     // then all users are returned
     expect(mockUserDbGetAllUsers).toHaveBeenCalled();

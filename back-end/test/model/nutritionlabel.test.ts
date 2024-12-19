@@ -248,7 +248,7 @@ test('given: invalid carbohydrates value, when: nutritionlabel is constructed, t
         });
 
     // then error is thrown
-    expect(nutritionlabel).toThrow('Carbohydrates is required');
+    expect(nutritionlabel).toThrow('Carbohydrates are required');
 });
 
 test('given: invalid sugar value, when: nutritionlabel is constructed, then: error is thrown', () => {
@@ -308,5 +308,5 @@ test('given: invalid salts value, when: nutritionlabel is constructed, then: err
         });
 
     // then error is thrown
-    expect(nutritionlabel).toThrow('Salts is required');
+    expect(nutritionlabel).toThrow('Salts are required');
 });
