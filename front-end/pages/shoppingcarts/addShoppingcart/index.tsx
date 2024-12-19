@@ -5,10 +5,9 @@ import AddShoppingcartForm from '@components/shoppingcart/AddShoppingcartForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 
-
 const ShoppingcartForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
@@ -36,11 +35,11 @@ const ShoppingcartForm: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };
