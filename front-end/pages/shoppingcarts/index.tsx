@@ -40,7 +40,7 @@ const Home: React.FC = () => {
 
     useInterval(() => {
         loggedInUser?.email && mutate(['user', loggedInUser.email]);
-    }, 100);
+    }, 2000);
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
