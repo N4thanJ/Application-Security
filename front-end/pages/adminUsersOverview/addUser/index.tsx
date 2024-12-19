@@ -1,4 +1,5 @@
 import CreateUserForm from '@components/users/CreateUserForm';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const AddUser: React.FC = () => {
     return (
@@ -6,6 +7,15 @@ const AddUser: React.FC = () => {
             <CreateUserForm />
         </section>
     );
+};
+
+export const getServerSideProps = async (context: any) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+        },
+    };
 };
 
 export default AddUser;

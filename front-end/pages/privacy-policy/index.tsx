@@ -145,7 +145,7 @@ const PrivacyPolicy: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
