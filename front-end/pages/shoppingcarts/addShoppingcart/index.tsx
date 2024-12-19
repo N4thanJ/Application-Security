@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 import { User } from '@types';
 import AddShoppingcartForm from '@components/shoppingcart/AddShoppingcartForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
+
 
 const ShoppingcartForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const {t} = useTranslation();
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
@@ -15,7 +18,7 @@ const ShoppingcartForm: React.FC = () => {
     if (!loggedInUser) {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
     }
@@ -23,7 +26,7 @@ const ShoppingcartForm: React.FC = () => {
     return (
         <>
             <Head>
-                <title>Create a new shoppingcart</title>
+                <title>{t('pagetitles.createshoppingcart')}</title>
             </Head>
 
             <section className="border border-gray-200 grid self-center">

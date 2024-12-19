@@ -5,9 +5,11 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { User } from '@types';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const AdminPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
@@ -17,7 +19,7 @@ const AdminPage: React.FC = () => {
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
     }
@@ -25,10 +27,10 @@ const AdminPage: React.FC = () => {
     return (
         <>
             <Head>
-                <title>Admin Item Overview</title>
+                <title>{t('pagetitles.adminitemoverview')}</title>
             </Head>
             <div className="flex items-center gap-4 mb-4">
-                <h1>Admin Overview Page</h1>
+                <h1>{t('pagetitles.adminitemoverview')}</h1>
                 <Link
                     href={`itemOverview/addItem`}
                     className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
@@ -44,11 +46,11 @@ const AdminPage: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };

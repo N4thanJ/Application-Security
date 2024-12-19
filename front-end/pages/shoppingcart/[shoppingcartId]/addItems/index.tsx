@@ -7,47 +7,47 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'next-i18next';
+import useSWR, { mutate } from 'swr';
+import useInterval from 'use-interval';
 
 const addItemsToShoppingcart: React.FC = () => {
     const router = useRouter();
     const { shoppingcartId } = router.query;
 
-    const [items, setItems] = useState<Item[]>([]);
-
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
-    const [shoppingcart, setShoppingcart] = useState<Shoppingcart>();
+    const { t } = useTranslation();
 
-    const fetchItems = async () => {
-        try {
-            const response = await ItemsService.getAllItems();
-            const fetchedItems: Item[] = await response.json();
-            setItems(fetchedItems);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const fetchItemsAndShoppingcartById = async () => {
+        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
 
-    const fetchShoppingcart = async () => {
-        try {
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            const response = await ShoppingcartService.getShoppingcartById(
-                token,
-                String(shoppingcartId)
-            );
+        const reponses = await Promise.all([
+            ItemsService.getAllItems(),
+            ShoppingcartService.getShoppingcartById(token, shoppingcartId as string),
+        ]);
 
-            if (response) {
-                const fetchedShoppingcart = await response.json();
-                console.log(fetchShoppingcart);
-                setShoppingcart(fetchedShoppingcart);
-            } else {
-                console.error('Error fetching shoppingcart:', response);
+        const [itemResponse, shoppingcartResponse] = reponses;
+
+        if (itemResponse && shoppingcartResponse) {
+            if (itemResponse.ok && shoppingcartResponse.ok) {
+                const items = await itemResponse.json();
+                const shoppingcart = await shoppingcartResponse.json();
+
+                return { items, shoppingcart };
             }
-        } catch (error) {
-            console.error('Error fetching shoppingcart:', error);
         }
     };
+
+    const { data, isLoading, error } = useSWR(
+        'itemsAndShoppingcart',
+        fetchItemsAndShoppingcartById
+    );
+
+    useInterval(() => {
+        mutate('itemdAndShoppingcart', fetchItemsAndShoppingcartById);
+    }, 2000);
 
     const addItemToShoppingcart = async (item: Item, shoppingcart: Shoppingcart) => {
         try {
@@ -60,7 +60,7 @@ const addItemsToShoppingcart: React.FC = () => {
 
             if (response) {
                 const updatedShoppingcart = await response.json();
-                setShoppingcart(updatedShoppingcart);
+                mutate('itemsAndShoppingcart', { ...data, shoppingcart: updatedShoppingcart });
             }
         } catch (error) {
             console.error('Error fetching shoppingcart:', error);
@@ -83,7 +83,7 @@ const addItemsToShoppingcart: React.FC = () => {
 
             if (response) {
                 const updatedShoppingcart = await response.json();
-                setShoppingcart(updatedShoppingcart);
+                mutate('itemsAndShoppingcart', { ...data, shoppingcart: updatedShoppingcart });
             }
         } catch (error) {
             console.error('Error fetching shoppingcart:', error);
@@ -93,35 +93,38 @@ const addItemsToShoppingcart: React.FC = () => {
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
-
-        fetchItems();
-        fetchShoppingcart();
-    }, [shoppingcartId]);
+    });
 
     if (!loggedInUser) {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
+    }
+
+    if (isLoading) {
+        return <p>{t('loading')}</p>;
     }
 
     return (
         <section>
             <div className="pb-8 pt-4 gap-4">
                 <Link
-                    href={`/shoppingcart/${shoppingcart?.id}`}
+                    href={`/shoppingcart/${data && data.shoppingcart?.id}`}
                     className="bg-green-500 hover:bg-green-500/70 transition-all duration-300 text-white px-2 py-1 rounded-lg"
                 >
                     Go back
                 </Link>
-                <h1 className="text-2xl font-semibold mt-4">Add Items to {shoppingcart?.name}</h1>
+                <h1 className="text-2xl font-semibold mt-4">
+                    Add Items to {data && data.shoppingcart?.name}
+                </h1>
             </div>
 
-            {shoppingcart && items && shoppingcart.items && (
+            {data?.shoppingcart && data.items && data.shoppingcart.items && (
                 <AddItemToShoppingcartOverview
-                    items={items}
-                    shoppingcart={shoppingcart}
+                    items={data.items}
+                    shoppingcart={data.shoppingcart}
                     selectedItem={setSelectedItem}
                     addItemToShoppingcart={addItemToShoppingcart}
                     handleQuantityChange={handleQuantityChange}
@@ -131,11 +134,11 @@ const addItemsToShoppingcart: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };

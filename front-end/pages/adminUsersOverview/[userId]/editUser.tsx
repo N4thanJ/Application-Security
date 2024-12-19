@@ -7,11 +7,13 @@ import Head from 'next/head';
 import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const EditUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const params = useParams<{ userId?: string }>();
     const userId = params?.userId;
+    const { t } = useTranslation();
 
     const getUserById = async (id: string) => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
@@ -37,25 +39,25 @@ const EditUserPage: React.FC = () => {
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
+    }
+
+    if (isLoading) {
+        return <p>{t('loading...')}</p>;
     }
 
     return (
         <>
             <Head>
-                <title>Edit User</title>
+                <title>{t('pagetitles.editUser')}</title>
             </Head>
             <section>
-                {isLoading ? (
-                    <p className="text-center text-gray-600">Loading user information...</p>
-                ) : (
-                    <div>
-                        {error && <p className="text-center text-red-600">{error}</p>}
-                        {data && <UserEditForm initialUser={data} />}
-                    </div>
-                )}
+                <div>
+                    {error && <p className="text-center text-red-600">{error}</p>}
+                    {data && <UserEditForm initialUser={data} />}
+                </div>
             </section>
         </>
     );

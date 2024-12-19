@@ -6,55 +6,63 @@ import ItemService from '@services/ItemsService';
 import AddNutritionLabelForm from '@components/nutritionlabel/AddNutritionlabelForm';
 import Head from 'next/head';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
+import useSWR, { mutate } from 'swr';
+import useInterval from 'use-interval';
 
 const NutritionlabelForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
     const params = useParams<{ itemId?: string }>();
     const itemId = params?.itemId;
-    const [item, setItem] = useState<Item>();
+    const { t } = useTranslation();
+
+    const fetchItem = async () => {
+        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+        const response = await ItemService.getItemById(token, String(itemId));
+
+        const item = await response.json();
+        return item;
+    };
+
+    const { data, isLoading, error } = useSWR('item', fetchItem);
+
+    useInterval(() => {
+        mutate('item', fetchItem);
+    }, 2000);
 
     useEffect(() => {
-        if (!itemId) return;
-        const fetchItem = async () => {
-            try {
-                const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-                const response = await ItemService.getItemById(token, String(itemId));
-                const fetchedItem = await response.json();
-                setItem(fetchedItem);
-            } catch (error) {
-                console.error('Error fetching item:', error);
-            }
-        };
-
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
-
-        fetchItem();
     }, [itemId]);
 
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
+    }
+
+    if (isLoading) {
+        return <p>{t('loading...')}</p>;
     }
 
     return (
         <>
             <Head>
-                <title>Add Nutritionlabel To Item</title>
+                <title>{t('pagetitles.nutritionlabelform')}</title>
             </Head>
-            <section>{item && <AddNutritionLabelForm item={item} />}</section>
+            {error && <p>Error...</p>}
+            <section>{data && <AddNutritionLabelForm item={data} />}</section>
         </>
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };
