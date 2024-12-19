@@ -1,12 +1,11 @@
 import ShoppingcartService from '@services/ShopingcartService';
 import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();
-    const dateInputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation('common');
 
     const [shoppingcart, setShoppingcart] = useState<Shoppingcart>({
@@ -14,6 +13,11 @@ const AddShoppingcartForm: React.FC = () => {
         deliveryDate: new Date(),
         items: [],
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{
+        type: 'error' | 'success';
+        text: string;
+    } | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -23,86 +27,125 @@ const AddShoppingcartForm: React.FC = () => {
         }));
     };
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const validateForm = (): boolean => {
+        if (!shoppingcart.name) {
+            setStatusMessage({ type: 'error', text: t('AddShoppingcartForm.errors.missingName') });
+            return false;
+        }
+
+        if (!shoppingcart.deliveryDate || new Date(shoppingcart.deliveryDate) < today) {
+            setStatusMessage({
+                type: 'error',
+                text: t('AddShoppingcartForm.errors.invalidDeliveryDate'),
+            });
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (!validateForm()) return;
+
+        setIsSubmitting(true);
+        setStatusMessage(null);
+
         try {
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            await ShoppingcartService.addShoppingcart(token, shoppingcart);
-            router.push('/shoppingcarts');
-        } catch (error) {
-            console.error('Error adding shoppingcart:', error);
-        }
-    };
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string)?.token;
+            if (!token) throw new Error(t('AddShoppingcartForm.errors.missingToken'));
 
-    const handleDateClick = () => {
-        if (dateInputRef.current) {
-            dateInputRef.current.showPicker();
-        }
-    };
-
-    useEffect(() => {
-        if (dateInputRef.current) {
-            dateInputRef.current.addEventListener('click', handleDateClick);
-        }
-        return () => {
-            if (dateInputRef.current) {
-                dateInputRef.current.removeEventListener('click', handleDateClick);
+            const response = await ShoppingcartService.addShoppingcart(token, shoppingcart);
+            if (response && response.ok) {
+                setStatusMessage({ type: 'success', text: t('AddShoppingcartForm.success') });
+                setTimeout(() => router.push('/shoppingcarts'), 1500);
+            } else {
+                const errorMsg =
+                    (response && (await response.json()).message) ||
+                    t('AddShoppingcartForm.errors.generic');
+                throw new Error(errorMsg);
             }
-        };
-    }, []);
+        } catch (error: any) {
+            setStatusMessage({
+                type: 'error',
+                text: error.message || t('AddShoppingcartForm.errors.generic'),
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-    const minDate = new Date();
-    minDate.setDate(minDate.getDate());
-    const minDateString = minDate.toISOString().split('T')[0];
-
-    const valueDate = shoppingcart.deliveryDate
-        ? shoppingcart.deliveryDate.toISOString().split('T')[0]
-        : minDateString;
+    const minDate = new Date().toISOString().split('T')[0];
+    const valueDate = shoppingcart.deliveryDate?.toISOString().split('T')[0] || minDate;
 
     return (
         <>
-            <h1>{t('AddShoppingcartForm.title')}</h1>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+                {t('AddShoppingcartForm.title')}
+            </h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                {statusMessage && (
+                    <div
+                        className={`mb-4 p-3 rounded-md text-center font-medium ${
+                            statusMessage.type === 'error'
+                                ? 'bg-red-100 text-red-700'
+                                : 'bg-green-100 text-green-700'
+                        }`}
+                    >
+                        {statusMessage.text}
+                    </div>
+                )}
+
+                <div className="mb-4">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                         {t('AddShoppingcartForm.labels.name')}:
                     </label>
                     <input
                         type="text"
                         id="name"
-                        required
                         name="name"
                         value={shoppingcart.name}
                         onChange={handleInputChange}
+                        required
                         className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder={t('AddShoppingcartForm.placeholders.name')}
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="deliveryDate" className="text-sm font-medium text-gray-700">
+                <div className="mb-4">
+                    <label
+                        htmlFor="deliveryDate"
+                        className="block text-sm font-medium text-gray-700"
+                    >
                         {t('AddShoppingcartForm.labels.deliveryDate')}:
                     </label>
-                    <div className="mt-1 relative">
-                        <input
-                            type="date"
-                            id="deliveryDate"
-                            ref={dateInputRef}
-                            required
-                            name="deliveryDate"
-                            value={valueDate}
-                            onChange={handleInputChange}
-                            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-                            min={minDateString}
-                        />
-                    </div>
+                    <input
+                        type="date"
+                        id="deliveryDate"
+                        name="deliveryDate"
+                        value={valueDate}
+                        onChange={handleInputChange}
+                        required
+                        min={minDate}
+                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
                 </div>
 
                 <button
                     type="submit"
-                    className="mt-6 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    disabled={isSubmitting}
+                    className={`w-full py-2 px-4 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                        isSubmitting
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                    }`}
                 >
-                    {t('AddShoppingcartForm.buttons.create')}
+                    {isSubmitting
+                        ? t('AddShoppingcartForm.loading')
+                        : t('AddShoppingcartForm.buttons.create')}
                 </button>
             </form>
         </>

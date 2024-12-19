@@ -3,6 +3,7 @@ import ItemService from '@services/ItemsService';
 import { Item, Nutritionlabel } from '@types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import classNames from 'classnames';
 
 type Props = {
     item: Item;
@@ -22,6 +23,11 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
         salts: item.nutritionlabel?.salts || 0,
         item: item || undefined,
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{
+        type: 'error' | 'success';
+        text: string;
+    } | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -31,28 +37,53 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
         }));
     };
 
+    const validateForm = (): boolean => {
+        const errors: string[] = [];
+        if (nutritionlabel.energy <= 0)
+            errors.push(t('AddNutritionLabelForm.errors.energyPositive'));
+        if (nutritionlabel.fat < 0) errors.push(t('AddNutritionLabelForm.errors.fatNonNegative'));
+        // Add additional checks for other fields if necessary
+
+        if (errors.length > 0) {
+            setStatusMessage({ type: 'error', text: errors.join('. ') });
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        try {
-            if (item.id === undefined || item.id === null) {
-                throw new Error(t('AddNutritionLabelForm.errors.missingId'));
-            }
+        if (!validateForm()) return;
 
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+        setIsLoading(true);
+        setStatusMessage(null);
+
+        try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string)?.token;
+            if (!token) throw new Error(t('AddNutritionLabelForm.errors.missingToken'));
+
             const response = await ItemService.addNutritionlabelToItem(
                 token,
-                item.id,
+                item.id as number,
                 nutritionlabel
             );
-            console.log('Service response:', response);
-
-            router.push('/itemOverview');
-        } catch (error) {
-            console.error('Error details:', {
-                error,
-                itemState: item,
-                nutritionLabelState: nutritionlabel,
+            if (response && response.ok) {
+                setStatusMessage({ type: 'success', text: t('AddNutritionLabelForm.success') });
+                setTimeout(() => router.push('/itemOverview'), 2000);
+            } else {
+                throw new Error(
+                    (response && (await response.json())).message ||
+                        t('AddNutritionLabelForm.errors.generic')
+                );
+            }
+        } catch (error: any) {
+            setStatusMessage({
+                type: 'error',
+                text: error.message || t('AddNutritionLabelForm.errors.generic'),
             });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -64,138 +95,90 @@ const AddNutritionLabelForm: React.FC<Props> = ({ item }: Props) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
                 {t('AddNutritionLabelForm.title')}
             </h2>
-            <div className="space-y-2">
-                <div>
-                    <label htmlFor="energy" className="block text-gray-700 font-medium mb-1">
-                        {t('AddNutritionLabelForm.labels.energy')}:
-                    </label>
-                    <input
-                        type="number"
-                        required
-                        name="energy"
-                        min="0.01"
-                        step={1}
-                        value={nutritionlabel.energy}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
+            {statusMessage && (
+                <div
+                    className={classNames(
+                        'mb-4 p-3 rounded-md text-center font-medium',
+                        { 'bg-red-100 text-red-700': statusMessage.type === 'error' },
+                        { 'bg-green-100 text-green-700': statusMessage.type === 'success' }
+                    )}
+                >
+                    {statusMessage.text}
                 </div>
+            )}
 
-                <div className="flex gap-8 flex-wrap">
-                    <div className="flex-1 min-w-0">
-                        <label htmlFor="fat" className="block text-gray-700 font-medium mb-1">
-                            {t('AddNutritionLabelForm.labels.fat')}:
-                        </label>
-                        <input
-                            type="number"
-                            required
-                            name="fat"
-                            min="0.01"
-                            step={1}
-                            value={nutritionlabel.fat}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
+            <div className="space-y-4">
+                {[
+                    {
+                        name: 'energy',
+                        label: t('AddNutritionLabelForm.labels.energy'),
+                        value: nutritionlabel.energy,
+                    },
+                    {
+                        name: 'fat',
+                        label: t('AddNutritionLabelForm.labels.fat'),
+                        value: nutritionlabel.fat,
+                    },
+                    {
+                        name: 'saturatedFats',
+                        label: t('AddNutritionLabelForm.labels.saturatedFats'),
+                        value: nutritionlabel.saturatedFats,
+                    },
+                    {
+                        name: 'carbohydrates',
+                        label: t('AddNutritionLabelForm.labels.carbohydrates'),
+                        value: nutritionlabel.carbohydrates,
+                    },
+                    {
+                        name: 'sugar',
+                        label: t('AddNutritionLabelForm.labels.sugar'),
+                        value: nutritionlabel.sugar,
+                    },
+                    {
+                        name: 'protein',
+                        label: t('AddNutritionLabelForm.labels.protein'),
+                        value: nutritionlabel.protein,
+                    },
+                    {
+                        name: 'salts',
+                        label: t('AddNutritionLabelForm.labels.salts'),
+                        value: nutritionlabel.salts,
+                    },
+                ].map((field) => (
+                    <div key={field.name}>
                         <label
-                            htmlFor="saturatedFats"
+                            htmlFor={field.name}
                             className="block text-gray-700 font-medium mb-1"
                         >
-                            {t('AddNutritionLabelForm.labels.saturatedFats')}:
+                            {field.label}:
                         </label>
                         <input
                             type="number"
                             required
-                            name="saturatedFats"
-                            min="0.01"
+                            name={field.name}
+                            min={0}
                             step={1}
-                            value={nutritionlabel.saturatedFats}
+                            value={field.value}
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
-                </div>
-
-                <div className="flex gap-8 flex-wrap">
-                    <div className="flex-1 min-w-0">
-                        <label
-                            htmlFor="carbohydrates"
-                            className="block text-gray-700 font-medium mb-1"
-                        >
-                            {t('AddNutritionLabelForm.labels.carbohydrates')}:
-                        </label>
-                        <input
-                            type="number"
-                            required
-                            name="carbohydrates"
-                            min="0.01"
-                            step={1}
-                            value={nutritionlabel.carbohydrates}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <label htmlFor="sugar" className="block text-gray-700 font-medium mb-1">
-                            {t('AddNutritionLabelForm.labels.sugar')}:
-                        </label>
-                        <input
-                            type="number"
-                            required
-                            name="sugar"
-                            min="0.01"
-                            step={1}
-                            value={nutritionlabel.sugar}
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label htmlFor="protein" className="block text-gray-700 font-medium mb-1">
-                        {t('AddNutritionLabelForm.labels.protein')}:
-                    </label>
-                    <input
-                        type="number"
-                        required
-                        name="protein"
-                        min="0.01"
-                        step={1}
-                        value={nutritionlabel.protein}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="salts" className="block text-gray-700 font-medium mb-1">
-                        {t('AddNutritionLabelForm.labels.salts')}:
-                    </label>
-                    <input
-                        type="number"
-                        required
-                        name="salts"
-                        min="0.01"
-                        step={1}
-                        value={nutritionlabel.salts}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                </div>
-
-                <div className="text-center">
-                    <button
-                        type="submit"
-                        value="Submit"
-                        className="mt-6 w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
-                    >
-                        {t('AddNutritionLabelForm.buttons.submit')}
-                    </button>
-                </div>
+                ))}
             </div>
+
+            <button
+                type="submit"
+                className={classNames(
+                    'mt-6 w-full py-3 font-semibold rounded-lg transition duration-300 cursor-pointer',
+                    { 'bg-blue-500 text-white hover:bg-blue-600': !isLoading },
+                    { 'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading }
+                )}
+                disabled={isLoading}
+            >
+                {isLoading
+                    ? t('AddNutritionLabelForm.loading')
+                    : t('AddNutritionLabelForm.buttons.submit')}
+            </button>
         </form>
     );
 };
