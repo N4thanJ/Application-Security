@@ -2,6 +2,7 @@ import ShoppingcartOverview from '@components/shoppingcart/ShoppingcartOverview'
 import ShoppingcartService from '@services/ShopingcartService';
 import UserService from '@services/userService';
 import { User } from '@types';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
@@ -83,6 +84,15 @@ const Home: React.FC = () => {
             )}
         </section>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default Home;

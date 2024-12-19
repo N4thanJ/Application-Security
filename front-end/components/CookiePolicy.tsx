@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 const CookiePolicy: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const { t } = useTranslation(); // Initialize translation function
 
     useEffect(() => {
         // Check if the user has already made a decision
@@ -27,10 +29,9 @@ const CookiePolicy: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 z-50">
             <div className="flex justify-between items-center max-w-5xl mx-auto">
                 <p className="text-sm">
-                    We use cookies to enhance your experience. By accepting, you agree to our use of
-                    cookies.{' '}
+                    {t('CookiePolicy.message')}
                     <a href="/privacy-policy" className="underline">
-                        Learn more
+                        {t('CookiePolicy.learnMore')}
                     </a>
                     .
                 </p>
@@ -39,13 +40,13 @@ const CookiePolicy: React.FC = () => {
                         onClick={handleDecline}
                         className="bg-red-500 px-4 py-2 rounded text-sm text-white hover:bg-red-600"
                     >
-                        Decline
+                        {t('CookiePolicy.decline')}
                     </button>
                     <button
                         onClick={handleAccept}
                         className="bg-green-500 px-4 py-2 rounded text-sm text-white hover:bg-green-600"
                     >
-                        Accept
+                        {t('CookiePolicy.accept')}
                     </button>
                 </div>
             </div>

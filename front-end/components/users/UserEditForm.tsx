@@ -2,6 +2,7 @@ import { useState, ChangeEvent, useEffect } from 'react';
 import UserService from '@services/userService';
 import { useRouter } from 'next/router';
 import { Role, User } from '@types';
+import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
 
 interface UpdateUserFormProps {
     initialUser: User;
@@ -9,6 +10,7 @@ interface UpdateUserFormProps {
 
 const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
     const router = useRouter();
+    const { t } = useTranslation(); // Initialize translation function
     const [user, setUser] = useState({
         id: initialUser.id,
         email: initialUser.email,
@@ -50,12 +52,12 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                 className="flex flex-col p-6 w-full max-w-lg mx-auto mb-8 bg-tertiary shadow-md rounded-lg border-2 border-gray-200"
             >
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-                    Update User
+                    {t('UpdateUserForm.title')}
                 </h2>
                 <div className="space-y-2">
                     <div>
                         <label htmlFor="email" className="block text-gray-700 font-medium mb-1">
-                            Email:
+                            {t('UpdateUserForm.emailLabel')}
                         </label>
                         <input
                             type="email"
@@ -69,7 +71,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
 
                     <div>
                         <label htmlFor="password" className="block text-gray-700 font-medium mb-1">
-                            Password:
+                            {t('UpdateUserForm.passwordLabel')}
                         </label>
                         <input
                             type="password"
@@ -83,7 +85,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
 
                     <div>
                         <label htmlFor="role" className="block text-gray-700 font-medium mb-1">
-                            Role:
+                            {t('UpdateUserForm.roleLabel')}
                         </label>
                         <select
                             name="role"
@@ -92,10 +94,10 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                         >
                             <option className="text-sm" value="user">
-                                User
+                                {t('UpdateUserForm.roleUser')}
                             </option>
                             <option className="text-sm" value="admin">
-                                Admin
+                                {t('UpdateUserForm.roleAdmin')}
                             </option>
                         </select>
                     </div>
@@ -105,7 +107,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                             type="submit"
                             className="mt-6 w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
                         >
-                            Update User
+                            {t('UpdateUserForm.updateButton')}
                         </button>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import ItemService from '@services/ItemsService';
 import AddNutritionLabelForm from '@components/nutritionlabel/AddNutritionlabelForm';
 import Head from 'next/head';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const NutritionlabelForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -47,6 +48,15 @@ const NutritionlabelForm: React.FC = () => {
             <section>{item && <AddNutritionLabelForm item={item} />}</section>
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default NutritionlabelForm;

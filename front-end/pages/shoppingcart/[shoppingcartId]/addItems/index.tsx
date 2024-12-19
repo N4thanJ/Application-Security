@@ -3,6 +3,7 @@ import ItemsService from '@services/ItemsService';
 import ShoppingcartService from '@services/ShopingcartService';
 import { Item, Shoppingcart, User } from '@types';
 import { X } from 'lucide-react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -128,6 +129,15 @@ const addItemsToShoppingcart: React.FC = () => {
             )}
         </section>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default addItemsToShoppingcart;

@@ -1,5 +1,6 @@
 import AddItemForm from '@components/items/AddItemForm';
 import { User } from '@types';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
@@ -27,6 +28,15 @@ const NutritionlabelForm: React.FC = () => {
             <AddItemForm />
         </>
     );
+};
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
 };
 
 export default NutritionlabelForm;
