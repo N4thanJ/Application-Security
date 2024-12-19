@@ -54,7 +54,10 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
             {/* Filters */}
             <div className="mb-4 flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
-                    <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                        htmlFor="category-filter"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                         {t('addItemToShoppingcartOverview.filters.category')}
                     </label>
                     <select
@@ -73,7 +76,10 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                     </select>
                 </div>
                 <div className="flex-1">
-                    <label htmlFor="name-filter" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                        htmlFor="name-filter"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                         {t('addItemToShoppingcartOverview.filters.name')}
                     </label>
                     <input
@@ -82,7 +88,9 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                         className="w-full p-2 border border-gray-300 rounded-md"
                         value={nameFilter}
                         onChange={(e) => setNameFilter(e.target.value)}
-                        placeholder={t('addItemToShoppingcartOverview.filters.placeholderName') as string}
+                        placeholder={
+                            t('addItemToShoppingcartOverview.filters.placeholderName') as string
+                        }
                     />
                 </div>
             </div>
@@ -108,48 +116,58 @@ const AddItemToShoppingcartOverview: React.FC<Props> = ({
                             <div>
                                 <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
                                 <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
-                                    {t('addItemToShoppingcartOverview.itemCard.price', { price: item.price })}
+                                    € {item.price}
                                 </p>
                             </div>
 
                             <div className="flex items-center justify-center space-x-2 mt-4">
-                                {(shoppingcart.items.find((cartItem) => cartItem.item.id === item.id)?.quantity ??
-                                    0) > 0 && (
-                                        <>
-                                            <button
-                                                className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleQuantityInputChange(item, (quantities[Number(item.id)] || 0) - 1);
-                                                }}
-                                            >
-                                                <Minus size={24} />
-                                            </button>
-                                            <input
-                                                type="number"
-                                                className="w-28 text-center border border-gray-300 rounded-md"
-                                                value={quantities[Number(item.id)] ?? 0}
-                                                onChange={(e) =>
-                                                    setQuantities((prev) => ({
-                                                        ...prev,
-                                                        [Number(item.id)]: parseInt(e.target.value) || undefined,
-                                                    }))
+                                {(shoppingcart.items.find(
+                                    (cartItem) => cartItem.item.id === item.id
+                                )?.quantity ?? 0) > 0 && (
+                                    <>
+                                        <button
+                                            className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleQuantityInputChange(
+                                                    item,
+                                                    (quantities[Number(item.id)] || 0) - 1
+                                                );
+                                            }}
+                                        >
+                                            <Minus size={24} />
+                                        </button>
+                                        <input
+                                            type="number"
+                                            className="w-28 text-center border border-gray-300 rounded-md"
+                                            value={quantities[Number(item.id)] ?? 0}
+                                            onChange={(e) =>
+                                                setQuantities((prev) => ({
+                                                    ...prev,
+                                                    [Number(item.id)]:
+                                                        parseInt(e.target.value) || undefined,
+                                                }))
+                                            }
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleQuantityInputChange(
+                                                        item,
+                                                        parseInt(
+                                                            (e.target as HTMLInputElement).value
+                                                        ) || 0
+                                                    );
+                                                    (e.target as HTMLInputElement).blur();
                                                 }
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        handleQuantityInputChange(
-                                                            item,
-                                                            parseInt((e.target as HTMLInputElement).value) || 0
-                                                        );
-                                                        (e.target as HTMLInputElement).blur();
-                                                    }
-                                                }}
-                                                onBlur={(e) => {
-                                                    handleQuantityInputChange(item, parseInt(e.target.value) || 0);
-                                                }}
-                                            />
-                                        </>
-                                    )}
+                                            }}
+                                            onBlur={(e) => {
+                                                handleQuantityInputChange(
+                                                    item,
+                                                    parseInt(e.target.value) || 0
+                                                );
+                                            }}
+                                        />
+                                    </>
+                                )}
                                 <button
                                     className="bg-blue-500 rounded-full hover:bg-blue-700 transition-all text-white p-1"
                                     onClick={(e) => {

@@ -8,15 +8,17 @@ import UserService from '@services/userService';
 import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const AdminUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const { t } = useTranslation();
 
     const handleDeleteUser = async (id: number): Promise<void> => {
         try {
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            await UserService.deleteUser(token, id);
-            mutate('users', getAllUsers());
+            const deletedUser = await UserService.deleteUser(token, id);
+            mutate('users', deletedUser);
         } catch (error) {
             console.error(error);
         }
@@ -44,18 +46,22 @@ const AdminUserPage: React.FC = () => {
     if (!loggedInUser || loggedInUser.role !== 'admin') {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
+    }
+
+    if (isLoading) {
+        return <p>{t('loading...')}</p>;
     }
 
     return (
         <>
             <Head>
-                <title>Admin User Overview</title>
+                <title>{t('pagetitles.adminuserpage')}</title>
             </Head>
             <div className="flex items-center gap-4 mb-4">
-                <h1>Admin User Overview Page</h1>
+                <h1>{t('pagetitles.adminuserpage')}</h1>
                 <Link
                     href={`adminUsersOverview/addUser`}
                     className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
@@ -65,14 +71,10 @@ const AdminUserPage: React.FC = () => {
             </div>
 
             <section>
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : (
-                    <div>
-                        {error && <p>{error}</p>}
-                        <UserAdminOverview users={data} handleDeleteUser={handleDeleteUser} />
-                    </div>
-                )}
+                <div>
+                    {error && <p>{error}</p>}
+                    <UserAdminOverview users={data} handleDeleteUser={handleDeleteUser} />
+                </div>
             </section>
         </>
     );

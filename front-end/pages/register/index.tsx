@@ -1,12 +1,15 @@
 import UserRegisterForm from '@components/users/UserRegisterForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import { useTranslation } from 'next-i18next';
 
 const Register: React.FC = () => {
+    const { t } = useTranslation();
+
     return (
         <>
             <Head>
-                <title>Register a new accoutn</title>
+                <title>{t('pagetitles.register')}</title>
             </Head>
             <section className="flex flex-col items-center py-16">
                 <UserRegisterForm />
@@ -15,11 +18,11 @@ const Register: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };

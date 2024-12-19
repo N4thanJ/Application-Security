@@ -42,14 +42,18 @@ const ItemsOverview: React.FC<Props> = ({ items }: Props) => {
                                         <img
                                             src={item.pathToImage}
                                             className="w-full h-full object-cover rounded"
-                                            alt={t('itemsOverview.itemCard.altText', { itemName: item.name })}
+                                            alt={t('itemsOverview.itemCard.altText', {
+                                                itemName: item.name,
+                                            })}
                                         />
                                     </div>
 
                                     <div className="pt-2">
-                                        <h2 className="text-lg font-semibold text-gray-700">{item.name}</h2>
+                                        <h2 className="text-lg font-semibold text-gray-700">
+                                            {item.name}
+                                        </h2>
                                         <p className="text-sm text-white bg-red-500 inline-block rounded-md py-1 px-1">
-                                            {t('itemsOverview.itemCard.price', { price: item.price })}
+                                            € {item.price}
                                         </p>
                                     </div>
                                 </div>

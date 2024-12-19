@@ -5,30 +5,19 @@ import { User } from '@types';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
+import { useTranslation } from 'next-i18next';
 
 const Home: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const { t } = useTranslation();
 
-    const fetchUser = async () => {
-        try {
-            if (!loggedInUser) {
-                return;
-            }
-
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            const response = await UserService.getUserByEmail(token, loggedInUser.email);
-
-            if (!response.ok) {
-                throw new Error('User not found');
-            }
-
-            const fetchedUser = await response.json();
-            setUser(fetchedUser);
-        } catch (error) {
-            console.error('Error fetching user:', error);
-        }
+    const getUserByEmail = async (email: string) => {
+        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+        const response = await UserService.getUserByEmail(token, email);
+        const user = await response.json();
+        return user;
     };
 
     const deleteShoppingcartById = async (id: number) => {
@@ -38,38 +27,48 @@ const Home: React.FC = () => {
             if (!deletedShoppingcart || !deletedShoppingcart.ok) {
                 throw new Error('Shoppingcart not found');
             }
-            fetchUser();
+            mutate('user', getUserByEmail(loggedInUser?.email as string));
         } catch (error) {
             console.error('Error fetching user:', error);
         }
     };
+
+    const { data, isLoading, error } = useSWR(
+        loggedInUser?.email ? ['user', loggedInUser.email] : null,
+        () => getUserByEmail(loggedInUser?.email as string)
+    );
+
+    useInterval(() => {
+        loggedInUser?.email && mutate(['user', loggedInUser.email]);
+    }, 2000);
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
     }, []);
 
-    useEffect(() => {
-        if (loggedInUser) {
-            fetchUser();
-        }
-    }, [loggedInUser]);
-
     if (!loggedInUser) {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
-                Please log in to view this page.
+                {t('loginwarning')}
             </p>
         );
     }
 
+    if (isLoading) {
+        return <p>{t('loading')}</p>;
+    }
+
     return (
         <section className="shadow-lg p-8 border rounded-lg">
-            {user?.shoppingcarts && user.shoppingcarts.length > 0 ? (
-                <ShoppingcartOverview
-                    shoppingcarts={user.shoppingcarts}
-                    deleteShoppingcartById={deleteShoppingcartById}
-                />
+            {data?.shoppingcarts && data.shoppingcarts.length > 0 ? (
+                <div>
+                    {error && <p>{error}</p>}
+                    <ShoppingcartOverview
+                        shoppingcarts={data.shoppingcarts}
+                        deleteShoppingcartById={deleteShoppingcartById}
+                    />
+                </div>
             ) : (
                 <>
                     <h3>You currently don't have any shoppingcarts :(</h3>
@@ -86,11 +85,11 @@ const Home: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };
