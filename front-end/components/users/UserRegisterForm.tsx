@@ -108,7 +108,7 @@ const UserRegisterForm: React.FC = () => {
                 </div>
 
                 {statusMessages && (
-                    <div className="mt-4">
+                    <div>
                         <ul>
                             {statusMessages.map(({ message, type }, index) => (
                                 <li
