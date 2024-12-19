@@ -62,10 +62,13 @@ const Home: React.FC = () => {
     return (
         <section className="shadow-lg p-8 border rounded-lg">
             {data?.shoppingcarts && data.shoppingcarts.length > 0 ? (
-                <ShoppingcartOverview
-                    shoppingcarts={data.shoppingcarts}
-                    deleteShoppingcartById={deleteShoppingcartById}
-                />
+                <div>
+                    {error && <p>{error}</p>}
+                    <ShoppingcartOverview
+                        shoppingcarts={data.shoppingcarts}
+                        deleteShoppingcartById={deleteShoppingcartById}
+                    />
+                </div>
             ) : (
                 <>
                     <h3>You currently don't have any shoppingcarts :(</h3>

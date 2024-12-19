@@ -122,13 +122,16 @@ const addItemsToShoppingcart: React.FC = () => {
             </div>
 
             {data?.shoppingcart && data.items && data.shoppingcart.items && (
-                <AddItemToShoppingcartOverview
-                    items={data.items}
-                    shoppingcart={data.shoppingcart}
-                    selectedItem={setSelectedItem}
-                    addItemToShoppingcart={addItemToShoppingcart}
-                    handleQuantityChange={handleQuantityChange}
-                />
+                <div>
+                    {error && <p>{error}</p>}
+                    <AddItemToShoppingcartOverview
+                        items={data.items}
+                        shoppingcart={data.shoppingcart}
+                        selectedItem={setSelectedItem}
+                        addItemToShoppingcart={addItemToShoppingcart}
+                        handleQuantityChange={handleQuantityChange}
+                    />
+                </div>
             )}
         </section>
     );
