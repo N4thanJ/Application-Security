@@ -1,5 +1,6 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const Language: React.FC = () => {
     const router = useRouter();

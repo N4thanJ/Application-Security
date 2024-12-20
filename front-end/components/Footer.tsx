@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import React from 'react';
 
 const Footer: React.FC = () => {
     const { t } = useTranslation(); // Initialize translation function

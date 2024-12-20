@@ -75,9 +75,7 @@ const UserLoginForm: React.FC = () => {
 
                 setStatusMessages([
                     {
-                        message:
-                            errorResponse?.message ||
-                            t('UserLoginForm.invalidCredentials'),
+                        message: errorResponse?.message || t('UserLoginForm.invalidCredentials'),
                         type: 'error',
                     },
                 ]);

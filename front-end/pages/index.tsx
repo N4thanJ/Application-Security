@@ -5,8 +5,9 @@ import { Item, User } from '@types';
 import { Images } from 'lucide-react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React from 'react';
 
 const ItemPage: React.FC = () => {
     const { t } = useTranslation();
@@ -83,7 +84,9 @@ const ItemPage: React.FC = () => {
                 </div>
 
                 <div className="border-t py-4">
-                    <h2 className="text-xl font-semibold">{t('item_page.categories.vegetables')}</h2>
+                    <h2 className="text-xl font-semibold">
+                        {t('item_page.categories.vegetables')}
+                    </h2>
                     <div>{items && <ItemOverview items={vegetables} />}</div>
                 </div>
 
@@ -106,12 +109,11 @@ const ItemPage: React.FC = () => {
     );
 };
 
-
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { locale } = context;
     return {
         props: {
-            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         },
     };
 };

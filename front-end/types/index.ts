@@ -1,4 +1,4 @@
-export type Role = 'user' | 'admin';
+export type Role = 'user' | 'admin' | 'manager';
 export type Category = 'fruits' | 'vegetables' | 'dairy' | 'meat' | 'fish';
 
 export type User = {
