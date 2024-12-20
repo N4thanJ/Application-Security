@@ -6,16 +6,14 @@ import { useTranslation } from 'next-i18next';
 import classNames from 'classnames';
 import React from 'react';
 
-
 const AddItemForm: React.FC = () => {
     const router = useRouter();
-    const { t } = useTranslation('common'); // Load translations from the common namespace
+    const { t } = useTranslation('common');
     const [item, setItem] = useState<Item>({
         name: '',
         price: 0,
-        category: 'fruits',
         pathToImage: '',
-        nutritionlabel: undefined,
+        category: 'fruits',
     });
     const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
 
@@ -63,6 +61,8 @@ const AddItemForm: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!validateForm()) return;
+
+        console.log(item);
 
         try {
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string)?.token;

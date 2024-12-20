@@ -36,7 +36,7 @@
  *          pathToImage:
  *            type: string
  *            description: Path to the item's image in the server
- *            example: "/images/orange.png"
+ *            example: "https://www.quanta.org/orange/orange.jpg"
  *          category:
  *            $ref: '#/components/schemas/Category'
  *          Nutritionlabel:
@@ -64,7 +64,7 @@
  *          pathToImage:
  *            type: string
  *            description: Path to the item's image
- *            example: "/images/orange.png"
+ *            example: "https://www.quanta.org/orange/orange.jpg"
  *            pattern: "^/images/.*\\.(jpg|jpeg|png)$"
  *          category:
  *            $ref: '#/components/schemas/Category'

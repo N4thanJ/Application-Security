@@ -13,7 +13,6 @@ const main = async () => {
     const fruits = await Promise.all([
         prisma.item.create({
             data: {
-                id: 1,
                 name: 'Strawberry',
                 price: 4.19,
                 pathToImage:
@@ -23,7 +22,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 2,
                 name: 'Kaki',
                 price: 3.99,
                 pathToImage:
@@ -33,7 +31,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 3,
                 name: 'Banana',
                 price: 2.59,
                 pathToImage:
@@ -43,7 +40,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 4,
                 name: 'Kiwi',
                 price: 1.39,
                 pathToImage:
@@ -53,7 +49,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 5,
                 name: 'Blueberries',
                 price: 3.49,
                 pathToImage:
@@ -63,7 +58,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 6,
                 name: 'Plum',
                 price: 1.29,
                 pathToImage:
@@ -73,7 +67,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 7,
                 name: 'Dragonfruit',
                 price: 4.99,
                 pathToImage:
@@ -83,7 +76,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 8,
                 name: 'Coconut',
                 price: 6.79,
                 pathToImage:
@@ -93,7 +85,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 9,
                 name: 'Mango',
                 price: 3.79,
                 pathToImage:
@@ -103,7 +94,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 10,
                 name: 'Papaya',
                 price: 4.29,
                 pathToImage:
@@ -113,7 +103,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 11,
                 name: 'Passion Fruit',
                 price: 5.49,
                 pathToImage:
@@ -126,7 +115,6 @@ const main = async () => {
     const vegetables = await Promise.all([
         prisma.item.create({
             data: {
-                id: 12,
                 name: 'Spinach',
                 price: 3.49,
                 pathToImage:
@@ -136,7 +124,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 13,
                 name: 'Carrot',
                 price: 1.79,
                 pathToImage:
@@ -146,7 +133,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 14,
                 name: 'Bell Pepper',
                 price: 2.49,
                 pathToImage:
@@ -156,7 +142,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 15,
                 name: 'Cucumber',
                 price: 1.99,
                 pathToImage:
@@ -166,7 +151,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 16,
                 name: 'Tomato',
                 price: 2.29,
                 pathToImage:
@@ -176,7 +160,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 17,
                 name: 'Cauliflower',
                 price: 3.29,
                 pathToImage:
@@ -186,7 +169,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 18,
                 name: 'Eggplant',
                 price: 2.79,
                 pathToImage:
@@ -196,7 +178,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 19,
                 name: 'Zucchini',
                 price: 2.59,
                 pathToImage:
@@ -206,7 +187,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 20,
                 name: 'Asparagus',
                 price: 4.49,
                 pathToImage:
@@ -216,7 +196,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 21,
                 name: 'Broccoli',
                 price: 2.99,
                 pathToImage:
@@ -229,7 +208,6 @@ const main = async () => {
     const dairy = await Promise.all([
         prisma.item.create({
             data: {
-                id: 22,
                 name: 'Yogurt',
                 price: 2.79,
                 pathToImage: 'https://cdn.carrefour.eu/1200_04961127_T1.webp',
@@ -238,7 +216,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 23,
                 name: 'Cheese',
                 price: 5.49,
                 pathToImage:
@@ -248,7 +225,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 24,
                 name: 'Butter',
                 price: 4.29,
                 pathToImage:
@@ -258,7 +234,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 25,
                 name: 'Cream',
                 price: 3.59,
                 pathToImage:
@@ -268,7 +243,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 26,
                 name: 'Sour Cream',
                 price: 2.99,
                 pathToImage:
@@ -278,7 +252,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 27,
                 name: 'Cottage Cheese',
                 price: 3.29,
                 pathToImage:
@@ -288,7 +261,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 28,
                 name: 'Kefir',
                 price: 4.59,
                 pathToImage:
@@ -298,7 +270,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 29,
                 name: 'Heavy Cream',
                 price: 3.79,
                 pathToImage: 'https://www.noracooks.com/wp-content/uploads/2022/04/144A8456.jpg',
@@ -307,7 +278,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 30,
                 name: 'Goat Cheese',
                 price: 5.99,
                 pathToImage:
@@ -317,7 +287,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 31,
                 name: 'Milk',
                 price: 3.99,
                 pathToImage:
@@ -330,7 +299,6 @@ const main = async () => {
     const meat = await Promise.all([
         prisma.item.create({
             data: {
-                id: 32,
                 name: 'Ground Beef',
                 price: 7.49,
                 pathToImage:
@@ -340,7 +308,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 33,
                 name: 'Pork Chops',
                 price: 5.79,
                 pathToImage:
@@ -350,7 +317,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 34,
                 name: 'Lamb Shoulder',
                 price: 8.99,
                 pathToImage:
@@ -360,7 +326,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 35,
                 name: 'Turkey Breast',
                 price: 6.49,
                 pathToImage:
@@ -370,7 +335,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 36,
                 name: 'Beef Steak',
                 price: 9.99,
                 pathToImage:
@@ -380,7 +344,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 37,
                 name: 'Chicken Thighs',
                 price: 5.29,
                 pathToImage:
@@ -390,7 +353,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 38,
                 name: 'Bacon',
                 price: 7.29,
                 pathToImage:
@@ -400,7 +362,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 39,
                 name: 'Sausages',
                 price: 6.79,
                 pathToImage:
@@ -410,7 +371,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 40,
                 name: 'Duck Breast',
                 price: 10.99,
                 pathToImage:
@@ -420,7 +380,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 41,
                 name: 'Chicken Breast',
                 price: 6.99,
                 pathToImage:
@@ -433,7 +392,6 @@ const main = async () => {
     const fish = await Promise.all([
         prisma.item.create({
             data: {
-                id: 42,
                 name: 'Tuna',
                 price: 9.99,
                 pathToImage:
@@ -443,7 +401,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 43,
                 name: 'Cod',
                 price: 8.49,
                 pathToImage:
@@ -453,7 +410,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 44,
                 name: 'Mackerel',
                 price: 7.29,
                 pathToImage:
@@ -463,7 +419,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 45,
                 name: 'Trout',
                 price: 10.49,
                 pathToImage:
@@ -473,7 +428,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 46,
                 name: 'Sardines',
                 price: 6.79,
                 pathToImage:
@@ -483,7 +437,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 47,
                 name: 'Halibut',
                 price: 14.99,
                 pathToImage:
@@ -493,7 +446,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 48,
                 name: 'Sea Bass',
                 price: 11.99,
                 pathToImage:
@@ -503,7 +455,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 49,
                 name: 'Tilapia',
                 price: 7.49,
                 pathToImage:
@@ -513,7 +464,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 50,
                 name: 'Red Snapper',
                 price: 12.49,
                 pathToImage:
@@ -523,7 +473,6 @@ const main = async () => {
         }),
         prisma.item.create({
             data: {
-                id: 51,
                 name: 'Salmon',
                 price: 12.99,
                 pathToImage:
