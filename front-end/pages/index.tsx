@@ -33,8 +33,6 @@ const ItemPage: React.FC = () => {
             const fruits = items.filter((item: Item) => String(item.category) === 'fruits');
             setFruits(fruits);
 
-            console.log(fruits);
-
             const vegetables = items.filter((item: Item) => String(item.category) === 'vegetables');
             setVegetables(vegetables);
 
