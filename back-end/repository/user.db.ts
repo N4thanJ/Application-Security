@@ -24,6 +24,32 @@ const getAll = async (): Promise<User[]> => {
     }
 };
 
+const getAlluserswithroleuser = async (): Promise<User[]> => {
+    try {
+        const userPrisma = await db.user.findMany({
+            where: {
+                role: 'user',
+            },
+            include: {
+                shoppingcarts: {
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return userPrisma.map((userPrisma) => User.from(userPrisma));
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not get all users with role user');
+    }
+};
+
 const getByEmail = async ({ email }: { email: string }): Promise<User | null> => {
     try {
         const userPrisma = await db.user.findUnique({
@@ -199,4 +225,5 @@ export default {
     updateUser,
     deleteUser,
     getById,
+    getAlluserswithroleuser,
 };

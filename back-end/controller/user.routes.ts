@@ -40,7 +40,7 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import userService from '../service/user.service';
-import { UserInput } from '../types';
+import { Role, UserInput } from '../types';
 
 const userRouter = express.Router();
 
@@ -70,9 +70,16 @@ const userRouter = express.Router();
  *       500:
  *         description: Internal server error
  */
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+    };
+}
+
 userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await userService.getAllUsers();
+        const { role } = (req as AuthenticatedRequest).auth;
+        const users = await userService.getAllUsers(role);
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
