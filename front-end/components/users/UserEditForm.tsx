@@ -2,7 +2,8 @@ import { useState, ChangeEvent, useEffect } from 'react';
 import UserService from '@services/userService';
 import { useRouter } from 'next/router';
 import { Role, User } from '@types';
-import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 interface UpdateUserFormProps {
     initialUser: User;
@@ -10,11 +11,11 @@ interface UpdateUserFormProps {
 
 const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
     const router = useRouter();
-    const { t } = useTranslation(); // Initialize translation function
+    const { t } = useTranslation();
     const [user, setUser] = useState({
         id: initialUser.id,
         email: initialUser.email,
-        password: '', // Initially empty, as passwords should not be exposed
+        password: '',
         role: initialUser.role,
     });
 

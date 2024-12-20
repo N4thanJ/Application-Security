@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
+import React from 'react';
 
 const PrivacyPolicy: React.FC = () => {
     const { t } = useTranslation('common');
@@ -67,22 +68,25 @@ const PrivacyPolicy: React.FC = () => {
                 <h2>{t('PrivacyPolicy.informationWeCollect')}</h2>
                 <p>{t('PrivacyPolicy.collectDetails')}</p>
                 <ul className="list-disc pl-8">
-                    {t('PrivacyPolicy.collectPoints', { returnObjects: true }).map(
-                        (point: string, index: number) => (
-                            <li key={index}>{point}</li>
+                    {Array.isArray(t('PrivacyPolicy.collectPoints', { returnObjects: true })) ? (
+                        (t('PrivacyPolicy.collectPoints', { returnObjects: true }) as string[]).map(
+                            (point: string, index: number) => (
+                                <li key={index}>{point}</li>
+                            )
                         )
-                    )}
+                    ) : null}
                 </ul>
                 <p>{t('PrivacyPolicy.consentNotice')}</p>
 
                 <h2>{t('PrivacyPolicy.howWeUse')}</h2>
                 <p>{t('PrivacyPolicy.useDetails')}</p>
                 <ul className="list-disc pl-8">
-                    {t('PrivacyPolicy.usePoints', { returnObjects: true }).map(
-                        (point: string, index: number) => (
-                            <li key={index}>{point}</li>
-                        )
-                    )}
+                    {Array.isArray(t('PrivacyPolicy.usePoints', { returnObjects: true })) &&
+                        (t('PrivacyPolicy.usePoints', { returnObjects: true }) as string[]).map(
+                            (point: string, index: number) => (
+                                <li key={index}>{point}</li>
+                            )
+                        )}
                 </ul>
                 <p>{t('PrivacyPolicy.storageNotice')}</p>
 

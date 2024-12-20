@@ -30,7 +30,8 @@ const ItemAdminOverview: React.FC = () => {
 
     async function handleDeleteItem(id: number | undefined): Promise<void> {
         try {
-            id && (await ItemsService.deleteItem(id));
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
+            id && (await ItemsService.deleteItem(token, id));
             setItems((prevItems) => prevItems.filter((item) => item.id !== id));
         } catch (error) {
             console.error(error);
@@ -65,8 +66,9 @@ const ItemAdminOverview: React.FC = () => {
                             {items.map((item) => (
                                 <tr
                                     key={item.id}
-                                    className={`${item.id && item.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                                        } hover:bg-gray-100 transition-colors duration-200 text-center`}
+                                    className={`${
+                                        item.id && item.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                    } hover:bg-gray-100 transition-colors duration-200 text-center`}
                                 >
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
                                         {item.name}
@@ -81,7 +83,9 @@ const ItemAdminOverview: React.FC = () => {
                                         <Link href={item.pathToImage} target="_blank">
                                             <img
                                                 src={item.pathToImage}
-                                                alt={t('ItemAdminOverview.image.alt', { name: item.name.toLowerCase() })}
+                                                alt={t('ItemAdminOverview.image.alt', {
+                                                    name: item.name.toLowerCase(),
+                                                })}
                                                 className="w-28 h-18 m-auto rounded-md border border-gray-200"
                                             />
                                         </Link>
@@ -100,9 +104,11 @@ const ItemAdminOverview: React.FC = () => {
                                                     href={`/itemOverview/${item.id}/addNutritionlabel`}
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-700 hover:text-white hover:rounded-t-lg transition-all duration-200"
                                                 >
-                                                    {t(item.nutritionlabel
-                                                        ? 'ItemAdminOverview.nutritionLabel.update'
-                                                        : 'ItemAdminOverview.nutritionLabel.add')}
+                                                    {t(
+                                                        item.nutritionlabel
+                                                            ? 'ItemAdminOverview.nutritionLabel.update'
+                                                            : 'ItemAdminOverview.nutritionLabel.add'
+                                                    )}
                                                 </Link>
                                                 <a
                                                     className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"

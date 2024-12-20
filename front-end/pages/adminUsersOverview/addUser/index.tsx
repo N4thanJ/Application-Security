@@ -1,5 +1,6 @@
 import CreateUserForm from '@components/users/CreateUserForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React from 'react';
 
 const AddUser: React.FC = () => {
     return (

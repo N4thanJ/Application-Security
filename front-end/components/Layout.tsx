@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import Footer from './Footer';
 import CookiePolicy from './CookiePolicy';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const Layout: React.FC<{ children: ReactNode; className: string }> = ({ children, className }) => {
     const { t } = useTranslation('common');

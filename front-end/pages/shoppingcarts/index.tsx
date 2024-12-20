@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const Home: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);

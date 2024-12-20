@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { calculateTotal, calculateTotalOfItem } from 'util/item';
 import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import React from 'react';
 
 type ShoppingcartItem = {
     item: Item;
@@ -74,11 +75,15 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                             </div>
                             <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
                                 <div className="text-center">
-                                    <p className="text-sm font-medium text-gray-600">{t('ShoppingcartCheckoutComponent.price')}</p>
+                                    <p className="text-sm font-medium text-gray-600">
+                                        {t('ShoppingcartCheckoutComponent.price')}
+                                    </p>
                                     <p className="text-gray-800">${item.price.toFixed(2)}</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-medium text-gray-600">{t('ShoppingcartCheckoutComponent.quantity')}</p>
+                                    <p className="text-sm font-medium text-gray-600">
+                                        {t('ShoppingcartCheckoutComponent.quantity')}
+                                    </p>
                                     <input
                                         type="number"
                                         value={itemQuantities[Number(item.id)] || quantity}
@@ -90,7 +95,9 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                                     />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-medium text-gray-600">{t('ShoppingcartCheckoutComponent.total')}</p>
+                                    <p className="text-sm font-medium text-gray-600">
+                                        {t('ShoppingcartCheckoutComponent.total')}
+                                    </p>
                                     <p className="text-gray-800">
                                         $$
                                         {calculateTotalOfItem(
@@ -118,18 +125,24 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                     ))}
                 </ul>
             ) : (
-                <p className="my-6 text-center text-gray-500">{t('ShoppingcartCheckoutComponent.noItems')}</p>
+                <p className="my-6 text-center text-gray-500">
+                    {t('ShoppingcartCheckoutComponent.noItems')}
+                </p>
             )}
 
             <div>
                 <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700">{t('ShoppingcartCheckoutComponent.totalItems')}</p>
+                    <p className="font-semibold text-gray-700">
+                        {t('ShoppingcartCheckoutComponent.totalItems')}
+                    </p>
                     <p className="text-gray-800">
                         {shoppingcart.items.reduce((acc, item) => acc + item.quantity, 0)}
                     </p>
                 </div>
                 <div className="flex justify-between items-center">
-                    <p className="font-semibold text-gray-700">{t('ShoppingcartCheckoutComponent.totalPrice')}</p>
+                    <p className="font-semibold text-gray-700">
+                        {t('ShoppingcartCheckoutComponent.totalPrice')}
+                    </p>
                     <p className="text-xl font-bold text-gray-800">
                         ${calculateTotal(shoppingcart.items)}
                     </p>

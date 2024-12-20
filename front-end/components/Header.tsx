@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
 import Language from './language/Language';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const Header: React.FC = () => {
     const { t } = useTranslation();
@@ -47,12 +48,16 @@ const Header: React.FC = () => {
 
                                 {loggedInUser.role === 'admin' && (
                                     <li>
-                                        <Link href="/itemOverview">{t('header.admin_items_overview')}</Link>
+                                        <Link href="/itemOverview">
+                                            {t('header.admin_items_overview')}
+                                        </Link>
                                     </li>
                                 )}
                                 {loggedInUser.role === 'admin' && (
                                     <li>
-                                        <Link href="/adminUsersOverview">{t('header.admin_users_overview')}</Link>
+                                        <Link href="/adminUsersOverview">
+                                            {t('header.admin_users_overview')}
+                                        </Link>
                                     </li>
                                 )}
                             </>

@@ -9,6 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
+import React from 'react';
 
 const NutritionlabelForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import React from 'react';
 
 const CreateUserForm: React.FC = () => {
     const router = useRouter();

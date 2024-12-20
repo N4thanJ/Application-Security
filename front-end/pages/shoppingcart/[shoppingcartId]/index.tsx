@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import useSWR, { mutate } from 'swr';
+import React from 'react';
 
 const CartViewer: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);

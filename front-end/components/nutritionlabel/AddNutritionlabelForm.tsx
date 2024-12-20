@@ -3,6 +3,7 @@ import ItemService from '@services/ItemsService';
 import { Item, Nutritionlabel } from '@types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 type Props = {
     item: Item;

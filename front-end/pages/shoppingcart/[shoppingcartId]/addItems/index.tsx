@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
+import React from 'react';
 
 const addItemsToShoppingcart: React.FC = () => {
     const router = useRouter();

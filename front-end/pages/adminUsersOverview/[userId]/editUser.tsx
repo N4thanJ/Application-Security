@@ -8,6 +8,7 @@ import useSWR, { mutate } from 'swr';
 import useInterval from 'use-interval';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const EditUserPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);

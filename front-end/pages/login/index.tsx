@@ -2,6 +2,7 @@ import UserLoginForm from '@components/users/UserLoginForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const Login: React.FC = () => {
     const { t } = useTranslation();
