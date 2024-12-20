@@ -127,7 +127,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                             value={user.password}
                             onChange={handleInputChange}
                             required
-                            placeholder={t('UpdateUserForm.passwordPlaceholder')}
+                            placeholder={'Enter a valid password...'}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
@@ -145,6 +145,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                         >
                             <option value="user">{t('UpdateUserForm.roleUser')}</option>
                             <option value="admin">{t('UpdateUserForm.roleAdmin')}</option>
+                            <option value="admin">{t('UpdateUserForm.roleManager')}</option>
                         </select>
                     </div>
 

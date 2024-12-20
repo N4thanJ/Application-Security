@@ -99,7 +99,7 @@ const ShoppingcartCheckoutComponent: React.FC<Props> = ({
                                         {t('ShoppingcartCheckoutComponent.total')}
                                     </p>
                                     <p className="text-gray-800">
-                                        $$
+                                        $
                                         {calculateTotalOfItem(
                                             item,
                                             itemQuantities[Number(item.id)] || quantity

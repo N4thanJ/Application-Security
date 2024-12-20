@@ -34,14 +34,13 @@ const Header: React.FC = () => {
     return (
         <header className="bg-primary text-white flex justify-between uppercase py-6">
             <div className="max-w-7xl px-8 mx-auto flex justify-between w-full">
-                <h1 className="text-lg font-bold">{t('header.title')}</h1>
+                <Link href={'/'}>
+                    <h1 className="text-lg font-bold">{t('header.title')}</h1>
+                </Link>
                 <nav className="">
                     <ul className="flex gap-4">
                         {loggedInUser && (
                             <>
-                                <li>
-                                    <Link href="/">{t('header.home')}</Link>
-                                </li>
                                 <li>
                                     <Link href="/shoppingcarts">{t('header.shoppingcarts')}</Link>
                                 </li>

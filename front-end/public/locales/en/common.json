@@ -58,7 +58,11 @@
         },
         "buttons": {
             "addItem": "Add Item"
-        }
+        },
+        "error": {
+            "general": "An error occurred. Please try again."
+        },
+        "success": "Item added successfully."
     },
     "itemOverview": {
         "title": "Item Overview",
@@ -218,7 +222,8 @@
         "roleLabel": "Role:",
         "roleUser": "User",
         "roleAdmin": "Admin",
-        "updateButton": "Update User"
+        "updateButton": "Update User",
+        "roleManager": "Manager"
     },
     "UserLoginForm": {
         "title": "Login",

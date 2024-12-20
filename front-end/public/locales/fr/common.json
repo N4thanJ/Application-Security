@@ -1,14 +1,14 @@
 {
     "apptitle": "Application de panier d'achat",
-    "loginwarning" : "Veuillez vous connecter pour afficher cette page.",
-    "pagetitles" : {
-        "editUser" : "Modifier l'utilisateur",
-        "adminuserpage" : "Vue d'ensemble des utilisateurs admin",
-        "nutritionlabelform" : "Ajouter une étiquette nutritionnelle à l'article",
-        "additem" : "Ajouter un article",
-        "login" : "Connexion",
-        "register" : "Créer un nouveau compte",
-        "createshoppingcart" : "Créer un nouveau panier"
+    "loginwarning": "Veuillez vous connecter pour afficher cette page.",
+    "pagetitles": {
+        "editUser": "Modifier l'utilisateur",
+        "adminuserpage": "Vue d'ensemble des utilisateurs admin",
+        "nutritionlabelform": "Ajouter une étiquette nutritionnelle à l'article",
+        "additem": "Ajouter un article",
+        "login": "Connexion",
+        "register": "Créer un nouveau compte",
+        "createshoppingcart": "Créer un nouveau panier"
     },
     "item_page": {
         "title": "Page de Vue d'Ensemble des Articles",
@@ -217,6 +217,7 @@
         "roleLabel": "Rôle:",
         "roleUser": "Utilisateur",
         "roleAdmin": "Administrateur",
+        "roleManager": "Manageur",
         "updateButton": "Mettre à jour l'utilisateur"
     },
     "UserLoginForm": {
@@ -260,36 +261,36 @@
         "adminOverview": "Vue d'ensemble de l'administrateur"
     },
     "PrivacyPolicy": {
-    "title": "Politique de Confidentialité",
-    "accepted": "Accepté",
-    "rejected": "Rejeté",
-    "intro": "Votre vie privée est importante pour nous. C'est la politique de Shop & Go de respecter votre vie privée concernant toute information que nous pouvons collecter auprès de vous sur notre site web, <0>http://www.shopandgo.com</0>, et d'autres plateformes que nous exploitons.",
-    "overview": "Shop & Go est conçu pour rendre vos visites au supermarché plus pratiques. Pour ce faire, nous pouvons collecter et utiliser certaines informations personnelles. Cette politique de confidentialité décrit comment nous gérons, stockons et protégeons ces données.",
-    "informationWeCollect": "Informations que Nous Collectons",
-    "collectDetails": "Nous demandons uniquement des informations personnelles lorsqu'elles sont nécessaires pour vous fournir un service spécifique, tel que :",
-    "collectPoints": [
-      "Votre nom, adresse e-mail ou d'autres coordonnées pour la création de compte.",
-      "Vos préférences d'achat, listes et données de localisation pour suggérer les meilleurs itinéraires et magasins proches de vous.",
-      "Commentaires, questions ou communications pour améliorer nos services."
-    ],
-    "consentNotice": "Toutes les collectes de données sont effectuées avec votre consentement, et vous serez informé des raisons pour lesquelles les informations sont nécessaires et comment elles seront utilisées.",
-    "howWeUse": "Comment Nous Utilisons Vos Informations",
-    "useDetails": "Les données personnelles que nous collectons sont utilisées pour :",
-    "usePoints": [
-      "Améliorer votre expérience de planification en personnalisant les recommandations.",
-      "Optimiser vos visites au supermarché en fonction de vos préférences et de votre localisation.",
-      "Communiquer des mises à jour importantes ou répondre à vos questions."
-    ],
-    "storageNotice": "Nous ne conservons vos informations que le temps nécessaire pour fournir ces services. Les données stockées sont protégées à l'aide de pratiques conformes aux normes de l'industrie pour éviter tout accès non autorisé, vol ou utilisation abusive.",
-    "thirdPartyServices": "Services Tiers",
-    "thirdPartyNotice": "Nous ne partageons pas vos données personnelles avec des tiers, sauf si cela est requis par la loi ou nécessaire pour fournir les services que vous demandez. Par exemple, les données de localisation peuvent être utilisées avec des services de cartographie pour identifier les supermarchés les plus proches.",
-    "externalLinks": "Notre site web peut contenir des liens vers des sites externes non exploités par Shop & Go. Veuillez noter que nous ne sommes pas responsables du contenu, des pratiques ou des politiques de confidentialité de ces sites externes.",
-    "yourRights": "Vos Droits",
-    "rightsDetails": "Vous avez le droit de refuser notre demande d'informations personnelles, avec la compréhension que cela peut limiter certaines fonctionnalités de Shop & Go. Par exemple, les suggestions de supermarché personnalisées peuvent ne pas être disponibles.",
-    "rightsActions": "Vous pouvez également demander à consulter, mettre à jour ou supprimer les données personnelles que nous avons collectées à votre sujet. Veuillez nous contacter à <0>privacy@shopandgo.com</0> pour toute assistance concernant les préoccupations liées à la vie privée.",
-    "revokeConsent": "À tout moment, vous pouvez choisir de <0>révoquer</0> votre consentement à la collecte et à l'utilisation des données.",
-    "policyUpdates": "Mises à Jour de cette Politique",
-    "updateNotice": "Cette politique de confidentialité est en vigueur à compter du 18/12/2024. Nous pouvons la mettre à jour de temps à autre pour refléter les changements dans nos pratiques ou dans les lois applicables. Toutes les mises à jour seront communiquées via notre site web.",
-    "agreementNotice": "En continuant à utiliser Shop & Go, vous acceptez notre politique de confidentialité. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à <0>support@shopandgo.com</0>."
-  }
+        "title": "Politique de Confidentialité",
+        "accepted": "Accepté",
+        "rejected": "Rejeté",
+        "intro": "Votre vie privée est importante pour nous. C'est la politique de Shop & Go de respecter votre vie privée concernant toute information que nous pouvons collecter auprès de vous sur notre site web, <0>http://www.shopandgo.com</0>, et d'autres plateformes que nous exploitons.",
+        "overview": "Shop & Go est conçu pour rendre vos visites au supermarché plus pratiques. Pour ce faire, nous pouvons collecter et utiliser certaines informations personnelles. Cette politique de confidentialité décrit comment nous gérons, stockons et protégeons ces données.",
+        "informationWeCollect": "Informations que Nous Collectons",
+        "collectDetails": "Nous demandons uniquement des informations personnelles lorsqu'elles sont nécessaires pour vous fournir un service spécifique, tel que :",
+        "collectPoints": [
+            "Votre nom, adresse e-mail ou d'autres coordonnées pour la création de compte.",
+            "Vos préférences d'achat, listes et données de localisation pour suggérer les meilleurs itinéraires et magasins proches de vous.",
+            "Commentaires, questions ou communications pour améliorer nos services."
+        ],
+        "consentNotice": "Toutes les collectes de données sont effectuées avec votre consentement, et vous serez informé des raisons pour lesquelles les informations sont nécessaires et comment elles seront utilisées.",
+        "howWeUse": "Comment Nous Utilisons Vos Informations",
+        "useDetails": "Les données personnelles que nous collectons sont utilisées pour :",
+        "usePoints": [
+            "Améliorer votre expérience de planification en personnalisant les recommandations.",
+            "Optimiser vos visites au supermarché en fonction de vos préférences et de votre localisation.",
+            "Communiquer des mises à jour importantes ou répondre à vos questions."
+        ],
+        "storageNotice": "Nous ne conservons vos informations que le temps nécessaire pour fournir ces services. Les données stockées sont protégées à l'aide de pratiques conformes aux normes de l'industrie pour éviter tout accès non autorisé, vol ou utilisation abusive.",
+        "thirdPartyServices": "Services Tiers",
+        "thirdPartyNotice": "Nous ne partageons pas vos données personnelles avec des tiers, sauf si cela est requis par la loi ou nécessaire pour fournir les services que vous demandez. Par exemple, les données de localisation peuvent être utilisées avec des services de cartographie pour identifier les supermarchés les plus proches.",
+        "externalLinks": "Notre site web peut contenir des liens vers des sites externes non exploités par Shop & Go. Veuillez noter que nous ne sommes pas responsables du contenu, des pratiques ou des politiques de confidentialité de ces sites externes.",
+        "yourRights": "Vos Droits",
+        "rightsDetails": "Vous avez le droit de refuser notre demande d'informations personnelles, avec la compréhension que cela peut limiter certaines fonctionnalités de Shop & Go. Par exemple, les suggestions de supermarché personnalisées peuvent ne pas être disponibles.",
+        "rightsActions": "Vous pouvez également demander à consulter, mettre à jour ou supprimer les données personnelles que nous avons collectées à votre sujet. Veuillez nous contacter à <0>privacy@shopandgo.com</0> pour toute assistance concernant les préoccupations liées à la vie privée.",
+        "revokeConsent": "À tout moment, vous pouvez choisir de <0>révoquer</0> votre consentement à la collecte et à l'utilisation des données.",
+        "policyUpdates": "Mises à Jour de cette Politique",
+        "updateNotice": "Cette politique de confidentialité est en vigueur à compter du 18/12/2024. Nous pouvons la mettre à jour de temps à autre pour refléter les changements dans nos pratiques ou dans les lois applicables. Toutes les mises à jour seront communiquées via notre site web.",
+        "agreementNotice": "En continuant à utiliser Shop & Go, vous acceptez notre politique de confidentialité. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à <0>support@shopandgo.com</0>."
+    }
 }

@@ -73,7 +73,7 @@ const AddItemForm: React.FC = () => {
             if (response && response.ok) {
                 setStatusMessages([
                     {
-                        message: t('addItemForm.success'),
+                        message: 'success: redirecting',
                         type: 'success',
                     },
                 ]);
@@ -86,7 +86,7 @@ const AddItemForm: React.FC = () => {
                     const errorData = await response.json();
                     setStatusMessages([
                         {
-                            message: errorData?.message || t('addItemForm.error.general'),
+                            message: errorData?.message || t('error: unknownError'),
                             type: 'error',
                         },
                     ]);
@@ -96,7 +96,7 @@ const AddItemForm: React.FC = () => {
             console.error(error);
             setStatusMessages([
                 {
-                    message: t('addItemForm.error.general'),
+                    message: 'error: unknownError',
                     type: 'error',
                 },
             ]);

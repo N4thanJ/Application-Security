@@ -37,7 +37,7 @@ const AdminUserPage: React.FC = () => {
 
     useInterval(() => {
         mutate('users', getAllUsers());
-    }, 1000);
+    }, 2000);
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
