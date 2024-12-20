@@ -18,8 +18,8 @@ const AdminUserPage: React.FC = () => {
     const handleDeleteUser = async (id: number): Promise<void> => {
         try {
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            const deletedUser = await UserService.deleteUser(token, id);
-            mutate('users', deletedUser);
+            await UserService.deleteUser(token, id);
+            mutate('users', getAllUsers());
         } catch (error) {
             console.error(error);
         }
@@ -61,20 +61,12 @@ const AdminUserPage: React.FC = () => {
             <Head>
                 <title>{t('pagetitles.adminuserpage')}</title>
             </Head>
-            <div className="flex items-center gap-4 mb-4">
-                <h1>{t('pagetitles.adminuserpage')}</h1>
-                <Link
-                    href={`adminUsersOverview/addUser`}
-                    className="p-1 bg-green-400 rounded-lg text-white hover:bg-green-600 transition-all"
-                >
-                    <Plus size={24} />
-                </Link>
-            </div>
+            <h1 className="mb-4">{t('pagetitles.adminuserpage')}</h1>
 
             <section>
                 <div>
                     {error && <p>{error}</p>}
-                    <UserAdminOverview users={data} handleDeleteUser={handleDeleteUser} />
+                    {data && <UserAdminOverview users={data} handleDeleteUser={handleDeleteUser} />}
                 </div>
             </section>
         </>
