@@ -9,8 +9,11 @@ import { Request, Response, NextFunction } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
+import { he } from 'date-fns/locale';
+import helmet from 'helmet';
 
 const app = express();
+app.use(helmet());
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
@@ -40,7 +43,7 @@ app.use(
     }).unless({
         path: ['/api-docs/', '/users/login', '/users/signup', '/items', '/status'],
     })
-);  
+);
 
 app.use('/users', userRouter);
 app.use('/shoppingcarts', shoppingcartRouter);

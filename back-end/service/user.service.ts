@@ -5,14 +5,18 @@ import bcrypt from 'bcrypt';
 import { AuthenticationResponse, Role, UserInput } from '../types';
 import generateSWToken from '../util/jwt';
 
-const getAllUsers = async (): Promise<User[]> => {
-    const users = await userDb.getAll();
-    if (!users) {
-        throw new Error('No users found');
-    }
+const getAllUsers = async (role: Role): Promise<User[]> => {
+    if (role === "admin") {
+        return await userDb.getAll();
+    } else if (role === "manager") {
+        return await userDb.getAlluserswithroleuser();
+    } else {
+        throw new Error('You are not authorized to view this information')
+    };
 
-    return users;
 };
+
+
 
 const getByEmail = async (email: string): Promise<User> => {
     const user = await userDb.getByEmail({ email });
