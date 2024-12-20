@@ -24,6 +24,11 @@ const UserTable: React.FC = () => {
                     <td className="border border-black">Jane123!</td>
                     <td className="border border-black">Admin</td>
                 </tr>
+                <tr>
+                    <td className="border border-black">josh.doe@mail.com</td>
+                    <td className="border border-black">Josh123!</td>
+                    <td className="border border-black">Manager</td>
+                </tr>
             </tbody>
         </table>
     );
