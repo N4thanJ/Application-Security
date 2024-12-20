@@ -15,6 +15,9 @@ const getAll = async (): Promise<User[]> => {
                     },
                 },
             },
+            orderBy: {
+                id: 'asc',
+            },
         });
 
         return userPrisma.map((userPrisma) => User.from(userPrisma));

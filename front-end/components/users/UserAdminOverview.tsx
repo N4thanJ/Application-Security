@@ -24,6 +24,9 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                     <table className="min-w-full bg-white text-left">
                         <thead className="rounded-t-lg">
                             <tr className="bg-gray-100 text-gray-700 text-center">
+                                <th className="px-6 py-4 w-12 font-semibold text-sm">
+                                    {t('UserAdminOverview.id')}
+                                </th>
                                 <th className="px-6 py-4 font-semibold text-sm">
                                     {t('UserAdminOverview.email')}
                                 </th>
@@ -44,7 +47,10 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                                     } hover:bg-gray-100 transition-colors duration-200 text-center`}
                                 >
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
-                                        {user.email}
+                                        {user.id}
+                                    </td>
+                                    <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
+                                        <a href={`mailto:${user.email}`}>{user.email}</a>
                                     </td>
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
                                         {user.role}
@@ -59,17 +65,17 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
 
                                         {/* Dropdown Menu */}
                                         {menuOpenId === user.id && (
-                                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 transition-opacity duration-200 ease-out opacity-100">
+                                            <div className="absolute right-0 mt-2 w-48 rounded-lg overflow-hidden bg-white border border-gray-200 shadow-lg z-10 transition-opacity duration-200 ease-out opacity-100">
                                                 <Link
                                                     href={`/adminUsersOverview/${user.id}/editUser`}
-                                                    className="block px-4 py-2 text-sm text-gray-700 rounded-t-lg hover:bg-blue-700 hover:text-white transition-all duration-200"
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-700 hover:text-white transition-all duration-200"
                                                 >
                                                     {t('UserAdminOverview.editUser')}
                                                 </Link>
 
                                                 {user?.role !== 'admin' && (
                                                     <a
-                                                        className="block rounded-b-lg px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
+                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
                                                         onClick={() =>
                                                             handleDeleteUser(Number(user.id))
                                                         }
