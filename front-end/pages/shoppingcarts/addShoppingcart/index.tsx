@@ -4,6 +4,7 @@ import { User } from '@types';
 import AddShoppingcartForm from '@components/shoppingcart/AddShoppingcartForm';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const ShoppingcartForm: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);

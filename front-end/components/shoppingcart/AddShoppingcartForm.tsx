@@ -3,6 +3,7 @@ import { Shoppingcart } from '@types';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const AddShoppingcartForm: React.FC = () => {
     const router = useRouter();

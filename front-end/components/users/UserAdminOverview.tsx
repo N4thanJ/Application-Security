@@ -24,17 +24,24 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
                     <table className="min-w-full bg-white text-left">
                         <thead className="rounded-t-lg">
                             <tr className="bg-gray-100 text-gray-700 text-center">
-                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.email')}</th>
-                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.role')}</th>
-                                <th className="px-6 py-4 font-semibold text-sm">{t('UserAdminOverview.actions')}</th>
+                                <th className="px-6 py-4 font-semibold text-sm">
+                                    {t('UserAdminOverview.email')}
+                                </th>
+                                <th className="px-6 py-4 font-semibold text-sm">
+                                    {t('UserAdminOverview.role')}
+                                </th>
+                                <th className="px-6 py-4 font-semibold text-sm">
+                                    {t('UserAdminOverview.actions')}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {users.map((user) => (
                                 <tr
                                     key={user.id}
-                                    className={`${user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                                        } hover:bg-gray-100 transition-colors duration-200 text-center`}
+                                    className={`${
+                                        user.id && user.id % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                    } hover:bg-gray-100 transition-colors duration-200 text-center`}
                                 >
                                     <td className="px-6 py-4 border-t border-gray-200 text-sm text-gray-800">
                                         {user.email}

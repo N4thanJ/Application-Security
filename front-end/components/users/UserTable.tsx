@@ -1,4 +1,5 @@
 import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import React from 'react';
 
 const UserTable: React.FC = () => {
     const { t } = useTranslation(); // Initialize translation function

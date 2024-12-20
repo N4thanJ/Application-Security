@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { calculateTotal } from 'util/item';
 import { formatDate } from 'util/shoppingcart';
 import { useTranslation } from 'next-i18next'; // Assuming you're using next-i18next for translations
+import React from 'react';
 
 type Props = {
     shoppingcarts: Shoppingcart[] | [];
@@ -47,7 +48,10 @@ const ShoppingcartOverview: React.FC<Props> = ({
                                 <ShoppingCart className="w-6 h-6 text-primary" />
                             </div>
                             <div className="text-sm text-gray-600">
-                                <p>{t('ShoppingcartOverview.due')} {formatDate(shoppingcart.deliveryDate)}</p>
+                                <p>
+                                    {t('ShoppingcartOverview.due')}{' '}
+                                    {formatDate(shoppingcart.deliveryDate)}
+                                </p>
                                 <p>
                                     {t('ShoppingcartOverview.items')}{' '}
                                     {shoppingcart.items.reduce(
@@ -55,7 +59,10 @@ const ShoppingcartOverview: React.FC<Props> = ({
                                         0
                                     )}
                                 </p>
-                                <p>{t('ShoppingcartOverview.total')}${calculateTotal(shoppingcart.items as any)}</p>
+                                <p>
+                                    {t('ShoppingcartOverview.total')}$
+                                    {calculateTotal(shoppingcart.items as any)}
+                                </p>
                             </div>
                         </div>
                         <div className="bg-gray-50 grid gap-4 p-4">

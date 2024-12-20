@@ -3,6 +3,7 @@ import UserService from '@services/userService';
 import { useRouter } from 'next/router';
 import { Role, User } from '@types';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 interface UpdateUserFormProps {
     initialUser: User;
@@ -12,7 +13,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
     const router = useRouter();
     const { t } = useTranslation();
 
-    const [user, setUser] = useState<User>({
+    const [user, setUser] = useState({
         id: initialUser.id,
         email: initialUser.email,
         password: '',

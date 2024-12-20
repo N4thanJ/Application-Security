@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { User } from '@types';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 
 const AdminPage: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
