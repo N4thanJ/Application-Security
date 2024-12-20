@@ -29,7 +29,7 @@ const ShoppingcartForm: React.FC = () => {
                 <title>{t('pagetitles.createshoppingcart')}</title>
             </Head>
 
-            <section className="border border-gray-200 grid self-center">
+            <section className="p-6 w-full max-w-lg mx-auto bg-white shadow-md rounded-lg border-2 border-gray-200">
                 {loggedInUser && <AddShoppingcartForm />}
             </section>
         </>

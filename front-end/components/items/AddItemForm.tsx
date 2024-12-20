@@ -1,9 +1,11 @@
 import { useState, ChangeEvent } from 'react';
 import ItemService from '@services/ItemsService';
-import { Item } from '@types';
+import { Item, StatusMessage } from '@types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import classNames from 'classnames';
 import React from 'react';
+
 
 const AddItemForm: React.FC = () => {
     const router = useRouter();
@@ -15,6 +17,40 @@ const AddItemForm: React.FC = () => {
         pathToImage: '',
         nutritionlabel: undefined,
     });
+    const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+
+    const clearStatusMessages = () => {
+        setStatusMessages([]);
+    };
+
+    const validateForm = (): boolean => {
+        clearStatusMessages();
+        let isValid = true;
+
+        if (!item.name.trim()) {
+            setStatusMessages((prev) => [
+                ...prev,
+                { message: t('addItemForm.validation.nameRequired'), type: 'error' },
+            ]);
+            isValid = false;
+        }
+        if (item.price <= 0) {
+            setStatusMessages((prev) => [
+                ...prev,
+                { message: t('addItemForm.validation.pricePositive'), type: 'error' },
+            ]);
+            isValid = false;
+        }
+        if (!item.pathToImage.trim()) {
+            setStatusMessages((prev) => [
+                ...prev,
+                { message: t('addItemForm.validation.imageUrlRequired'), type: 'error' },
+            ]);
+            isValid = false;
+        }
+
+        return isValid;
+    };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -26,14 +62,45 @@ const AddItemForm: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        try {
-            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            await ItemService.addItem(token, item);
-        } catch (error) {
-            console.error(t('addItemForm.error'), error);
-        }
+        if (!validateForm()) return;
 
-        router.push('/itemOverview');
+        try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string)?.token;
+            if (!token) throw new Error(t('addItemForm.error.tokenMissing'));
+
+            const response = await ItemService.addItem(token, item);
+
+            if (response && response.ok) {
+                setStatusMessages([
+                    {
+                        message: t('addItemForm.success'),
+                        type: 'success',
+                    },
+                ]);
+
+                setTimeout(() => {
+                    router.push('/itemOverview');
+                }, 2000); // Redirect after a delay
+            } else {
+                if (response) {
+                    const errorData = await response.json();
+                    setStatusMessages([
+                        {
+                            message: errorData?.message || t('addItemForm.error.general'),
+                            type: 'error',
+                        },
+                    ]);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            setStatusMessages([
+                {
+                    message: t('addItemForm.error.general'),
+                    type: 'error',
+                },
+            ]);
+        }
     };
 
     return (
@@ -45,6 +112,7 @@ const AddItemForm: React.FC = () => {
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
                     {t('addItemForm.title')}
                 </h2>
+
                 <div className="space-y-2">
                     <div>
                         <label htmlFor="name" className="block text-gray-700 font-medium mb-1">
@@ -109,16 +177,30 @@ const AddItemForm: React.FC = () => {
                             <option value="dairy">{t('addItemForm.categories.dairy')}</option>
                         </select>
                     </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="mt-6 w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
-                        >
-                            {t('addItemForm.buttons.addItem')}
-                        </button>
-                    </div>
                 </div>
+
+                {statusMessages.length > 0 && (
+                    <ul className="mt-4">
+                        {statusMessages.map(({ message, type }, index) => (
+                            <li
+                                key={index}
+                                className={classNames('mb-2', {
+                                    'text-red-700': type === 'error',
+                                    'text-green-700': type === 'success',
+                                })}
+                            >
+                                {message}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <button
+                    type="submit"
+                    className="mt-6 w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer"
+                >
+                    {t('addItemForm.buttons.addItem')}
+                </button>
             </form>
         </section>
     );
