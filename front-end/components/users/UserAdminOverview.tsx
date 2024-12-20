@@ -75,8 +75,7 @@ const UserAdminOverview: React.FC<Props> = ({ users, handleDeleteUser }: Props) 
 
                                                 {user?.role !== 'admin' && (
                                                     <a
-                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
-                                                        onClick={() =>
+                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"                                                        onClick={() =>
                                                             handleDeleteUser(Number(user.id))
                                                         }
                                                     >

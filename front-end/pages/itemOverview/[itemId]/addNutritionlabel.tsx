@@ -36,7 +36,7 @@ const NutritionlabelForm: React.FC = () => {
         setLoggedInUser(token);
     }, [itemId]);
 
-    if (!loggedInUser || loggedInUser.role !== 'admin') {
+    if (!loggedInUser || (loggedInUser.role !== 'admin' && loggedInUser.role !== 'manager')) {
         return (
             <p className="py-56 text-lg text-red-600 text-center italic font-bold">
                 {t('loginwarning')}

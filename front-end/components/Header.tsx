@@ -46,14 +46,16 @@ const Header: React.FC = () => {
                                     <Link href="/shoppingcarts">{t('header.shoppingcarts')}</Link>
                                 </li>
 
-                                {loggedInUser.role === 'admin' && (
+                                {(loggedInUser.role === 'admin' ||
+                                    loggedInUser.role === 'manager') && (
                                     <li>
                                         <Link href="/itemOverview">
                                             {t('header.admin_items_overview')}
                                         </Link>
                                     </li>
                                 )}
-                                {loggedInUser.role === 'admin' && (
+                                {(loggedInUser.role === 'admin' ||
+                                    loggedInUser.role === 'manager') && (
                                     <li>
                                         <Link href="/adminUsersOverview">
                                             {t('header.admin_users_overview')}
