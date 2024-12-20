@@ -26,11 +26,19 @@ const AdminUserPage: React.FC = () => {
     };
 
     const getAllUsers = async () => {
-        const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-        const response = await UserService.getAllUsers(token);
+        try {
+            const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string)?.token;
+            if (!token) throw new Error('No token found.');
 
-        const users = await response.json();
-        return users;
+            const response = await UserService.getAllUsers(token);
+            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+            const users = await response.json();
+            return Array.isArray(users) ? users : [];
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
     };
 
     const { data, isLoading, error } = useSWR('users', getAllUsers);

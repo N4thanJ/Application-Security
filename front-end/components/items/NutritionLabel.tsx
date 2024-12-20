@@ -16,39 +16,31 @@ const NutritionLabel: React.FC<Props> = ({ item }: Props) => {
                     <h2 className="text-2xl font-bold mb-4">{t('NutritionLabel.title')}</h2>
                     <ul className="space-y-2 text-gray-700">
                         <li>
-                            <span className="font-medium">
-                                {t('NutritionLabel.labels.energy')}:
-                            </span>{' '}
+                            <span className="font-medium">{'Energy'}:</span>{' '}
                             {item.nutritionlabel.energy} g
                         </li>
                         <li>
-                            <span className="font-medium">{t('NutritionLabel.labels.fats')}:</span>{' '}
-                            {item.nutritionlabel.fat} g
+                            <span className="font-medium">{'Fats'}:</span> {item.nutritionlabel.fat}{' '}
+                            g
                         </li>
                         <li>
-                            <span className="font-medium">
-                                {t('NutritionLabel.labels.saturatedFats')}:
-                            </span>{' '}
+                            <span className="font-medium">{'Saturated Fats'}</span>{' '}
                             {item.nutritionlabel.saturatedFats} g
                         </li>
                         <li>
-                            <span className="font-medium">
-                                {t('NutritionLabel.labels.carbohydrates')}:
-                            </span>{' '}
+                            <span className="font-medium">{'Carbohydrates'}</span>{' '}
                             {item.nutritionlabel.carbohydrates} g
                         </li>
                         <li>
-                            <span className="font-medium">{t('NutritionLabel.labels.sugar')}:</span>{' '}
+                            <span className="font-medium">{'Sugar'}:</span>{' '}
                             {item.nutritionlabel.sugar} g
                         </li>
                         <li>
-                            <span className="font-medium">
-                                {t('NutritionLabel.labels.protein')}:
-                            </span>{' '}
+                            <span className="font-medium">{'Protein'}:</span>{' '}
                             {item.nutritionlabel.protein} g
                         </li>
                         <li>
-                            <span className="font-medium">{t('NutritionLabel.labels.salts')}:</span>{' '}
+                            <span className="font-medium">{'Salts'}:</span>{' '}
                             {item.nutritionlabel.salts} g
                         </li>
                     </ul>

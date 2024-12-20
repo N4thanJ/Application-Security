@@ -15,7 +15,7 @@ const Header: React.FC = () => {
     const logOut = () => {
         sessionStorage.removeItem('loggedInUser');
         setLoggedInUser(null);
-        router.push('/login');
+        router.push('/');
     };
 
     const getLoggedInUser = () => {

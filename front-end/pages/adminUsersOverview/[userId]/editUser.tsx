@@ -29,7 +29,7 @@ const EditUserPage: React.FC = () => {
     );
 
     useInterval(() => {
-        userId && mutate('users', getUserById(userId));
+        userId && mutate('user', getUserById(userId));
     }, 1000);
 
     useEffect(() => {

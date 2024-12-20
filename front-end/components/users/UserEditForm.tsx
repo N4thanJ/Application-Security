@@ -63,7 +63,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
             });
 
             if (response.ok) {
-                setStatusMessage({ type: 'success', text: t('UpdateUserForm.successMessage') });
+                setStatusMessage({ type: 'success', text: 'Success, redirecting...' });
                 setTimeout(() => router.push('/adminUsersOverview'), 1500);
             } else {
                 const errorMsg =
@@ -145,7 +145,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ initialUser }) => {
                         >
                             <option value="user">{t('UpdateUserForm.roleUser')}</option>
                             <option value="admin">{t('UpdateUserForm.roleAdmin')}</option>
-                            <option value="admin">{t('UpdateUserForm.roleManager')}</option>
+                            <option value="manager">{t('UpdateUserForm.roleManager')}</option>
                         </select>
                     </div>
 

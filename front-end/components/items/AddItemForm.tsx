@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useMemo } from 'react';
 import ItemService from '@services/ItemsService';
 import { Item, StatusMessage } from '@types';
 import { useRouter } from 'next/router';
@@ -16,6 +16,8 @@ const AddItemForm: React.FC = () => {
         category: 'fruits',
     });
     const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+
+    const categories = ['fruits', 'vegetables', 'dairy', 'meat', 'fish'];
 
     const clearStatusMessages = () => {
         setStatusMessages([]);
@@ -170,11 +172,13 @@ const AddItemForm: React.FC = () => {
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                         >
-                            <option value="fruits">{t('addItemForm.categories.fruits')}</option>
-                            <option value="vegetables">
-                                {t('addItemForm.categories.vegetables')}
-                            </option>
-                            <option value="dairy">{t('addItemForm.categories.dairy')}</option>
+                            {categories.map((category) => (
+                                <option key={category} value={category}>
+                                    {category === 'all'
+                                        ? t('addItemToShoppingcartOverview.filters.allCategories')
+                                        : category}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
