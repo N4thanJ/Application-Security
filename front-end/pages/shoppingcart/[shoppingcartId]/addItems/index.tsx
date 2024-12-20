@@ -94,7 +94,7 @@ const addItemsToShoppingcart: React.FC = () => {
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
         setLoggedInUser(token);
-    });
+    }, []);
 
     if (!loggedInUser) {
         return (
