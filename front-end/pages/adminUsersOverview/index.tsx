@@ -45,6 +45,8 @@ const AdminUserPage: React.FC = () => {
 
     useInterval(() => {
         mutate('users', getAllUsers());
+
+        console.log('user:' + data);
     }, 2000);
 
     useEffect(() => {
