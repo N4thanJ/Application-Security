@@ -74,11 +74,7 @@ const authenticate = async ({
     return authresponse;
 };
 
-const updateUser = async (role: Role, userId: number, user: UserInput): Promise<User> => {
-    if (role !== 'admin') {
-        throw new Error('You are not authorized to update users details');
-    }
-
+const updateUser = async (userId: number, user: UserInput): Promise<User> => {
     const existingUser = await userDb.getByEmail({ email: user.email });
 
     if (existingUser) {
@@ -97,11 +93,7 @@ const updateUser = async (role: Role, userId: number, user: UserInput): Promise<
     return userDb.updateUser(userId, updatedUser);
 };
 
-const deleteUser = async (role: Role, userId: number): Promise<User> => {
-    if (role !== 'admin') {
-        throw new Error('You are not authorized to delete users');
-    }
-
+const deleteUser = async (userId: number): Promise<User> => {
     const user = await userDb.deleteUser(userId);
     if (!user) {
         throw new Error('No user found');

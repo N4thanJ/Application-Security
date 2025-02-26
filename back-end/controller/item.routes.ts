@@ -272,7 +272,12 @@ itemRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunctio
 itemRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-        const item = await itemService.createItem(role, req.body);
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const item = await itemService.createItem(req.body);
         res.status(201).json(item);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -346,10 +351,14 @@ itemRouter.post(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { role } = (req as AuthenticatedRequest).auth;
+
+            if (role && role !== 'admin') {
+                res.status(401).json({ message: 'Unauthorized' });
+            }
             const itemId = parseInt(req.params.itemId);
             const nutritionlabel = req.body;
 
-            const item = await itemService.addNutritionLabelToItem(role, itemId, nutritionlabel);
+            const item = await itemService.addNutritionLabelToItem(itemId, nutritionlabel);
             res.status(200).json(item);
         } catch (error) {
             res.status(500).json({ message: (error as Error).message });
@@ -411,8 +420,13 @@ itemRouter.post(
 itemRouter.delete('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const itemId = parseInt(req.params.itemId);
-        const message = await itemService.deleteItemById(role, itemId);
+        const message = await itemService.deleteItemById(itemId);
 
         res.status(200).json({ message });
     } catch (error) {

@@ -12,13 +12,8 @@ const getAllNutritionlabels = async (): Promise<Nutritionlabel[]> => {
 };
 
 const createNutritionlabel = async (
-    role: Role,
     nutritionlabel: NutritionlabelInput
 ): Promise<Nutritionlabel> => {
-    if (role !== 'admin') {
-        throw new Error('You are not authorized to create nutritionlabels');
-    }
-
     const newNutritionlabel = new Nutritionlabel(nutritionlabel);
     const createdNutritionLabel = await nutritionlabelDb.create(newNutritionlabel);
     if (!createdNutritionLabel) {
