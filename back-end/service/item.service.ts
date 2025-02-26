@@ -1,6 +1,6 @@
 import itemDb from '../repository/item.db';
 import { Item } from '../model/item';
-import { ItemInput, NutritionlabelInput } from '../types';
+import { ItemInput, NutritionlabelInput, Role } from '../types';
 import { Nutritionlabel } from '../model/nutritionlabel';
 import nutritionlabelDb from '../repository/nutritionlabel.db';
 
@@ -13,7 +13,11 @@ const getAllItems = async (): Promise<Item[]> => {
     return items;
 };
 
-const createItem = async (item: ItemInput): Promise<Item> => {
+const createItem = async (role: Role, item: ItemInput): Promise<Item> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to create items');
+    }
+
     const createdItem = await itemDb.create(new Item(item));
     if (!createdItem) {
         throw new Error('Item could not be created');
@@ -23,9 +27,14 @@ const createItem = async (item: ItemInput): Promise<Item> => {
 };
 
 const addNutritionLabelToItem = async (
+    role: Role,
     itemId: number,
     nutritionlabel: NutritionlabelInput
 ): Promise<Item> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to add nutritionLabel to an Item');
+    }
+
     const item = await itemDb.getById(itemId);
 
     if (!item) {
@@ -50,7 +59,11 @@ const getItemById = async (itemId: number): Promise<Item> => {
     return item;
 };
 
-const deleteItemById = async (itemId: number): Promise<string> => {
+const deleteItemById = async (role: Role, itemId: number): Promise<string> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to add nutritionLabel to an Item');
+    }
+
     const item = await itemDb.getById(itemId);
 
     if (!item) {
