@@ -1,6 +1,6 @@
 import { Nutritionlabel } from '../model/nutritionlabel';
 import nutritionlabelDb from '../repository/nutritionlabel.db';
-import { NutritionlabelInput } from '../types';
+import { NutritionlabelInput, Role } from '../types';
 
 const getAllNutritionlabels = async (): Promise<Nutritionlabel[]> => {
     const nutritionLabels = await nutritionlabelDb.getAll();
@@ -12,8 +12,13 @@ const getAllNutritionlabels = async (): Promise<Nutritionlabel[]> => {
 };
 
 const createNutritionlabel = async (
+    role: Role,
     nutritionlabel: NutritionlabelInput
 ): Promise<Nutritionlabel> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to create nutritionlabels');
+    }
+
     const newNutritionlabel = new Nutritionlabel(nutritionlabel);
     const createdNutritionLabel = await nutritionlabelDb.create(newNutritionlabel);
     if (!createdNutritionLabel) {

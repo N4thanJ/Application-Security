@@ -105,8 +105,15 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import nutritionlabelService from '../service/nutritionlabel.service';
+import { Role } from '../types';
 
 const nutritionlabelRouter = express.Router();
+
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+    };
+}
 
 /**
  * @swagger
@@ -195,8 +202,12 @@ nutritionlabelRouter.get('/', async (req: Request, res: Response, next: NextFunc
 
 nutritionlabelRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
         const nutritionlabel = req.body;
-        const newNutritionlabel = await nutritionlabelService.createNutritionlabel(nutritionlabel);
+        const newNutritionlabel = await nutritionlabelService.createNutritionlabel(
+            role,
+            nutritionlabel
+        );
         res.status(201).json(newNutritionlabel);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });

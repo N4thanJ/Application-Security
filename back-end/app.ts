@@ -43,6 +43,7 @@ app.use(
     }).unless((req) => {
         return (
             (req.method === 'GET' && req.path === '/items') ||
+            (req.method === 'GET' && req.path === '/nutritionlabels') ||
             ['/api-docs/', '/users/login', '/users/signup', '/status'].includes(req.path)
         );
     })
