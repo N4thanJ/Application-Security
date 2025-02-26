@@ -74,12 +74,16 @@ const authenticate = async ({
     return authresponse;
 };
 
-const updateUser = async (userId: number, user: UserInput): Promise<User> => {
-    // const existingUser = await userDb.getByEmail({ email: user.email });
+const updateUser = async (role: Role, userId: number, user: UserInput): Promise<User> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to update users details');
+    }
 
-    // if (!existingUser) {
-    //     throw new Error(`User with email: ${user.email} does not exist.`);
-    // }
+    const existingUser = await userDb.getByEmail({ email: user.email });
+
+    if (existingUser) {
+        throw new Error('User with this email already exists');
+    }
 
     const hashedPassword = await bcrypt.hash(user.password, await genSalt());
 
@@ -93,7 +97,11 @@ const updateUser = async (userId: number, user: UserInput): Promise<User> => {
     return userDb.updateUser(userId, updatedUser);
 };
 
-const deleteUser = async (userId: number): Promise<User> => {
+const deleteUser = async (role: Role, userId: number): Promise<User> => {
+    if (role !== 'admin') {
+        throw new Error('You are not authorized to delete users');
+    }
+
     const user = await userDb.deleteUser(userId);
     if (!user) {
         throw new Error('No user found');

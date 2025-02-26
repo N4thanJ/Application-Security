@@ -44,6 +44,12 @@ import { Role, UserInput } from '../types';
 
 const userRouter = express.Router();
 
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+    };
+}
+
 /**
  * @swagger
  * /users:
@@ -70,11 +76,6 @@ const userRouter = express.Router();
  *       500:
  *         description: Internal server error
  */
-interface AuthenticatedRequest extends Request {
-    auth: {
-        role: Role;
-    };
-}
 
 userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -316,9 +317,10 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
  */
 userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
         const userId = parseInt(req.params.userId);
         const user = req.body as UserInput;
-        const updatedUser = await userService.updateUser(userId, user);
+        const updatedUser = await userService.updateUser(role, userId, user);
         res.status(200).json(updatedUser);
     } catch (error) {
         next(error);
@@ -352,8 +354,9 @@ userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunctio
  */
 userRouter.delete('/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
         const userId = parseInt(req.params.userId);
-        await userService.deleteUser(userId);
+        await userService.deleteUser(role,userId);
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         next(error);
