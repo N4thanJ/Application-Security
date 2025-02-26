@@ -6,6 +6,7 @@ let mockUserDbGetAllUsers: jest.Mock;
 
 beforeEach(() => {
     mockUserDbGetAllUsers = jest.fn();
+    userDb.getAll = mockUserDbGetAllUsers;
 });
 
 test('given: a filled userDb, when: getting all users from userService, then: all users are returned', async () => {
@@ -13,15 +14,15 @@ test('given: a filled userDb, when: getting all users from userService, then: al
     const user1: UserInput = {
         email: 'john.doe@mail.com',
         password: 'password',
-        role: 'user',
+        role: 'admin',
     };
 
     const users: UserInput[] = [user1];
 
-    userDb.getAll = mockUserDbGetAllUsers.mockReturnValue(users);
+    mockUserDbGetAllUsers.mockReturnValue(users);
 
     // when getting all users from userService
-    await userService.getAllUsers();
+    await userService.getAllUsers(user1.role);
 
     // then all users are returned
     expect(mockUserDbGetAllUsers).toHaveBeenCalled();
