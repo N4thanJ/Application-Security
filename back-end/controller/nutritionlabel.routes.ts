@@ -105,8 +105,15 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import nutritionlabelService from '../service/nutritionlabel.service';
+import { Role } from '../types';
 
 const nutritionlabelRouter = express.Router();
+
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+    };
+}
 
 /**
  * @swagger
@@ -195,6 +202,12 @@ nutritionlabelRouter.get('/', async (req: Request, res: Response, next: NextFunc
 
 nutritionlabelRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const nutritionlabel = req.body;
         const newNutritionlabel = await nutritionlabelService.createNutritionlabel(nutritionlabel);
         res.status(201).json(newNutritionlabel);

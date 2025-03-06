@@ -119,8 +119,15 @@
 
 import express, { NextFunction, Request, Response } from 'express';
 import itemService from '../service/item.service';
+import { Role } from '../types';
 
 const itemRouter = express.Router();
+
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+    };
+}
 
 /**
  * @swagger
@@ -264,6 +271,12 @@ itemRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunctio
 
 itemRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const item = await itemService.createItem(req.body);
         res.status(201).json(item);
     } catch (error) {
@@ -337,6 +350,11 @@ itemRouter.post(
     '/:itemId/addNutritionlabel',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { role } = (req as AuthenticatedRequest).auth;
+
+            if (role && role !== 'admin') {
+                res.status(401).json({ message: 'Unauthorized' });
+            }
             const itemId = parseInt(req.params.itemId);
             const nutritionlabel = req.body;
 
@@ -401,6 +419,12 @@ itemRouter.post(
 
 itemRouter.delete('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const itemId = parseInt(req.params.itemId);
         const message = await itemService.deleteItemById(itemId);
 

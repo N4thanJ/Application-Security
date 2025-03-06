@@ -62,6 +62,13 @@ import { Role } from '@prisma/client';
 
 const shoppingcartRouter = express.Router();
 
+interface AuthenticatedRequest extends Request {
+    auth: {
+        role: Role;
+        email: string;
+    };
+}
+
 /**
  * @swagger
  * /shoppingcarts:
@@ -95,6 +102,12 @@ const shoppingcartRouter = express.Router();
 
 shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { role } = (req as AuthenticatedRequest).auth;
+
+        if (role && role !== 'admin') {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const shoppingcarts = await shoppingcartService.getAllShoppingcarts();
         res.status(200).json(shoppingcarts);
     } catch (error) {
@@ -149,15 +162,18 @@ shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFuncti
  *                   example: "Internal server error occurred"
  */
 
-shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const shoppingcartId = parseInt(req.params.itemId);
-        const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
-        res.status(200).json(shoppingcart);
-    } catch (error) {
-        res.status(500).json({ message: (error as Error).message });
+shoppingcartRouter.get(
+    '/:shoppingcartId',
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const shoppingcartId = parseInt(req.params.shoppingcartId);
+            const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
+            res.status(200).json(shoppingcart);
+        } catch (error) {
+            res.status(500).json({ message: (error as Error).message });
+        }
     }
-});
+);
 
 /**
  * @swagger
@@ -206,13 +222,10 @@ shoppingcartRouter.get('/:itemId', async (req: Request, res: Response, next: Nex
 
 shoppingcartRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const request = req as Request & { auth: { email: string; role: Role } };
+        const { role, email } = (req as AuthenticatedRequest).auth;
 
-        const { email, role } = request.auth;
-
-        if (!email || !role) {
+        if (role && role !== 'admin') {
             res.status(401).json({ message: 'Unauthorized' });
-            return;
         }
 
         const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email);

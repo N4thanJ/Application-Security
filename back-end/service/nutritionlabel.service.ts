@@ -1,6 +1,6 @@
 import { Nutritionlabel } from '../model/nutritionlabel';
 import nutritionlabelDb from '../repository/nutritionlabel.db';
-import { NutritionlabelInput } from '../types';
+import { NutritionlabelInput, Role } from '../types';
 
 const getAllNutritionlabels = async (): Promise<Nutritionlabel[]> => {
     const nutritionLabels = await nutritionlabelDb.getAll();

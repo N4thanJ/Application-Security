@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt, { genSalt } from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -487,7 +487,7 @@ const main = async () => {
             data: {
                 id: 0,
                 email: 'john.doe@mail.com',
-                password: await bcrypt.hash('John123!', 12),
+                password: await bcrypt.hash('John123!', await genSalt()),
                 role: 'user',
                 shoppingcarts: {
                     create: {
@@ -502,7 +502,7 @@ const main = async () => {
             data: {
                 id: 1,
                 email: 'jane.doe@mail.com',
-                password: await bcrypt.hash('Jane123!', 12),
+                password: await bcrypt.hash('Jane123!', await genSalt()),
                 role: 'admin',
                 shoppingcarts: {
                     create: {
@@ -517,7 +517,7 @@ const main = async () => {
             data: {
                 id: 2,
                 email: 'josh.doe@mail.com',
-                password: await bcrypt.hash('Josh123!', 12),
+                password: await bcrypt.hash('Josh123!', await genSalt()),
                 role: 'manager',
             },
         }),

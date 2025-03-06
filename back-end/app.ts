@@ -40,8 +40,12 @@ app.use(
     expressjwt({
         secret: process.env.JWT_SECRET || 'default_secret',
         algorithms: ['HS256'],
-    }).unless({
-        path: ['/api-docs/', '/users/login', '/users/signup', '/items', '/status'],
+    }).unless((req) => {
+        return (
+            (req.method === 'GET' && req.path === '/items') ||
+            (req.method === 'GET' && req.path === '/nutritionlabels') ||
+            ['/api-docs/', '/users/login', '/users/signup', '/status'].includes(req.path)
+        );
     })
 );
 

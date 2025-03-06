@@ -1,6 +1,6 @@
 import itemDb from '../repository/item.db';
 import { Item } from '../model/item';
-import { ItemInput, NutritionlabelInput } from '../types';
+import { ItemInput, NutritionlabelInput, Role } from '../types';
 import { Nutritionlabel } from '../model/nutritionlabel';
 import nutritionlabelDb from '../repository/nutritionlabel.db';
 

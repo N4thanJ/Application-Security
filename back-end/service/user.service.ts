@@ -1,22 +1,19 @@
 import userDb from '../repository/user.db';
 import { User } from '../model/user';
 
-import bcrypt from 'bcrypt';
+import bcrypt, { genSalt } from 'bcrypt';
 import { AuthenticationResponse, Role, UserInput } from '../types';
 import generateSWToken from '../util/jwt';
 
 const getAllUsers = async (role: Role): Promise<User[]> => {
-    if (role === "admin") {
+    if (role === 'admin') {
         return await userDb.getAll();
-    } else if (role === "manager") {
+    } else if (role === 'manager') {
         return await userDb.getAlluserswithroleuser();
     } else {
-        throw new Error('You are not authorized to view this information')
-    };
-
+        throw new Error('You are not authorized to view this information');
+    }
 };
-
-
 
 const getByEmail = async (email: string): Promise<User> => {
     const user = await userDb.getByEmail({ email });
@@ -34,7 +31,7 @@ const createUser = async (user: UserInput): Promise<User> => {
         throw new Error(`User with email: ${user.email} already exists.`);
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(user.password, await genSalt());
 
     const newUser = new User({
         email: user.email,
@@ -78,13 +75,13 @@ const authenticate = async ({
 };
 
 const updateUser = async (userId: number, user: UserInput): Promise<User> => {
-    // const existingUser = await userDb.getByEmail({ email: user.email });
+    const existingUser = await userDb.getByEmail({ email: user.email });
 
-    // if (!existingUser) {
-    //     throw new Error(`User with email: ${user.email} does not exist.`);
-    // }
+    if (existingUser) {
+        throw new Error('User with this email already exists');
+    }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(user.password, await genSalt());
 
     const updatedUser = new User({
         email: user.email,
