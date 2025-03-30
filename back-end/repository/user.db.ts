@@ -53,11 +53,16 @@ const getAlluserswithroleuser = async (): Promise<User[]> => {
     }
 };
 
-const getByEmail = async ({ email }: { email: string }): Promise<User | null> => {
+const getByEmail = async (email: string): Promise<User | null> => {
+    if (!email) {
+        console.error('Email is undefined or null');
+        throw new Error('Email is required');
+    }
+
     try {
         const userPrisma = await db.user.findUnique({
             where: {
-                email,
+                email: email,
             },
             include: {
                 shoppingcarts: {
@@ -221,6 +226,35 @@ const getById = async (id: number): Promise<User> => {
     }
 };
 
+const changePassword = async (email: string, newPassword: string): Promise<User> => {
+    try {
+        const userPrisma = await db.user.update({
+            where: {
+                email: email,
+            },
+            data: {
+                password: newPassword,
+            },
+            include: {
+                shoppingcarts: {
+                    include: {
+                        items: {
+                            include: {
+                                item: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return User.from(userPrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Could not update user');
+    }
+};
+
 export default {
     getAll,
     getByEmail,
@@ -229,4 +263,5 @@ export default {
     deleteUser,
     getById,
     getAlluserswithroleuser,
+    changePassword,
 };

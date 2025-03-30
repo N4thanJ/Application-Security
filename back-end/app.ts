@@ -9,7 +9,6 @@ import { Request, Response, NextFunction } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
-import { he } from 'date-fns/locale';
 import helmet from 'helmet';
 
 const app = express();

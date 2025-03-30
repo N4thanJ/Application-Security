@@ -41,7 +41,7 @@ const getAllUsers = async (token: string) => {
 };
 
 const deleteUser = async (token: string, id: number) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + id, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/delete/' + id, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const deleteUser = async (token: string, id: number) => {
 };
 
 const updateUser = async (token: string, userId: number, user: User) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + userId, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/update/' + userId, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
