@@ -65,11 +65,16 @@ const Header: React.FC = () => {
                         )}
 
                         {loggedInUser ? (
-                            <li>
-                                <Link onClick={logOut} href={'/login'}>
-                                    {t('header.logout')}
-                                </Link>
-                            </li>
+                            <>
+                                <li>
+                                    <Link onClick={logOut} href={'/login'}>
+                                        {t('header.logout')}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href={'/settings'}>Settings</Link>
+                                </li>
+                            </>
                         ) : (
                             <>
                                 <li>
