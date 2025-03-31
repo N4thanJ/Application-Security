@@ -102,6 +102,16 @@ const deleteUser = async (userId: number): Promise<User> => {
     return user;
 };
 
+const deleteUserByEmail = async (mailToDelete: string): Promise<User> => {
+    const user = await userDb.deleteUserByEmail(mailToDelete);
+
+    if (!user) {
+        throw new Error('No user found');
+    }
+
+    return user;
+};
+
 const getById = async (id: number): Promise<User> => {
     const user = await userDb.getById(id);
     if (!user) {
@@ -147,4 +157,5 @@ export default {
     deleteUser,
     getById,
     changePassword,
+    deleteUserByEmail,
 };

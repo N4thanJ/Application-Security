@@ -376,6 +376,52 @@ userRouter.delete('/delete/:userId', async (req: Request, res: Response, next: N
 
 /**
  * @swagger
+ * /users/delete/mail/{mail}:
+ *   delete:
+ *     summary: Delete a user by email
+ *     description: Deletes a user by email from the system. Requires administrative privileges.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: mail
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The email of the user to delete
+ *     responses:
+ *       200:
+ *         description: User successfully deleted
+ *       404:
+ *         description: Not Found - User does not exist
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.delete('/delete/mail/:mail', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = (req as AuthenticatedRequest).auth;
+
+        if (!email) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        const mailToDelete = req.params.mail;
+
+        if (email !== mailToDelete) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        await userService.deleteUserByEmail(mailToDelete);
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
  * /users/change-password:
  *   put:
  *     summary: Change user password
