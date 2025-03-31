@@ -1,12 +1,12 @@
 import SettingsForm from '@components/users/UserSettingsPage';
-import { User } from '@types';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useState } from 'react';
+import { UserContext } from 'pages/_app';
+import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const SettingPage: React.FC = () => {
     const { t } = useTranslation();
-    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const { loggedInUser, setLoggedInUser } = useContext(UserContext);
 
     useEffect(() => {
         const token = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
