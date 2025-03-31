@@ -39,7 +39,7 @@ const RemoveAccountButton: React.FC<RemoveAccountButtonProps> = ({ setLoggedInUs
 
                 setTimeout(() => {
                     logOut();
-                }, 2000);
+                }, 1200);
             }
         } catch (error) {
             console.error(error);
