@@ -89,6 +89,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ setLoggedInUser
     };
     return (
         <>
+            <h3 className="text-lg">Change your password</h3>
             <form onSubmit={changePassword}>
                 <div className="py-4">
                     <label htmlFor="oldPassword" className="block mb-2">

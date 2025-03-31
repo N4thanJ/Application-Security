@@ -85,6 +85,16 @@ const updateUsersPassword = async (token: string, oldPassword: string, newPasswo
     });
 };
 
+const deleteUserByMail = async (token: string, mail: string) => {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/delete/mail/' + mail, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 const UserService = {
     login,
     register,
@@ -94,6 +104,7 @@ const UserService = {
     updateUser,
     getUserById,
     updateUsersPassword,
+    deleteUserByMail,
 };
 
 export default UserService;
