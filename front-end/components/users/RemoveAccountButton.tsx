@@ -26,7 +26,8 @@ const RemoveAccountButton: React.FC<RemoveAccountButtonProps> = ({ setLoggedInUs
 
         try {
             const token = JSON.parse(sessionStorage.getItem('loggedInUser') as string).token;
-            const response = await UserService.deleteUserByMail(token, token.email);
+            const email = JSON.parse(sessionStorage.getItem('loggedInUser') as string).email;
+            const response = await UserService.deleteUserByMail(token, email);
 
             if (response && response.ok) {
                 setStatusMessages([
