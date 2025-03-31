@@ -422,17 +422,15 @@ userRouter.delete('/delete/:userId', async (req: Request, res: Response, next: N
  */
 userRouter.put('/change-password', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const auth = (req as AuthenticatedRequest).auth;
+        const { email } = (req as AuthenticatedRequest).auth;
 
-        if (!auth) {
+        if (!email) {
             return res.status(401).json({ message: 'Authentication required' });
         }
 
-        const { email } = auth;
         const { oldPassword, newPassword } = req.body;
 
         if (!email || email.trim() === '') {
-            // Added validation for email
             res.status(400).json({ message: 'Email is required and cannot be empty' });
         }
 
