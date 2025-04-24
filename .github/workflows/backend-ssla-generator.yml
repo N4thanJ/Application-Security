@@ -9,16 +9,9 @@ jobs:
   build:
     permissions:
       id-token: write # For signing
-      contents: read # For repo checkout
-      actions: read # For getting workflow run info
+      contents: read # For repo checkout.
+      actions: read # For getting workflow run info.
     if: startsWith(github.ref, 'refs/tags/')
-
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-
-    # Reference the reusable workflow here directly at the job level
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       run-scripts: "ci, build"
