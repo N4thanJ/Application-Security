@@ -2,7 +2,7 @@
     "name": "courses_api",
     "version": "1.0.0",
     "description": "Courses API",
-    "author": "johanpck",
+    "author": "n4thanj",
     "license": "ISC",
     "main": "app.ts",
     "prisma": {
@@ -10,7 +10,9 @@
     },
     "scripts": {
         "test": "jest",
-        "start": "nodemon -L app.ts --delay 3"
+        "start": "nodemon -L app.ts --delay 3",
+        "ci": "npm ci",
+        "build": "tsc"
     },
     "nodemonConfig": {
         "ext": "ts",
@@ -51,5 +53,9 @@
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.2",
         "typescript": "^4.9.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/N4thanJ/Application-Security"
     }
 }
