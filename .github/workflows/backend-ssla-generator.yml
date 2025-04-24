@@ -6,13 +6,19 @@ on:
     types: [created]
 
 jobs:
-  build:
+  backend-wrapper:
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
-    with:
-      run-scripts: "ci, build"
-      working-directory: backend
     permissions:
-      id-token: write # For signing
-      contents: read # For repo checkout
-      actions: read # For getting workflow run info
+      id-token: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Move to backend and call reusable SLSA builder
+        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+        with:
+          run-scripts: "ci, build"
