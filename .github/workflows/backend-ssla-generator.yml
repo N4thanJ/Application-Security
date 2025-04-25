@@ -6,9 +6,8 @@ on:
     types: [created]
 
 jobs:
-  backend-wrapper:
+  build:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       id-token: write
       contents: read
