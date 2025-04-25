@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   generate-slsa:
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_node_slsa3.yml@main
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       build_root: frontend
     secrets:
