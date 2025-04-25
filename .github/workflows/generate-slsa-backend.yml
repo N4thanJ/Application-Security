@@ -45,13 +45,27 @@ jobs:
     steps:
       - name: Download SLSA verifier
         uses: slsa-framework/slsa-verifier/actions/installer@c9febc053813381b8a10add16ae3227d685e8e6f # v2.4.0
+
+      - name: Get package metadata
+        run: |
+          echo "PACKAGE_NAME=${{ needs.publish.outputs.package-name }}" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f3)" >> $GITHUB_ENV
+          echo "PACKAGE_BASE=$(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f2)" >> $GITHUB_ENV
+
+      - name: Download package and attestations
+        run: |
+          curl -Sso attestations.json "$(npm view $PACKAGE_NAME --json | jq -r '.dist.attestations.url')" && \
+          curl -Sso package.tgz "$(npm view $PACKAGE_NAME --json | jq -r '.dist.tarball')"
+
       - name: Verify SLSA provenance
         run: |
-          slsa-verifier verify-npm-package \
-            --package-name ${{ needs.publish.outputs.package-name }} \
-            --package-version $(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f3) \
-            --source-uri github.com/${{ github.repository }} \
-            --builder-id https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+          SLSA_VERIFIER_EXPERIMENTAL=1 slsa-verifier verify-npm-package package.tgz \
+            --attestations-path attestations.json \
+            --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0" \
+            --package-name "$PACKAGE_NAME" \
+            --package-version "$PACKAGE_VERSION" \
+            --source-uri "github.com/${{ github.repository }}"
+
       - name: Print verification result
         if: ${{ success() }}
         run: echo "✅ SLSA provenance verification passed!"
