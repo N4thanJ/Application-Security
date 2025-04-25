@@ -44,18 +44,11 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Download all artifacts from the current workflow run
+        uses: actions/download-artifact@v3
 
-      - name: Download package
-        run: |
-          curl -o package.tgz ${{ needs.publish.outputs.package-download-name }}
-          curl -o package.tgz.sha256 ${{ needs.publish.outputs.package-download-sha256 }}
-
-      - name: Download provenance
-        run: |
-          curl -o provenance.intoto.jsonl ${{ needs.publish.outputs.provenance-download-name }}
-          curl -o provenance.intoto.jsonl.sha256 ${{ needs.publish.outputs.provenance-download-sha256 }}
+      - name: List downloaded files
+        run: ls -l
 
       - name: Verify SLSA Provenance
         run: |
@@ -64,5 +57,5 @@ jobs:
           ./slsa-verifier-linux-amd64 verify-artifact \
             --source-uri "https://github.com/${{ github.repository }}" \
             --source-branch "main" \
-            --provenance-path provenance.intoto.jsonl \
+            --provenance-path slsa-attestations \
             package.tgz
