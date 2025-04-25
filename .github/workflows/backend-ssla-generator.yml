@@ -2,11 +2,9 @@ name: Backend SSLA Generator
 
 on:
   push:
-    paths:
-      - "backend/**"
-  pull_request:
-    paths:
-      - "backend/**"
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
