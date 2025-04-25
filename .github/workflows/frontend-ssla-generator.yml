@@ -1,12 +1,12 @@
-name: Backend SSLA Generator
+name: Frontend SSLA Generator
 
 on:
   push:
     paths:
-      - "backend/**"
+      - "frontend/**"
   pull_request:
     paths:
-      - "backend/**"
+      - "frontend/**"
 
 permissions:
   contents: read
@@ -16,6 +16,6 @@ jobs:
   generate-slsa:
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_node_slsa3.yml@main
     with:
-      build_root: backend
+      build_root: frontend
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
