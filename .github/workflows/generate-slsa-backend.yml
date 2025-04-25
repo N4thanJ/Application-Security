@@ -39,33 +39,30 @@ jobs:
           provenance-name: ${{ needs.build.outputs.provenance-name }}
           provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
           provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+
   verify:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
-      - name: Download SLSA verifier
-        uses: slsa-framework/slsa-verifier/actions/installer@v2.7.0
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Get package metadata
+      - name: Download package
         run: |
-          echo "PACKAGE_NAME=${{ needs.publish.outputs.package-name }}" >> $GITHUB_ENV
-          echo "PACKAGE_VERSION=$(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f3)" >> $GITHUB_ENV
-          echo "PACKAGE_BASE=$(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f2)" >> $GITHUB_ENV
+          curl -o package.tgz ${{ needs.publish.outputs.package-download-name }}
+          curl -o package.tgz.sha256 ${{ needs.publish.outputs.package-download-sha256 }}
 
-      - name: Download package and attestations
+      - name: Download provenance
         run: |
-          curl -Sso attestations.json "$(npm view $PACKAGE_NAME --json | jq -r '.dist.attestations.url')" && \
-          curl -Sso package.tgz "$(npm view $PACKAGE_NAME --json | jq -r '.dist.tarball')"
+          curl -o provenance.intoto.jsonl ${{ needs.publish.outputs.provenance-download-name }}
+          curl -o provenance.intoto.jsonl.sha256 ${{ needs.publish.outputs.provenance-download-sha256 }}
 
-      - name: Verify SLSA provenance
+      - name: Verify SLSA Provenance
         run: |
-          SLSA_VERIFIER_EXPERIMENTAL=1 slsa-verifier verify-npm-package package.tgz \
-            --attestations-path attestations.json \
-            --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0" \
-            --package-name "$PACKAGE_NAME" \
-            --package-version "$PACKAGE_VERSION" \
-            --source-uri "github.com/${{ github.repository }}"
-
-      - name: Print verification result
-        if: ${{ success() }}
-        run: echo "✅ SLSA provenance verification passed!"
+          curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
+          chmod +x slsa-verifier-linux-amd64
+          ./slsa-verifier-linux-amd64 verify-artifact \
+            --source-uri "https://github.com/${{ github.repository }}" \
+            --source-branch "main" \
+            --provenance-path provenance.intoto.jsonl \
+            package.tgz
