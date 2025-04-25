@@ -7,6 +7,7 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,7 +25,7 @@ jobs:
           cp ./backend/package-lock.json ./ || echo "No package-lock.json found"
 
       - name: Upload workspace
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: workspace
           path: |
