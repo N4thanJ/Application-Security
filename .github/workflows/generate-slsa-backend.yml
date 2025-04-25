@@ -27,6 +27,11 @@ jobs:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
 
+      - name: Configure npm for GitHub Packages
+        run: |
+          echo "@UcllSoftwareEngineering2425:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+
       - name: publish
         id: publish
         uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
