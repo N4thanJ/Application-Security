@@ -1,12 +1,16 @@
 {
+    "name": "@n4thanj/application-security-frontend",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "next dev -p 8080",
+        "ci": "npm ci",
         "build": "next build",
+        "dev": "next dev -p 8080",
         "start": "npm run dev",
         "test": "jest"
     },
     "dependencies": {
+        "@n4thanj/application-security-frontend": "file:",
         "@types/react": "18.0.28",
         "bootstrap": "5.2.3",
         "classnames": "^2.3.2",
@@ -39,5 +43,12 @@
         "tailwindcss": "^3.4.14",
         "ts-jest": "^29.2.5",
         "typescript": "4.9.5"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/N4thanJ/Application-Security"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
     }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "@n4thanj/application-security",
+    "name": "@n4thanj/application-security-backend",
     "version": "1.0.0",
     "description": "Courses API",
     "author": "n4thanj",
@@ -24,6 +24,8 @@
         "@n4thanj/application-security": "file:",
         "@n4thanj/Application-Security": "file:",
         "@N4thanJ/Application-Security": "file:",
+        "@n4thanj/application-security-backend": "file:",
+        "@n4thanj/application-security-frontend": "file:",
         "@prisma/client": "^5.1.1",
         "bcrypt": "^5.1.0",
         "bcryptjs": "^2.4.3",
