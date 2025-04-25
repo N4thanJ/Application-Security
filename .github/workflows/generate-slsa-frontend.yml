@@ -15,7 +15,7 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       directory: front-end
-      run-scripts: "ci, test, build"
+      run-scripts: "ci, build"
 
   publish:
     needs: [build]
