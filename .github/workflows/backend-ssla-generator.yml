@@ -14,5 +14,5 @@ jobs:
       actions: read
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
-      build_root: backend
+      directory: "./backend"
       run-scripts: "ci, build"
