@@ -57,5 +57,8 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/N4thanJ/Application-Security"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     }
 }
