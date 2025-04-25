@@ -47,7 +47,15 @@ jobs:
       - name: Download all artifacts from the current workflow run
         uses: actions/download-artifact@v4
 
-      - name: List downloaded files
+      - name: Find and move the package and provenance files
+        run: |
+          PACKAGE_FILE=$(find . -name "*.tgz" -print -quit)
+          PROVENANCE_FILE=$(find . -name "*slsa-attestations" -print -quit)
+
+          mv "$PACKAGE_FILE" ./package.tgz
+          mv "$PROVENANCE_FILE" ./slsa-attestations
+
+      - name: List files in the working directory
         run: ls -l
 
       - name: Verify SLSA Provenance
