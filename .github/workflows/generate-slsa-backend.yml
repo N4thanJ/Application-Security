@@ -44,16 +44,10 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
-      - name: Download all artifacts from the current workflow run
-        uses: actions/download-artifact@v4
-
-      - name: Find and move the package and provenance files
+      - name: curl the files
         run: |
-          PACKAGE_FILE=$(find . -name "*.tgz" -print -quit)
-          PROVENANCE_FILE=$(find . -name "*slsa-attestations" -print -quit)
-
-          mv "$PACKAGE_FILE" ./package.tgz
-          mv "$PROVENANCE_FILE" ./slsa-attestations
+          curl -Sso attestations.json $(npm view @n4thanj/application-security --json | jq -r '.dist.attestations.url') && \
+          curl -Sso actions-test.tgz "$(npm view @n4thanj/application-security --json | jq -r '.dist.tarball')"
 
       - name: List files in the working directory
         run: ls -l

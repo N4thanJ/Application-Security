@@ -39,16 +39,10 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
-      - name: Download all artifacts from the current workflow run
-        uses: actions/download-artifact@v4
-
-      - name: Find and move the package and provenance files
+      - name: curl the files
         run: |
-          PACKAGE_FILE=$(find . -name "*.tgz" -print -quit)
-          PROVENANCE_FILE=$(find . -name "*slsa-attestations" -print -quit)
-
-          mv "$PACKAGE_FILE" ./package.tgz
-          mv "$PROVENANCE_FILE" ./slsa-attestations
+          curl -Sso attestations.json $(npm view @n4thanj/application-security --json | jq -r '.dist.attestations.url') && \
+          curl -Sso actions-test.tgz "$(npm view @n4thanj/application-security --json | jq -r '.dist.tarball')"
 
       - name: List files in the working directory
         run: ls -l
@@ -57,8 +51,9 @@ jobs:
         run: |
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-          ./slsa-verifier-linux-amd64 verify-artifact \
-            --source-uri "https://github.com/${{ github.repository }}" \
-            --source-branch "main" \
-            --provenance-path slsa-attestations \
-            package.tgz
+          ./slsa-verifier-linux-amd64 verify-npm-package \
+            --attestations-path attestations.json \
+            --builder-id "https://github.com/actions/runner/github-hosted" \
+            --package-name "@n4thanj/application-security" \
+            --package-version 0.1.132 \
+            --source-uri github.com/n4thanj/application-security
