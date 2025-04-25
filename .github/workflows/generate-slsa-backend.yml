@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download SLSA verifier
-        uses: slsa-framework/slsa-verifier/actions/installer@c9febc053813381b8a10add16ae3227d685e8e6f # v2.4.0
+        uses: slsa-framework/slsa-verifier/actions/installer@v2.7.0
 
       - name: Get package metadata
         run: |
