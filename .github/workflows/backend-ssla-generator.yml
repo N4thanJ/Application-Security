@@ -7,17 +7,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
       actions: read
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Move to backend and call reusable SLSA builder
-        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
-        with:
-          run-scripts: "ci, build"
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+    with:
+      run-scripts: "ci, build"
