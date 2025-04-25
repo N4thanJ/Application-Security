@@ -1,11 +1,9 @@
 name: Generate SLSA Provenance for Frontend
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build:
     permissions:
@@ -16,7 +14,6 @@ jobs:
     with:
       directory: front-end
       run-scripts: "ci, build"
-
   publish:
     needs: [build]
     runs-on: ubuntu-latest
@@ -26,7 +23,6 @@ jobs:
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
-
       - name: publish
         id: publish
         uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
@@ -39,3 +35,19 @@ jobs:
           provenance-name: ${{ needs.build.outputs.provenance-name }}
           provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
           provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+  verify:
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download SLSA verifier
+        uses: slsa-framework/slsa-verifier/actions/installer@c9febc053813381b8a10add16ae3227d685e8e6f # v2.4.0
+      - name: Verify SLSA provenance
+        run: |
+          slsa-verifier verify-npm-package \
+            --package-name ${{ needs.publish.outputs.package-name }} \
+            --package-version $(echo ${{ needs.publish.outputs.package-name }} | cut -d@ -f3) \
+            --source-uri github.com/${{ github.repository }} \
+            --builder-id https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+      - name: Print verification result
+        if: ${{ success() }}
+        run: echo "✅ SLSA provenance verification passed!"
