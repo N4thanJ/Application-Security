@@ -1,0 +1,18 @@
+name: Generate SLSA Provenance for Backend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+    with:
+      directory: backend
+      run-scripts: "ci, test, build"
