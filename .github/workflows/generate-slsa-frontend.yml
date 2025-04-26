@@ -56,4 +56,4 @@ jobs:
             --builder-id "https://github.com/actions/runner/github-hosted" \
             --package-name "@n4thanj/application-security" \
             --package-version 0.1.132 \
-            --source-uri github.com/n4thanj/application-security
+            --source-uri github.com/N4thanJ/Application-Security
