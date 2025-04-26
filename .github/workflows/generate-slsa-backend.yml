@@ -61,5 +61,5 @@ jobs:
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security" \
             --package-version 1.0.0 \
-            --source-uri github.com/N4thanJ/Application-Security
+            --source-uri github.com/N4thanJ/Application-Security \
             --print-provenance
