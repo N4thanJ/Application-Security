@@ -51,7 +51,7 @@ jobs:
         run: |
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-          ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
             --attestations-path attestations.json \
             --builder-id "https://github.com/actions/runner/github-hosted" \
             --package-name "@n4thanj/application-security" \
