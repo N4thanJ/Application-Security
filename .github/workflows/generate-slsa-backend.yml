@@ -58,7 +58,7 @@ jobs:
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
             --attestations-path attestations.json \
-            --builder-id "https://github.com/actions/runner/github-hosted" \
+            --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security" \
             --package-version 0.1.132 \
             --source-uri github.com/N4thanJ/Application-Security
