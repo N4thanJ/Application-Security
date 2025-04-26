@@ -57,3 +57,4 @@ jobs:
             --package-name "@n4thanj/application-security" \
             --package-version 1.0.0 \
             --source-uri github.com/N4thanJ/Application-Security
+            --print-provenance
