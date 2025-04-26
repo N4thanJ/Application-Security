@@ -11,7 +11,8 @@
         "test": "jest",
         "start": "nodemon -L app.ts --delay 3",
         "ci": "npm ci",
-        "build": "tsc"
+        "build": "tsc",
+        "patch": "npm version patch"
     },
     "nodemonConfig": {
         "ext": "ts",

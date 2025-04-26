@@ -15,7 +15,7 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       directory: back-end
-      run-scripts: "ci, test, build"
+      run-scripts: "patch, ci, test, build"
 
   publish:
     needs: [build]
@@ -61,4 +61,4 @@ jobs:
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security" \
             --package-version 1.0.0 \
-            --source-uri github.com/N4thanJ/Application-Security 
+            --source-uri github.com/N4thanJ/Application-Security
