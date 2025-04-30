@@ -120,6 +120,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import itemService from '../service/item.service';
 import { Role } from '../types';
+import { logger } from '../util/logger';
 
 const itemRouter = express.Router();
 
@@ -162,9 +163,14 @@ interface AuthenticatedRequest extends Request {
 
 itemRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        logger.info({ event: 'get_all_items_attempt' });
+
         const items = await itemService.getAllItems();
+
         res.status(200).json(items);
+        logger.info({ event: 'get_all_items_success', itemCount: items.length });
     } catch (error) {
+        logger.error({ event: 'get_all_items_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -218,9 +224,14 @@ itemRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 itemRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const itemId = parseInt(req.params.itemId);
+        logger.info({ event: 'get_item_by_id_attempt', itemId });
+
         const item = await itemService.getItemById(itemId);
+
         res.status(200).json(item);
+        logger.info({ event: 'get_item_by_id_success', itemId });
     } catch (error) {
+        logger.error({ event: 'get_item_by_id_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -272,14 +283,23 @@ itemRouter.get('/:itemId', async (req: Request, res: Response, next: NextFunctio
 itemRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
+        logger.info({ event: 'create_item_attempt', role, itemName: req.body.name });
 
         if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
+            logger.warn({ event: 'create_item_unauthorized', role });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
 
         const item = await itemService.createItem(req.body);
+
         res.status(201).json(item);
+        logger.info({
+            event: 'create_item_success',
+            itemId: item.getId(),
+            itemName: item.getName(),
+        });
     } catch (error) {
+        logger.error({ event: 'create_item_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -351,16 +371,25 @@ itemRouter.post(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { role } = (req as AuthenticatedRequest).auth;
+            const itemId = parseInt(req.params.itemId);
+
+            logger.info({ event: 'add_nutrition_label_attempt', itemId, role });
 
             if (role && role !== 'admin') {
-                res.status(401).json({ message: 'Unauthorized' });
+                logger.warn({ event: 'add_nutrition_label_unauthorized', itemId, role });
+                return res.status(401).json({ message: 'Unauthorized' });
             }
-            const itemId = parseInt(req.params.itemId);
-            const nutritionlabel = req.body;
 
+            const nutritionlabel = req.body;
             const item = await itemService.addNutritionLabelToItem(itemId, nutritionlabel);
+
             res.status(200).json(item);
+            logger.info({ event: 'add_nutrition_label_success', itemId });
         } catch (error) {
+            logger.error({
+                event: 'add_nutrition_label_error',
+                message: (error as Error).message,
+            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -420,16 +449,21 @@ itemRouter.post(
 itemRouter.delete('/:itemId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
+        const itemId = parseInt(req.params.itemId);
+
+        logger.info({ event: 'delete_item_attempt', itemId, role });
 
         if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
+            logger.warn({ event: 'delete_item_unauthorized', itemId, role });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        const itemId = parseInt(req.params.itemId);
         const message = await itemService.deleteItemById(itemId);
 
         res.status(200).json({ message });
+        logger.info({ event: 'delete_item_success', itemId });
     } catch (error) {
+        logger.error({ event: 'delete_item_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });

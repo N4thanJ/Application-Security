@@ -9,11 +9,13 @@ import { Request, Response, NextFunction } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
-import { he } from 'date-fns/locale';
 import helmet from 'helmet';
+import { logger } from './util/logger';
+import { logSecurityEvents } from './logging.middleware';
 
 const app = express();
 app.use(helmet());
+app.use(logSecurityEvents);
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
@@ -54,20 +56,23 @@ app.use('/shoppingcarts', shoppingcartRouter);
 app.use('/nutritionlabels', nutritionlabelRouter);
 app.use('/items', itemRouter);
 
-app.get('/status', (req, res) => {
+app.get('/status', (_req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({ status: 'unauthorized', message: err.message });
+        logger.warn('Unauthorized Error' + err.message);
     } else if (err.name === 'CoursesError') {
         res.status(400).json({ status: 'domain error', message: err.message });
+        logger.error('Domain error occurred', { error: err });
     } else {
         res.status(400).json({ status: 'application error', message: err.message });
+        logger.error('Application error occurred', { error: err });
     }
 });
 
 app.listen(port || 3000, () => {
-    console.log(`Back-end is running on port ${port}.`);
+    logger.info(`Back-end is running on port ${port}.`);
 });
