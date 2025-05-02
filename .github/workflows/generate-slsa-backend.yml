@@ -53,10 +53,13 @@ jobs:
           mv package.tgz backend-package.tgz
           mv attestations.json backend-attestations.json
 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Verify SLSA Provenance
         run: |
           ls
-          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          PACKAGE_VERSION=$(jq -r '.version' back-end/package.json)
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package backend-package.tgz \
