@@ -6,8 +6,7 @@
         "build": "next build",
         "dev": "next dev -p 8080",
         "start": "npm run dev",
-        "test": "jest",
-        "patch": "npm version patch"
+        "test": "jest"
     },
     "dependencies": {
         "@n4thanj/application-security-frontend": "file:",

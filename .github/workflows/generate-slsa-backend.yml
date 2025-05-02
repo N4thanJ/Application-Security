@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "back-end/**"
   workflow_dispatch:
 
 jobs:
@@ -15,14 +17,14 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       directory: back-end
-      run-scripts: "patch, ci, test, build"
+      run-scripts: "ci, test, build"
 
   publish:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Set up Node registry authentication
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
+        uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
@@ -44,21 +46,46 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
-      - name: curl the files
+      - name: Download package and attestation
         run: |
-          curl -Sso attestations.json $(npm view @n4thanj/application-security --json | jq -r '.dist.attestations.url') && \
-          curl -Sso package.tgz "$(npm view @n4thanj/application-security --json | jq -r '.dist.tarball')"
-
-      - name: List files in the working directory
-        run: ls -l
+          curl -Sso attestations.json $(npm view @n4thanj/application-security-backend --json | jq -r '.dist.attestations.url')
+          curl -Sso package.tgz "$(npm view @n4thanj/application-security-backend --json | jq -r '.dist.tarball')"
+          mv package.tgz backend-package.tgz
+          mv attestations.json backend-attestations.json
 
       - name: Verify SLSA Provenance
         run: |
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
-            --attestations-path attestations.json \
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package backend-package.tgz \
+            --attestations-path backend-attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
-            --package-name "@n4thanj/application-security" \
+            --package-name "@n4thanj/application-security-backend" \
             --package-version 1.0.0 \
             --source-uri github.com/N4thanJ/Application-Security
+
+      - name: Upload verified backend artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: verified-backend
+          path: |
+            backend-package.tgz
+            backend-attestations.json
+
+  release:
+    needs: [verify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: verified-backend
+          path: .
+
+      - name: Upload backend release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            backend-package.tgz
+            backend-attestations.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
