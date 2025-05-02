@@ -76,8 +76,15 @@ jobs:
 
       - name: Rename package and provenance
         run: |
-          mv $(find artifacts -type f -name '*.tgz') package.tgz
-          mv $(find artifacts -type f -name '*slsa-attestations') attestations.json
+          echo "Artifacts directory:"
+          ls
+          find artifacts -type f
+
+          echo "Copying .tgz file..."
+          cp $(find artifacts -type f -name '*.tgz') package.tgz
+
+          echo "Copying slsa-attestations..."
+          cp $(find artifacts -type f -name '*slsa-attestations') attestations.json
 
       - name: Verify SLSA Provenance
         run: |
