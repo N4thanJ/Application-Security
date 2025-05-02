@@ -72,20 +72,32 @@ jobs:
             backend-package.tgz
             backend-attestations.json
 
-  release:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: verified-backend
-          path: .
+release:
+  needs: [verify]
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: verified-package
+        path: .
 
-      - name: Upload backend release to GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            backend-package.tgz
-            backend-attestations.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/download-artifact@v3
+      with:
+        name: verified-attestation
+        path: .
+
+    - name: Create backend-slsa folder and move files
+      run: |
+        mkdir backend-slsa
+        mv package.tgz backend-slsa/backend-package.tgz
+        mv attestations.json backend-slsa/backend-attestations.json
+
+    - name: Zip the folder
+      run: zip -r backend-slsa.zip backend-slsa
+
+    - name: Upload release to GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        files: backend-slsa.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
