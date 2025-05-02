@@ -54,7 +54,7 @@ jobs:
           mv attestations.json frontend-attestations.json
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Verify SLSA Provenance
         run: |
