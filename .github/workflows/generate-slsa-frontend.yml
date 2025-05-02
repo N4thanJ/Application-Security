@@ -46,15 +46,15 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download package and attestation
         run: |
           curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.attestations.url')
           curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.tarball')"
           mv package.tgz frontend-package.tgz
           mv attestations.json frontend-attestations.json
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Verify SLSA Provenance
         run: |
