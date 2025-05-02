@@ -67,24 +67,12 @@ jobs:
             --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security
 
-      - name: Move the files to a dir for packaging
+      - name: Configure npm for GitHub Packages
         run: |
-          mkdir frontend-slsa
-          mv package.tgz frontend-slsa
-          mv attestations.json frontend-slsa
+          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
-      - name: Zip the folder
-        run: zip -r frontend-slsa.zip frontend-slsa
-
-      - name: Upload verified frontend artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: verified-frontend-slsa
-          path: frontend-slsa.zip
-
-      - name: Upload release to GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          files: frontend-slsa.zip
+      - name: Publish package to GitHub Packages
+        run: npm publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

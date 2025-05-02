@@ -1,6 +1,6 @@
 {
     "name": "@n4thanj/application-security-frontend",
-    "version": "1.0.27",
+    "version": "1.0.0",
     "scripts": {
         "ci": "npm ci",
         "build": "next build",
@@ -48,6 +48,6 @@
         "url": "git+https://github.com/N4thanJ/Application-Security"
     },
     "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
+        "registry": "https://npm.pkg.github.com/"
     }
 }
