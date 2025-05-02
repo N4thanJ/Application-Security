@@ -1,6 +1,6 @@
 {
     "name": "@n4thanj/application-security-frontend",
-    "version": "1.0.18",
+    "version": "1.0.19",
     "scripts": {
         "ci": "npm ci",
         "build": "next build",
