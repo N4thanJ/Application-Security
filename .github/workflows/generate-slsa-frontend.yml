@@ -60,10 +60,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download package and attestation
+      - name: Download package and attestation from GitHub Packages
         run: |
-          curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.attestations.url')
-          curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.tarball')"
+          curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/ --json | jq -r '.dist.attestations.url')
+          curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/ --json | jq -r '.dist.tarball')"
 
       - name: Verify SLSA Provenance
         run: |
