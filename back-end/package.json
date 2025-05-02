@@ -1,6 +1,6 @@
 {
     "name": "@n4thanj/application-security-backend",
-    "version": "1.0.23",
+    "version": "1.0.24",
     "description": "Courses API",
     "author": "n4thanj",
     "main": "app.ts",

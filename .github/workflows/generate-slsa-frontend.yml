@@ -50,8 +50,6 @@ jobs:
         run: |
           curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.attestations.url')
           curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.tarball')"
-          mv package.tgz frontend-package.tgz
-          mv attestations.json frontend-attestations.json
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -62,8 +60,8 @@ jobs:
           PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package frontend-package.tgz \
-            --attestations-path frontend-attestations.json \
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
+            --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security-frontend" \
             --package-version $PACKAGE_VERSION \
@@ -74,8 +72,8 @@ jobs:
         with:
           name: verified-frontend
           path: |
-            frontend-package.tgz
-            frontend-attestations.json
+            package.tgz
+            attestations.json
 
   release:
     needs: [verify]
@@ -94,8 +92,8 @@ jobs:
       - name: Create frontend-slsa folder and move files
         run: |
           mkdir frontend-slsa
-          mv package.tgz frontend-slsa/frontend-package.tgz
-          mv attestations.json frontend-slsa/frontend-attestations.json
+          mv package.tgz frontend-slsa/package.tgz
+          mv attestations.json frontend-slsa/attestations.json
 
       - name: Zip the folder
         run: zip -r frontend-slsa.zip frontend-slsa
