@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          registry-url: "https://registry.npmjs.org"
+          registry-url: "https://npm.pkg.github.com/"
 
       - name: Configure npm for GitHub Packages
         run: |
@@ -41,7 +41,7 @@ jobs:
         uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
         with:
           access: public
-          node-auth-token: ${{ secrets.NPM_TOKEN }}
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
           package-name: ${{ needs.build.outputs.package-name }}
           package-download-name: ${{ needs.build.outputs.package-download-name }}
           package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
@@ -77,13 +77,3 @@ jobs:
             --package-name "@n4thanj/application-security-frontend" \
             --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security
-
-      - name: Configure npm for GitHub Packages
-        run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-
-      - name: Publish package to GitHub Packages
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
