@@ -67,36 +67,20 @@ jobs:
             --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security
 
-      - name: Upload verified frontend artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: verified-frontend
-          path: |
-            package.tgz
-            attestations.json
-
-  release:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: verified-package
-          path: .
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: verified-attestation
-          path: .
-
-      - name: Create frontend-slsa folder and move files
+      - name: Move the files to a dir for packaging
         run: |
           mkdir frontend-slsa
-          mv package.tgz frontend-slsa/package.tgz
-          mv attestations.json frontend-slsa/attestations.json
+          mv package.tgz frontend-slsa
+          mv attestations.json frontend-slsa
 
       - name: Zip the folder
         run: zip -r frontend-slsa.zip frontend-slsa
+
+      - name: Upload verified frontend artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-frontend-slsa
+          path: frontend-slsa.zip
 
       - name: Upload release to GitHub
         uses: softprops/action-gh-release@v1

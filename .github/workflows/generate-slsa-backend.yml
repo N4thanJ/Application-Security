@@ -67,36 +67,20 @@ jobs:
             --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security
 
-      - name: Upload verified backend artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: verified-package
-          path: |
-            package.tgz
-            attestations.json
-
-  release:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: verified-package
-          path: .
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: verified-attestation
-          path: .
-
-      - name: Create backend-slsa folder and move files
+      - name: Move the files to a dir for packaging
         run: |
           mkdir backend-slsa
-          mv package.tgz backend-slsa/package.tgz
-          mv attestations.json backend-slsa/attestations.json
+          mv package.tgz backend-slsa
+          mv attestations.json backend-slsa
 
       - name: Zip the folder
         run: zip -r backend-slsa.zip backend-slsa
+
+      - name: Upload verified backend artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-backend-slsa
+          path: backend-slsa.zip
 
       - name: Upload release to GitHub
         uses: softprops/action-gh-release@v1
