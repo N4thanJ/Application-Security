@@ -81,36 +81,34 @@ jobs:
 
       - name: Rename and extract package and provenance
         run: |
-          # Find the package tarball (non-attestation tgz file)
-          PACKAGE_TGZ=$(find artifacts -name "*.tgz" -not -path "*/slsa-attestations/*" | head -1)
-          if [ -z "$PACKAGE_TGZ" ]; then
-            echo "ERROR: Package tarball not found"
-            exit 1
-          fi
+          echo "Artifacts directory:"
+          find artifacts -type f
+
+          # Find the directory containing the package tarball
+          PACKAGE_DIR=$(find artifacts -type d -name '*package.tgz')
+          echo "Found package directory: $PACKAGE_DIR"
+
+          # Find the actual package tarball inside the directory
+          PACKAGE_TGZ=$(find "$PACKAGE_DIR" -type f -name '*.tgz')
           echo "Found package file: $PACKAGE_TGZ"
+
+          # Copy the tarball to the root as package.tgz
           cp "$PACKAGE_TGZ" package.tgz
 
-          # Find and extract the attestation archive
-          ATTESTATION_TGZ=$(find artifacts -name "folder.tgz" | head -1)
-          if [ -z "$ATTESTATION_TGZ" ]; then
-            echo "ERROR: Attestation archive not found"
-            exit 1
-          fi
-          echo "Found attestation archive: $ATTESTATION_TGZ"
+          # Extract the slsa attestation tarball
+          ATTESTATION_TGZ=$(find artifacts -type f -name 'folder.tgz')
+          echo "Found slsa attestation tarball: $ATTESTATION_TGZ"
 
-          # Create directory and extract
+          # Create a directory for the extracted attestation files
           mkdir -p slsa-attestation
           tar -xzf "$ATTESTATION_TGZ" -C slsa-attestation
 
-          # Find the JSON attestation file
-          ATTESTATION_JSON=$(find slsa-attestation -name "*.json" | head -1)
-          if [ -z "$ATTESTATION_JSON" ]; then
-            echo "ERROR: JSON attestation file not found"
-            ls -la slsa-attestation
-            exit 1
-          fi
+          # Locate the .json file from the extracted attestation folder
+          ATTESTATION_JSON=$(find slsa-attestation -type f -name '*.json')
           echo "Found attestation file: $ATTESTATION_JSON"
-          cp "$ATTESTATION_JSON" attestation.json
+
+          # Copy the attestation to the root as attestations.json
+          cp "$ATTESTATION_JSON" attestations.json
 
       - name: Verify SLSA Provenance
         run: |
