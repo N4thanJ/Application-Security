@@ -32,7 +32,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/user/packages/npm/application-security-frontend
+            https://api.github.com/users/N4thanJ/packages/npm/application-security-frontend
 
       - name: Set up Node registry authentication
         uses: actions/setup-node@v4
@@ -68,6 +68,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Configure npm for GitHub Packages
+        run: |
+          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
       - name: Download package and attestation from GitHub Packages
         run: |
