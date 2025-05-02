@@ -69,15 +69,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure npm for GitHub Packages
-        run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
-      - name: Download package and attestation from GitHub Packages
+      - name: Rename package and provenance
         run: |
-          curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/ --json | jq -r '.dist.attestations.url')
-          curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/ --json | jq -r '.dist.tarball')"
+          mv $(find artifacts -type f | grep '\.tgz$') package.tgz
+          mv $(find artifacts -type f | grep 'slsa-attestations$') attestations.json
 
       - name: Verify SLSA Provenance
         run: |
