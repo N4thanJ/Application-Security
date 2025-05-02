@@ -101,14 +101,22 @@ jobs:
 
           # Create a directory for the extracted attestation files
           mkdir -p slsa-attestation
-          tar -xzf "$ATTESTATION_TGZ" -C slsa-attestation
+          tar -xvf "$ATTESTATION_TGZ" -C slsa-attestation  # Use -v to see the files extracted
+
+          # List the extracted files to debug and see where the .json file is located
+          echo "Extracted files:"
+          ls -R slsa-attestation
 
           # Locate the .json file from the extracted attestation folder
           ATTESTATION_JSON=$(find slsa-attestation -type f -name '*.json')
           echo "Found attestation file: $ATTESTATION_JSON"
 
-          # Copy the attestation to the root as attestations.json
-          cp "$ATTESTATION_JSON" attestations.json
+          # If attestation file found, copy it
+          if [ -n "$ATTESTATION_JSON" ]; then
+            cp "$ATTESTATION_JSON" attestations.json
+          else
+            echo "No attestation JSON file found!"
+          fi
 
       - name: Verify SLSA Provenance
         run: |
