@@ -72,32 +72,32 @@ jobs:
             frontend-package.tgz
             frontend-attestations.json
 
-release:
-  needs: [verify]
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/download-artifact@v3
-      with:
-        name: verified-package
-        path: .
+  release:
+    needs: [verify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: verified-package
+          path: .
 
-    - uses: actions/download-artifact@v3
-      with:
-        name: verified-attestation
-        path: .
+      - uses: actions/download-artifact@v3
+        with:
+          name: verified-attestation
+          path: .
 
-    - name: Create frontend-slsa folder and move files
-      run: |
-        mkdir frontend-slsa
-        mv package.tgz frontend-slsa/frontend-package.tgz
-        mv attestations.json frontend-slsa/frontend-attestations.json
+      - name: Create frontend-slsa folder and move files
+        run: |
+          mkdir frontend-slsa
+          mv package.tgz frontend-slsa/frontend-package.tgz
+          mv attestations.json frontend-slsa/frontend-attestations.json
 
-    - name: Zip the folder
-      run: zip -r frontend-slsa.zip frontend-slsa
+      - name: Zip the folder
+        run: zip -r frontend-slsa.zip frontend-slsa
 
-    - name: Upload release to GitHub
-      uses: softprops/action-gh-release@v1
-      with:
-        files: frontend-slsa.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: frontend-slsa.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
