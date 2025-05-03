@@ -48,16 +48,18 @@ jobs:
         run: |
           curl -Sso attestations.json $(npm view @n4thanj/application-security-backend --json | jq -r '.dist.attestations.url') && \
           curl -Sso package.tgz "$(npm view @n4thanj/application-security-backend --json | jq -r '.dist.tarball')"
+
       - name: List files in the working directory
         run: ls -l
 
       - name: Verify SLSA Provenance
         run: |
+          PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
             --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security-backend" \
-            --package-version 1.0.0 \
+            --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security
