@@ -57,15 +57,9 @@ jobs:
           path: "attestations"
           sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
 
-      - name: debugging
+      - name: Move the attestations to the correct file
         run: |
-          echo "base dir"
-          ls
-          echo "moving the file"
-
           mv attestations/*/n4thanj-application-security-backend-1.0.0.build.slsa attestations/n4thanj-application-security-backend-1.0.0.build.slsa
-          echo "attestations dir"
-          ls attestations
 
       - name: Configure npm for GitHub Packages
         run: |
@@ -93,8 +87,8 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         run: |
-          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.attestations.url') && \
-          curl -Sso actions-test.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.tarball')"
+          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --registry https://npm.pkg.github.com/ --json | jq -r '.dist.attestations.url') && \
+          curl -Sso actions-test.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --registry https://npm.pkg.github.com/ --json | jq -r '.dist.tarball')"
 
       - name: Verify SLSA Provenance
         run: |
