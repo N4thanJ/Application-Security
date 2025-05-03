@@ -57,6 +57,13 @@ jobs:
           path: "attestations"
           sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
 
+      - name: debugging
+        run: |
+          echo "base dir"
+          ls
+          echo "attestations dir"
+          ls attestations
+
       - name: Configure npm for GitHub Packages
         run: |
           echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
