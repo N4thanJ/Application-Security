@@ -61,6 +61,9 @@ jobs:
         run: |
           echo "base dir"
           ls
+          echo "moving the file"
+
+          mv attestations/*/n4thanj-application-security-backend-1.0.0.build.slsa attestations/n4thanj-application-security-backend-1.0.0.build.slsa
           echo "attestations dir"
           ls attestations
 
