@@ -86,21 +86,26 @@ jobs:
           path: slsa-attestations
 
       - name: Extract SLSA attestation artifact
+        id: extract
         run: |
           FOLDER_TGZ_PATH=$(find slsa-attestations/ -name folder.tgz | head -n1)
           tar -xzf "$FOLDER_TGZ_PATH" -C slsa-attestations/
+
+          ATTESTATION=$(find slsa-attestations/ -name '*.slsa' | head -n1)
+          echo "Found attestation at: $ATTESTATION"
+          echo "attestation=$ATTESTATION" >> $GITHUB_OUTPUT
 
       - name: Verify SLSA Provenance
         run: |
           ls slsa-attestations
 
-          ATTESTATION=$(find slsa-attestations/ -name '*.slsa' | head -n1)
+          ATT_FILE="${{ steps.extract.outputs.attestation }}"
           PACKAGE_VERSION=$(jq -r '.version' back-end/package.json)
 
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-backend-1.0.0.tgz \
-            --attestations-path "$ATTESTATION" \
+            --attestations-path "$ATT_FILE" \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security-backend" \
             --package-version $PACKAGE_VERSION \
