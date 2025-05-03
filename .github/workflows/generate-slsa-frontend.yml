@@ -1,4 +1,4 @@
-name: Generate SLSA Provenance for Backend
+name: Generate SLSA Provenance for Frontend
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       actions: read
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
-      directory: frontend-end
+      directory: front-end
       run-scripts: "ci, build"
 
   publish:
@@ -58,6 +58,6 @@ jobs:
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
             --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
-            --package-name "@n4thanj/application-security" \
+            --package-name "@n4thanj/application-security-frontend" \
             --package-version 1.0.0 \
             --source-uri github.com/N4thanJ/Application-Security
