@@ -20,81 +20,44 @@ jobs:
   publish:
     needs: [build]
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    outputs:
-      provenance-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
-
     steps:
       - name: Set up Node registry authentication
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
 
-      - name: Download tarball
-        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v2.1.0
+      - name: publish
+        id: publish
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
         with:
-          name: ${{ needs.build.outputs.package-download-name }}
-          path: ${{ needs.build.outputs.package-name }}
-          sha256: ${{ needs.build.outputs.package-download-sha256 }}
-
-      - name: Download provenance
-        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v2.1.0
-        with:
-          name: ${{ needs.build.outputs.provenance-download-name }}
-          path: "attestations"
-          sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
-
-      - name: Move the attestations to the correct file
-        run: |
-          mv attestations/*/n4thanj-application-security-backend-1.0.0.build.slsa attestations/n4thanj-application-security-backend-1.0.0.build.slsa
-
-      - name: Configure npm for GitHub Packages
-        run: |
-          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
-
-      - name: Publish the package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
-          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
-        run: |
-          npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
+          access: public
+          node-auth-token: ${{ secrets.NPM_TOKEN }}
+          package-name: ${{ needs.build.outputs.package-name }}
+          package-download-name: ${{ needs.build.outputs.package-download-name }}
+          package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
+          provenance-name: ${{ needs.build.outputs.provenance-name }}
+          provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
+          provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
 
   verify:
     needs: [publish]
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure npm for GitHub Packages
+      - name: curl the files
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
-
-      - name: curling the attestations
-        run: |
-          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.attestations.url') && \
-          curl -Sso n4thanj-application-security-backend-1.0.0.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.tarball')"
+          curl -Sso attestations.json $(npm view @n4thanj/application-security-backend --json | jq -r '.dist.attestations.url') && \
+          curl -Sso package.tgz "$(npm view @n4thanj/application-security-backend --json | jq -r '.dist.tarball')"
+      - name: List files in the working directory
+        run: ls -l
 
       - name: Verify SLSA Provenance
         run: |
-          PACKAGE_VERSION=$(jq -r '.version' back-end/package.json)
-
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-
-          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-backend-1.0.0.tgz \
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
             --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
-            --package-name "@n4thanJ/application-security-backend" \
-            --package-version $PACKAGE_VERSION \
+            --package-name "@n4thanj/application-security" \
+            --package-version 1.0.0 \
             --source-uri github.com/N4thanJ/Application-Security
