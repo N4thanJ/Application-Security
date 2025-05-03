@@ -69,46 +69,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Debug artifacts
+      - name: Download package from github packages
         run: |
-          echo "Artifacts directory structure:"
-          find artifacts -type f | sort
-
-      - name: Rename and extract package and provenance
-        run: |
-          echo "Artifacts directory:"
-          find artifacts -type f
-
-          # Find the directory containing the package tarball
-          PACKAGE_DIR=$(find artifacts -type d -name '*package.tgz')
-          echo "Found package directory: $PACKAGE_DIR"
-
-          # Find the actual package tarball inside the directory
-          PACKAGE_TGZ=$(find "$PACKAGE_DIR" -type f -name '*.tgz')
-          echo "Found package file: $PACKAGE_TGZ"
-
-          # Copy the tarball to the root as package.tgz
-          cp "$PACKAGE_TGZ" package.tgz
-
-          # Extract the slsa attestation tarball
-          ATTESTATION_TGZ=$(find artifacts -type f -name 'folder.tgz')
-          echo "Found slsa attestation tarball: $ATTESTATION_TGZ"
-
-          # Create a directory for the extracted attestation files
-          mkdir -p slsa-attestation
-          tar -xzf "$ATTESTATION_TGZ" -C slsa-attestation
-
-          # Locate the .json file from the extracted attestation folder
-          ATTESTATION_JSON=$(find slsa-attestation -type f -name '*.json')
-          echo "Found attestation file: $ATTESTATION_JSON"
-
-          # Copy the attestation to the root as attestations.json
-          cp "$ATTESTATION_JSON" attestations.json
+          npm pack @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/
+          ls
 
       - name: Verify SLSA Provenance
         run: |
