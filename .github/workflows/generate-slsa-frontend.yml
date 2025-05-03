@@ -44,6 +44,9 @@ jobs:
     needs: [publish]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: curl the files
         run: |
           curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.attestations.url') && \
