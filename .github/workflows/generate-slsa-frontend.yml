@@ -25,9 +25,7 @@ jobs:
       packages: write
 
     outputs:
-      package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
-      provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
-      package-name: ${{ needs.build.outputs.package-name }}
+      provenance-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
 
     steps:
       - name: Delete old npm packages of frontend
@@ -86,7 +84,7 @@ jobs:
       - name: Download the SLSA attestation artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.publish.outputs.package-download-sha256 }}-slsa-attestations
+          name: ${{ needs.publish.outputs.provenance-download-sha256 }}-slsa-attestations
           path: slsa-attestations
 
       - name: Extract SLSA attestation artifact
@@ -100,7 +98,7 @@ jobs:
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-frontend-1.0.0.tgz \
-            --attestations-path slsa-attestations/${{ needs.publish.outputs.package-download-sha256 }}-slsa-attestations/n4thanj-application-security-frontend.build.slsa \
+            --attestations-path slsa-attestations/${{ needs.publish.outputs.provenance-download-sha256 }}-slsa-attestations/n4thanj-application-security-frontend.build.slsa \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security-frontend" \
             --package-version $PACKAGE_VERSION \
