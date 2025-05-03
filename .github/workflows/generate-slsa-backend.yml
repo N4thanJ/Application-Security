@@ -88,11 +88,14 @@ jobs:
       - name: List downloaded files
         run: ls -R slsa-attestations/
 
-      - name: Extract SLSA attestation artifact
+      - name: Extract SLSA attestation artifacts
         run: |
-          # Unzip all tgz files found in the slsa-attestations folder
-          find slsa-attestations/ -name "*.tgz" -exec tar -xzf {} -C slsa-attestations/ \;
-          ls -R slsa-attestations
+          # Extract the folder.tgz file which contains the attestation data
+          tar -xzf slsa-attestations/184e78ed6a9495c39ca4b8e47dd84e70-slsa-attestations/folder.tgz -C slsa-attestations/
+          # Extract the n4thanj-application-security-backend-1.0.0.tgz package
+          tar -xzf slsa-attestations/7cbce01764610f5595dbb11b18e2c1c9-package.tgz -C slsa-attestations/
+
+          ls slsa-attestations
 
       - name: Verify SLSA Provenance
         run: |
