@@ -80,15 +80,19 @@ jobs:
       - name: Download package from github packages
         run: npm pack @n4thanj/application-security-backend --registry=https://npm.pkg.github.com/
 
-      - name: Download the SLSA attestation artifact
+      - name: Download all SLSA attestation artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.publish.outputs.provenance-download-sha256 }}-slsa-attestations
           path: slsa-attestations
+
+      - name: List downloaded files
+        run: ls -R slsa-attestations/
 
       - name: Extract SLSA attestation artifact
         run: |
-          tar -xzf slsa-attestations/folder.tgz -C slsa-attestations
+          # Unzip all tgz files found in the slsa-attestations folder
+          find slsa-attestations/ -name "*.tgz" -exec tar -xzf {} -C slsa-attestations/ \;
+          ls -R slsa-attestations
 
       - name: Verify SLSA Provenance
         run: |
