@@ -77,7 +77,11 @@ jobs:
       - name: Download package from github packages
         run: |
           npm pack @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/
-          ls
+
+      - name: Unpack the tgz package
+        run: |
+          tar -xvzf n4thanj-application-security-frontend-1.0.0.tgz
+          ls package
 
       - name: Verify SLSA Provenance
         run: |
@@ -85,8 +89,8 @@ jobs:
           PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
-            --attestations-path attestations.json \
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-frontend-1.0.0.tgz \
+            --attestations-path package/attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanj/application-security-frontend" \
             --package-version $PACKAGE_VERSION \
