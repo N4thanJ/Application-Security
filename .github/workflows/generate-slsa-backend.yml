@@ -93,37 +93,18 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-
-      - name: Download package from github packages
-        run: npm pack @n4thanj/application-security-backend --registry=https://npm.pkg.github.com/
-
-      - name: Download all SLSA attestation artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: slsa-attestations
-
-      - name: Extract SLSA attestation artifact
-        id: extract
-        run: |
-          FOLDER_TGZ_PATH=$(find slsa-attestations/ -name folder.tgz | head -n1)
-          tar -xzf "$FOLDER_TGZ_PATH" -C slsa-attestations/
-
-          ATTESTATION=$(find slsa-attestations/ -name '*.slsa' | head -n1)
-          echo "Found attestation at: $ATTESTATION"
-          echo "attestation=$ATTESTATION" >> $GITHUB_OUTPUT
+          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.attestations.url') && \
+          curl -Sso actions-test.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.tarball')"
 
       - name: Verify SLSA Provenance
         run: |
-          ATT_FILE="${{ steps.extract.outputs.attestation }}"
           PACKAGE_VERSION=$(jq -r '.version' back-end/package.json)
 
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
 
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-backend-1.0.0.tgz \
-            --attestations-path "$ATT_FILE" \
+            --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
             --package-name "@n4thanJ/application-security-backend" \
             --package-version $PACKAGE_VERSION \
