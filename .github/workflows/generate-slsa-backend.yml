@@ -57,7 +57,7 @@ jobs:
 
       - name: Verify SLSA Provenance
         run: |
-          PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
+          PACKAGE_VERSION=$(jq -r '.version' backend-end/package.json)
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
