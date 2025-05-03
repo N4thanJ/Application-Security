@@ -28,38 +28,42 @@ jobs:
       provenance-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
 
     steps:
-      - name: Delete old npm packages of frontend
-        run: |
-          curl -L \
-            -X DELETE \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/users/N4thanJ/packages/npm/application-security-frontend
-
       - name: Set up Node registry authentication
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          registry-url: "https://npm.pkg.github.com/"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Download tarball
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v2.1.0
+        with:
+          name: ${{ needs.build.outputs.package-download-name }}
+          path: ${{ needs.build.outputs.package-name }}
+          sha256: ${{ needs.build.outputs.package-download-sha256 }}
+
+      - name: Download provenance
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v2.1.0
+        with:
+          name: ${{ needs.build.outputs.provenance-download-name }}
+          path: "attestations"
+          sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+
+      - name: Move the attestations to the correct file
+        run: |
+          mv attestations/*/n4thanj-application-security-frontend-1.0.0.build.slsa attestations/n4thanj-application-security-frontend-1.0.0.build.slsa
 
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: publish
-        id: publish
-        uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
-        with:
-          access: public
-          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
-          package-name: ${{ needs.build.outputs.package-name }}
-          package-download-name: ${{ needs.build.outputs.package-download-name }}
-          package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
-          provenance-name: ${{ needs.build.outputs.provenance-name }}
-          provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
-          provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+      - name: Publish the package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
+          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
+        run: |
+          npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
 
   verify:
     needs: [publish]
@@ -74,32 +78,23 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Download package from github packages
+      - name: curling the attestations
         run: |
-          npm pack @n4thanj/application-security-frontend --registry=https://npm.pkg.github.com/
-
-      - name: Download the SLSA attestation artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.publish.outputs.provenance-download-sha256 }}-slsa-attestations
-          path: slsa-attestations
-
-      - name: Extract SLSA attestation artifact
-        run: |
-          tar -xzf slsa-attestations/folder.tgz -C slsa-attestations
+          curl -Sso attestations.json $(npm view @n4thanJ/application-security-frontend@1.0.0 --json | jq -r '.dist.attestations.url') && \
+          curl -Sso n4thanj-application-security-frontend-1.0.0.tgz "$(npm view @n4thanJ/application-security-frontend@1.0.0 --json | jq -r '.dist.tarball')"
 
       - name: Verify SLSA Provenance
         run: |
-          ls
           PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
+
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
+
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-frontend-1.0.0.tgz \
-            --attestations-path slsa-attestations/${{ needs.publish.outputs.provenance-download-sha256 }}-slsa-attestations/n4thanj-application-security-frontend.build.slsa \
+            --attestations-path attestations.json \
             --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
-            --package-name "@n4thanj/application-security-frontend" \
+            --package-name "@n4thanJ/application-security-frontend" \
             --package-version $PACKAGE_VERSION \
             --source-uri github.com/N4thanJ/Application-Security

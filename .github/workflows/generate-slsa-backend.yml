@@ -28,20 +28,11 @@ jobs:
       provenance-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
 
     steps:
-      - name: Delete old npm packages of backend
-        run: |
-          curl -L \
-            -X DELETE \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/users/N4thanJ/packages/npm/application-security-backend
-
       - name: Set up Node registry authentication
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          registry-url: "https://npm.pkg.github.com/"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Download tarball
         uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v2.1.0
@@ -63,12 +54,12 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Publish the package
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
           PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
         run: |
@@ -87,13 +78,12 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
-      - name: Configure npm for GitHub Packages
+      - name: curling the attestations
         run: |
-          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --registry https://npm.pkg.github.com/ --json | jq -r '.dist.attestations.url') && \
-          curl -Sso n4thanj-application-security-backend-1.0.0.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --registry https://npm.pkg.github.com/ --json | jq -r '.dist.tarball')"
+          curl -Sso attestations.json $(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.attestations.url') && \
+          curl -Sso n4thanj-application-security-backend-1.0.0.tgz "$(npm view @n4thanJ/application-security-backend@1.0.0 --json | jq -r '.dist.tarball')"
 
       - name: Verify SLSA Provenance
         run: |

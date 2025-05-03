@@ -1,6 +1,6 @@
 {
     "name": "@n4thanj/application-security-backend",
-    "version": "1.0.0",
+    "version": "1.0.40",
     "description": "Courses API",
     "author": "n4thanj",
     "main": "app.ts",
@@ -64,6 +64,6 @@
         "url": "git+https://github.com/N4thanJ/Application-Security"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
+        "registry": "https://registry.npmjs.org"
     }
 }
