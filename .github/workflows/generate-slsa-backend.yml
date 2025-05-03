@@ -43,23 +43,32 @@ jobs:
           node-version: 18
           registry-url: "https://npm.pkg.github.com/"
 
+      - name: Download tarball
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v2.1.0
+        with:
+          name: ${{ needs.build.outputs.package-download-name }}
+          path: ${{ needs.build.outputs.package-name }}
+          sha256: ${{ needs.build.outputs.package-download-sha256 }}
+
+      - name: Download provenance
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v2.1.0
+        with:
+          name: ${{ needs.build.outputs.provenance-download-name }}
+          path: "attestations"
+          sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+
       - name: Configure npm for GitHub Packages
         run: |
           echo "@N4thanJ:registry=https://npm.pkg.github.com/" > ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
-      - name: publish
-        id: publish
-        uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
-        with:
-          access: public
-          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
-          package-name: ${{ needs.build.outputs.package-name }}
-          package-download-name: ${{ needs.build.outputs.package-download-name }}
-          package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
-          provenance-name: ${{ needs.build.outputs.provenance-name }}
-          provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
-          provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+      - name: Publish the package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
+          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
+        run: |
+          npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
 
   verify:
     needs: [publish]
@@ -97,21 +106,11 @@ jobs:
 
       - name: Verify SLSA Provenance
         run: |
-          ls -R slsa-attestations
-          ls
-
           ATT_FILE="${{ steps.extract.outputs.attestation }}"
-          echo "Using attestation file: $ATT_FILE"
           PACKAGE_VERSION=$(jq -r '.version' back-end/package.json)
 
           curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
           chmod +x slsa-verifier-linux-amd64
-
-          # Check if the attestation file exists and is not empty
-          if [ ! -s "$ATT_FILE" ]; then
-            echo "Attestation file is empty or doesn't exist: $ATT_FILE"
-            exit 1
-          fi
 
           SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package n4thanj-application-security-backend-1.0.0.tgz \
             --attestations-path "$ATT_FILE" \
