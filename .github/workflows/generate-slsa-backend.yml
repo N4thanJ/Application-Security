@@ -21,9 +21,6 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Unpublish the package
-        run: npm unpublish @n4thanj/application-security-back-end --force
-
       - name: Set up Node registry authentication
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
