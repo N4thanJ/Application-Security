@@ -14,14 +14,14 @@ import pinoHttp from 'pino-http';
 
 const app = express();
 
+app.use(express.json());
+
 const logToFile = pino(
     pino.transport({
         target: 'pino-pretty',
         options: { singleLine: true, destination: 'logs/app.log' },
     })
 );
-
-app.use(express.json());
 
 app.use(
     pinoHttp({
