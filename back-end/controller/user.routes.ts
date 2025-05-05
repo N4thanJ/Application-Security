@@ -47,6 +47,7 @@ const userRouter = express.Router();
 interface AuthenticatedRequest extends Request {
     auth: {
         role: Role;
+        email: string;
     };
 }
 
@@ -280,7 +281,7 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
 
 /**
  * @swagger
- * /users/{userId}:
+ * /users/update/{userId}:
  *   put:
  *     summary: Update a user
  *     description: Updates a user's information. Requires administrative privileges.
@@ -315,7 +316,7 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
  *       500:
  *         description: Internal server error
  */
-userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.put('/update/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
         const userId = parseInt(req.params.userId);
@@ -334,7 +335,7 @@ userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunctio
 
 /**
  * @swagger
- * /users/{userId}:
+ * /users/delete/{userId}:
  *   delete:
  *     summary: Delete a user
  *     description: Deletes a user from the system. Requires administrative privileges.
@@ -357,7 +358,7 @@ userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunctio
  *       500:
  *         description: Internal server error
  */
-userRouter.delete('/:userId', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.delete('/delete/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
         const userId = parseInt(req.params.userId);
@@ -368,6 +369,123 @@ userRouter.delete('/:userId', async (req: Request, res: Response, next: NextFunc
 
         await userService.deleteUser(userId);
         res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /users/delete/mail/{mail}:
+ *   delete:
+ *     summary: Delete a user by email
+ *     description: Deletes a user by email from the system. Requires administrative privileges.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: mail
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The email of the user to delete
+ *     responses:
+ *       200:
+ *         description: User successfully deleted
+ *       404:
+ *         description: Not Found - User does not exist
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.delete('/delete/mail/:mail', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = (req as AuthenticatedRequest).auth;
+
+        if (!email) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        const mailToDelete = req.params.mail;
+
+        if (email !== mailToDelete) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        await userService.deleteUserByEmail(mailToDelete);
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /users/change-password:
+ *   put:
+ *     summary: Change user password
+ *     description: Allows a user to change their password by providing the old password and a new password.
+ *     tags:
+ *       - users
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 description: The current password
+ *                 format: password
+ *               newPassword:
+ *                 type: string
+ *                 description: The new password
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password changed successfully
+ *       400:
+ *         description: Bad request - Invalid input
+ *       401:
+ *         description: Unauthorized - Invalid credentials
+ *       500:
+ *         description: Internal server error
+ */
+userRouter.put('/change-password', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = (req as AuthenticatedRequest).auth;
+
+        if (!email) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        const { oldPassword, newPassword } = req.body;
+
+        if (!email || email.trim() === '') {
+            res.status(400).json({ message: 'Email is required and cannot be empty' });
+        }
+
+        if (!oldPassword || !newPassword) {
+            res.status(400).json({ message: 'Old password and new password are required' });
+        }
+
+        const updatedUser = await userService.changePassword(email, oldPassword, newPassword);
+        res.status(200).json(updatedUser);
     } catch (error) {
         next(error);
     }

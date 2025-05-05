@@ -1,16 +1,16 @@
-import { User } from '@types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useInterval from 'use-interval';
 import Language from './language/Language';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { UserContext } from 'pages/_app';
 
 const Header: React.FC = () => {
     const { t } = useTranslation();
     const router = useRouter();
-    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const { loggedInUser, setLoggedInUser } = useContext(UserContext);
 
     const logOut = () => {
         sessionStorage.removeItem('loggedInUser');
@@ -25,6 +25,9 @@ const Header: React.FC = () => {
 
     useEffect(() => {
         getLoggedInUser();
+
+        window.addEventListener('storage', getLoggedInUser);
+        return () => window.removeEventListener('storage', getLoggedInUser);
     }, []);
 
     useInterval(() => {
@@ -65,11 +68,16 @@ const Header: React.FC = () => {
                         )}
 
                         {loggedInUser ? (
-                            <li>
-                                <Link onClick={logOut} href={'/login'}>
-                                    {t('header.logout')}
-                                </Link>
-                            </li>
+                            <>
+                                <li>
+                                    <Link onClick={logOut} href={'/login'}>
+                                        {t('header.logout')}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href={'/settings'}>Settings</Link>
+                                </li>
+                            </>
                         ) : (
                             <>
                                 <li>

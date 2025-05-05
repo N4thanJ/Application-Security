@@ -16,7 +16,7 @@ const getAllUsers = async (role: Role): Promise<User[]> => {
 };
 
 const getByEmail = async (email: string): Promise<User> => {
-    const user = await userDb.getByEmail({ email });
+    const user = await userDb.getByEmail(email);
     if (!user) {
         throw new Error(`No user found with email: ${email}`);
     }
@@ -25,7 +25,7 @@ const getByEmail = async (email: string): Promise<User> => {
 };
 
 const createUser = async (user: UserInput): Promise<User> => {
-    const existingUser = await userDb.getByEmail({ email: user.email });
+    const existingUser = await userDb.getByEmail(user.email);
 
     if (existingUser) {
         throw new Error(`User with email: ${user.email} already exists.`);
@@ -50,7 +50,7 @@ const authenticate = async ({
     email: string;
     password: string;
 }): Promise<AuthenticationResponse> => {
-    const foundUser = await userDb.getByEmail({ email });
+    const foundUser = await userDb.getByEmail(email);
 
     if (!foundUser) {
         throw new Error(`User with email: ${email} does not exist.`);
@@ -75,7 +75,7 @@ const authenticate = async ({
 };
 
 const updateUser = async (userId: number, user: UserInput): Promise<User> => {
-    const existingUser = await userDb.getByEmail({ email: user.email });
+    const existingUser = await userDb.getByEmail(user.email);
 
     if (existingUser) {
         throw new Error('User with this email already exists');
@@ -102,6 +102,16 @@ const deleteUser = async (userId: number): Promise<User> => {
     return user;
 };
 
+const deleteUserByEmail = async (mailToDelete: string): Promise<User> => {
+    const user = await userDb.deleteUserByEmail(mailToDelete);
+
+    if (!user) {
+        throw new Error('No user found');
+    }
+
+    return user;
+};
+
 const getById = async (id: number): Promise<User> => {
     const user = await userDb.getById(id);
     if (!user) {
@@ -109,6 +119,33 @@ const getById = async (id: number): Promise<User> => {
     }
 
     return user;
+};
+
+const changePassword = async (
+    email: string,
+    oldPassword: string,
+    newPassword: string
+): Promise<User> => {
+    if (!email || email.trim() === '') {
+        // Added validation for email
+        throw new Error('Email is required and cannot be empty');
+    }
+
+    const user = await userDb.getByEmail(email);
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const passwordMatches = await bcrypt.compare(oldPassword, user.getPassword());
+
+    if (!passwordMatches) {
+        throw new Error('Password is incorrect.');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    return userDb.changePassword(email, hashedPassword);
 };
 
 export default {
@@ -119,4 +156,6 @@ export default {
     updateUser,
     deleteUser,
     getById,
+    changePassword,
+    deleteUserByEmail,
 };

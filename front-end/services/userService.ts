@@ -41,7 +41,7 @@ const getAllUsers = async (token: string) => {
 };
 
 const deleteUser = async (token: string, id: number) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + id, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/delete/' + id, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const deleteUser = async (token: string, id: number) => {
 };
 
 const updateUser = async (token: string, userId: number, user: User) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + userId, {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/update/' + userId, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -71,6 +71,30 @@ const getUserById = async (token: string, userId: string) => {
     });
 };
 
+const updateUsersPassword = async (token: string, oldPassword: string, newPassword: string) => {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/change-password', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            oldPassword,
+            newPassword,
+        }),
+    });
+};
+
+const deleteUserByMail = async (token: string, mail: string) => {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/delete/mail/' + mail, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 const UserService = {
     login,
     register,
@@ -79,6 +103,8 @@ const UserService = {
     deleteUser,
     updateUser,
     getUserById,
+    updateUsersPassword,
+    deleteUserByMail,
 };
 
 export default UserService;
