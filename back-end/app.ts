@@ -1,23 +1,59 @@
 import * as dotenv from 'dotenv';
-import express from 'express';
 import cors from 'cors';
 import { userRouter } from './controller/user.routes';
 import { itemRouter } from './controller/item.routes';
 import { shoppingcartRouter } from './controller/shoppingcart.routes';
 import { nutritionlabelRouter } from './controller/nutritionlabel.routes';
-import { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
 import helmet from 'helmet';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
 
 const app = express();
+
+const logToFile = pino(
+    pino.transport({
+        target: 'pino-pretty',
+        options: { singleLine: true, destination: 'logs/app.log' },
+    })
+);
+
+app.use(express.json());
+
+app.use(
+    pinoHttp({
+        logger: logToFile,
+        customSuccessMessage(req, res) {
+            return `${req.method} ${req.url} ${res.statusCode}`;
+        },
+        serializers: {
+            req(req) {
+                const { password, ...safeBody } = req.raw.body || {};
+                return {
+                    id: req.id,
+                    method: req.method,
+                    url: req.url,
+                    timestamp: new Date().toISOString(),
+                    body: safeBody,
+                };
+            },
+            res(res) {
+                return {
+                    statusCode: res.statusCode,
+                };
+            },
+        },
+    })
+);
+
 app.use(helmet());
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
-app.use(cors({ origin: ['http://localhost:8000', 'http://127.0.0.1:8000'] }));
-app.use(express.json());
+app.use(cors({ origin: 'http://localhost:8000' }));
 
 // Swagger docs
 const swaggerOptions = {
@@ -53,11 +89,11 @@ app.use('/shoppingcarts', shoppingcartRouter);
 app.use('/nutritionlabels', nutritionlabelRouter);
 app.use('/items', itemRouter);
 
-app.get('/status', (req, res) => {
+app.get('/status', (_req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({ status: 'unauthorized', message: err.message });
     } else if (err.name === 'CoursesError') {

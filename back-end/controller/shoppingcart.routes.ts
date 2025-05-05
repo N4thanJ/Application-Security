@@ -103,11 +103,9 @@ interface AuthenticatedRequest extends Request {
 shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-
         if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
-
         const shoppingcarts = await shoppingcartService.getAllShoppingcarts();
         res.status(200).json(shoppingcarts);
     } catch (error) {
@@ -222,12 +220,7 @@ shoppingcartRouter.get(
 
 shoppingcartRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { role, email } = (req as AuthenticatedRequest).auth;
-
-        if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
-        }
-
+        const { email } = (req as AuthenticatedRequest).auth;
         const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email);
         res.status(201).json(shoppingcart);
     } catch (error) {
@@ -299,6 +292,7 @@ shoppingcartRouter.post(
                 itemId,
                 shoppingcartId,
             });
+
             res.status(200).json(shoppingcart);
         } catch (error) {
             res.status(500).json({ message: (error as Error).message });

@@ -205,11 +205,12 @@ nutritionlabelRouter.post('/', async (req: Request, res: Response, next: NextFun
         const { role } = (req as AuthenticatedRequest).auth;
 
         if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
 
         const nutritionlabel = req.body;
         const newNutritionlabel = await nutritionlabelService.createNutritionlabel(nutritionlabel);
+
         res.status(201).json(newNutritionlabel);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });

@@ -319,13 +319,13 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
 userRouter.put('/update/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-
-        if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
-        }
-
         const userId = parseInt(req.params.userId);
         const user = req.body as UserInput;
+
+        if (role && role !== 'admin') {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
         const updatedUser = await userService.updateUser(userId, user);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -361,12 +361,12 @@ userRouter.put('/update/:userId', async (req: Request, res: Response, next: Next
 userRouter.delete('/delete/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
+        const userId = parseInt(req.params.userId);
 
         if (role && role !== 'admin') {
-            res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        const userId = parseInt(req.params.userId);
         await userService.deleteUser(userId);
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {

@@ -1,0 +1,68 @@
+name: Generate SLSA Provenance for Frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
+    with:
+      directory: front-end
+      run-scripts: "ci, build"
+
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node registry authentication
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
+        with:
+          node-version: 18
+          registry-url: "https://registry.npmjs.org"
+
+      - name: publish
+        id: publish
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/publish@v2.1.0
+        with:
+          access: public
+          node-auth-token: ${{ secrets.NPM_TOKEN }}
+          package-name: ${{ needs.build.outputs.package-name }}
+          package-download-name: ${{ needs.build.outputs.package-download-name }}
+          package-download-sha256: ${{ needs.build.outputs.package-download-sha256 }}
+          provenance-name: ${{ needs.build.outputs.provenance-name }}
+          provenance-download-name: ${{ needs.build.outputs.provenance-download-name }}
+          provenance-download-sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+
+  verify:
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: curl the files
+        run: |
+          curl -Sso attestations.json $(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.attestations.url') && \
+          curl -Sso package.tgz "$(npm view @n4thanj/application-security-frontend --json | jq -r '.dist.tarball')"
+
+      - name: List files in the working directory
+        run: ls -l
+
+      - name: Verify SLSA Provenance
+        run: |
+          PACKAGE_VERSION=$(jq -r '.version' front-end/package.json)
+          curl -LO https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64
+          chmod +x slsa-verifier-linux-amd64
+          SLSA_VERIFIER_EXPERIMENTAL=1 ./slsa-verifier-linux-amd64 verify-npm-package package.tgz \
+            --attestations-path attestations.json \
+            --builder-id "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml" \
+            --package-name "@n4thanj/application-security-frontend" \
+            --package-version $PACKAGE_VERSION \
+            --source-uri github.com/N4thanJ/Application-Security
