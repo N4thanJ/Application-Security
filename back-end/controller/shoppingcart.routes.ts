@@ -59,7 +59,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import shoppingcartService from '../service/shoppingcart.service';
 import { Role } from '@prisma/client';
-import { logger } from '../util/logger';
 
 const shoppingcartRouter = express.Router();
 
@@ -104,19 +103,12 @@ interface AuthenticatedRequest extends Request {
 shoppingcartRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-        logger.info({ event: 'get_all_shoppingcarts_attempt', role });
-
         if (role && role !== 'admin') {
-            logger.warn({ event: 'get_all_shoppingcarts_unauthorized', role });
             return res.status(401).json({ message: 'Unauthorized' });
         }
-
         const shoppingcarts = await shoppingcartService.getAllShoppingcarts();
-
         res.status(200).json(shoppingcarts);
-        logger.info({ event: 'get_all_shoppingcarts_success', cartCount: shoppingcarts.length });
     } catch (error) {
-        logger.error({ event: 'get_all_shoppingcarts_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -173,18 +165,9 @@ shoppingcartRouter.get(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const shoppingcartId = parseInt(req.params.shoppingcartId);
-            logger.info({ event: 'get_shoppingcart_by_id_attempt', shoppingcartId });
-
             const shoppingcart = await shoppingcartService.getShoppingcartById(shoppingcartId);
-
             res.status(200).json(shoppingcart);
-            logger.info({ event: 'get_shoppingcart_by_id_success', shoppingcartId });
         } catch (error) {
-            logger.error({
-                event: 'get_shoppingcart_by_id_error',
-                shoppingcartId: req.params.shoppingcartId,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -237,39 +220,10 @@ shoppingcartRouter.get(
 
 shoppingcartRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { role, email } = (req as AuthenticatedRequest).auth;
-        logger.info({
-            event: 'create_shoppingcart_attempt',
-            role,
-            email,
-            cartName: req.body.name,
-        });
-
-        if (role && role !== 'admin') {
-            logger.warn({
-                event: 'create_shoppingcart_unauthorized',
-                role,
-                email,
-            });
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
+        const { email } = (req as AuthenticatedRequest).auth;
         const shoppingcart = await shoppingcartService.createShoppingcart(req.body, email);
-
         res.status(201).json(shoppingcart);
-        logger.info({
-            event: 'create_shoppingcart_success',
-            cartId: shoppingcart.getId(),
-            cartName: shoppingcart.getName(),
-            email: shoppingcart.getUser()?.getEmail(
-                
-            ),
-        });
     } catch (error) {
-        logger.error({
-            event: 'create_shoppingcart_error',
-            message: (error as Error).message,
-        });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -334,31 +288,13 @@ shoppingcartRouter.post(
         try {
             const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
-
-            logger.info({
-                event: 'add_item_to_shoppingcart_attempt',
-                itemId,
-                shoppingcartId,
-            });
-
             const shoppingcart = await shoppingcartService.addItemToShoppingcart({
                 itemId,
                 shoppingcartId,
             });
 
             res.status(200).json(shoppingcart);
-            logger.info({
-                event: 'add_item_to_shoppingcart_success',
-                itemId,
-                shoppingcartId,
-            });
         } catch (error) {
-            logger.error({
-                event: 'add_item_to_shoppingcart_error',
-                itemId: req.params.itemId,
-                shoppingcartId: req.params.shoppingcartId,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -424,31 +360,12 @@ shoppingcartRouter.delete(
         try {
             const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
-
-            logger.info({
-                event: 'delete_item_from_shoppingcart_attempt',
-                itemId,
-                shoppingcartId,
-            });
-
             const shoppingcart = await shoppingcartService.removeItemFromShoppingcart(
                 itemId,
                 shoppingcartId
             );
-
             res.status(200).json(shoppingcart);
-            logger.info({
-                event: 'delete_item_from_shoppingcart_success',
-                itemId,
-                shoppingcartId,
-            });
         } catch (error) {
-            logger.error({
-                event: 'delete_item_from_shoppingcart_error',
-                itemId: req.params.itemId,
-                shoppingcartId: req.params.shoppingcartId,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -514,31 +431,12 @@ shoppingcartRouter.delete(
         try {
             const itemId = parseInt(req.params.itemId);
             const shoppingcartId = parseInt(req.params.shoppingcartId);
-
-            logger.info({
-                event: 'remove_an_item_from_shoppingcart_attempt',
-                itemId,
-                shoppingcartId,
-            });
-
             const shoppingcart = await shoppingcartService.removeAnItemFromShoppingcart(
                 itemId,
                 shoppingcartId
             );
-
             res.status(200).json(shoppingcart);
-            logger.info({
-                event: 'remove_an_item_from_shoppingcart_success',
-                itemId,
-                shoppingcartId,
-            });
         } catch (error) {
-            logger.error({
-                event: 'remove_an_item_from_shoppingcart_error',
-                itemId: req.params.itemId,
-                shoppingcartId: req.params.shoppingcartId,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -613,13 +511,6 @@ shoppingcartRouter.put(
             const shoppingcartId = parseInt(req.params.shoppingcartId);
             const quantity = parseInt(req.params.quantity);
 
-            logger.info({
-                event: 'update_item_quantity_in_shoppingcart_attempt',
-                itemId,
-                shoppingcartId,
-                quantity,
-            });
-
             const shoppingcart = await shoppingcartService.updateItemQuantityInShoppingcart(
                 itemId,
                 shoppingcartId,
@@ -627,20 +518,7 @@ shoppingcartRouter.put(
             );
 
             res.status(200).json(shoppingcart);
-            logger.info({
-                event: 'update_item_quantity_in_shoppingcart_success',
-                itemId,
-                shoppingcartId,
-                quantity,
-            });
         } catch (error) {
-            logger.error({
-                event: 'update_item_quantity_in_shoppingcart_error',
-                itemId: req.params.itemId,
-                shoppingcartId: req.params.shoppingcartId,
-                quantity: req.params.quantity,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }
@@ -702,18 +580,9 @@ shoppingcartRouter.delete(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const shoppingcartId = parseInt(req.params.shoppingcartId);
-            logger.info({ event: 'delete_shoppingcart_attempt', shoppingcartId });
-
             await shoppingcartService.deleteShoppingcart(shoppingcartId);
-
             res.status(200).json({ message: 'Shopping cart deleted successfully' });
-            logger.info({ event: 'delete_shoppingcart_success', shoppingcartId });
         } catch (error) {
-            logger.error({
-                event: 'delete_shoppingcart_error',
-                shoppingcartId: req.params.shoppingcartId,
-                message: (error as Error).message,
-            });
             res.status(500).json({ message: (error as Error).message });
         }
     }

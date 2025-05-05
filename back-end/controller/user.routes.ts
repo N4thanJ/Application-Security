@@ -41,7 +41,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import userService from '../service/user.service';
 import { Role, UserInput } from '../types';
-import { logger } from '../util/logger';
 
 const userRouter = express.Router();
 
@@ -81,12 +80,9 @@ interface AuthenticatedRequest extends Request {
 userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-        logger.info({ event: 'get_all_users_attempt', role });
         const users = await userService.getAllUsers(role);
         res.status(200).json(users);
-        logger.info({ event: 'get_all_users_success', userCount: users.length });
     } catch (error) {
-        logger.error({ event: 'get_all_users_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -127,12 +123,9 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 userRouter.get('/email/:email', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const email = req.params.email;
-        logger.info({ event: 'get_user_by_email_attempt', email });
         const user = await userService.getByEmail(email);
         res.status(200).json(user);
-        logger.info({ event: 'get_user_by_email_success', userId: user?.getId() });
     } catch (error) {
-        logger.error({ event: 'get_user_by_email_error', message: (error as Error).message });
         next(error);
     }
 });
@@ -173,12 +166,9 @@ userRouter.get('/email/:email', async (req: Request, res: Response, next: NextFu
 userRouter.get('/id/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = parseInt(req.params.id);
-        logger.info({ event: 'get_user_by_id_attempt', id });
         const user = await userService.getById(id);
         res.status(200).json(user);
-        logger.info({ event: 'get_user_by_id_success', userId: user?.getId() });
     } catch (error) {
-        logger.error({ event: 'get_user_by_id_error', message: (error as Error).message });
         next(error);
     }
 });
@@ -228,14 +218,9 @@ userRouter.get('/id/:id', async (req: Request, res: Response, next: NextFunction
 userRouter.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const newUser = req.body as UserInput;
-        logger.info({ event: 'user_signup_attempt', newUser });
-
         const user = await userService.createUser(newUser);
         res.status(200).json(user);
-
-        logger.info({ event: 'user_signup_success', userId: user.getId(), email: user.getEmail() });
     } catch (error) {
-        logger.error({ event: 'user_signup_error', message: (error as Error).message });
         next(error);
     }
 });
@@ -286,17 +271,9 @@ userRouter.post('/signup', async (req: Request, res: Response, next: NextFunctio
 userRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
-        logger.info({ event: 'user_login_attempt', email });
         const authResponse = await userService.authenticate({ email, password });
         res.status(200).json(authResponse);
-        logger.info({
-            event: 'user_login_success',
-            email: authResponse.email,
-            token: authResponse.token,
-            role: authResponse.role,
-        });
     } catch (error) {
-        logger.error({ event: 'user_login_error', message: (error as Error).message });
         next(error);
     }
 });
@@ -344,18 +321,13 @@ userRouter.put('/:userId', async (req: Request, res: Response, next: NextFunctio
         const userId = parseInt(req.params.userId);
         const user = req.body as UserInput;
 
-        logger.info({ event: 'update_user_attempt', userId, role });
-
         if (role && role !== 'admin') {
-            logger.warn({ event: 'update_user_unauthorized', userId });
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
         const updatedUser = await userService.updateUser(userId, user);
         res.status(200).json(updatedUser);
-        logger.info({ event: 'update_user_success', userId });
     } catch (error) {
-        logger.error({ event: 'update_user_error', message: (error as Error).message });
         next(error);
     }
 });
@@ -390,18 +362,13 @@ userRouter.delete('/:userId', async (req: Request, res: Response, next: NextFunc
         const { role } = (req as AuthenticatedRequest).auth;
         const userId = parseInt(req.params.userId);
 
-        logger.info({ event: 'delete_user_attempt', userId, role });
-
         if (role && role !== 'admin') {
-            logger.warn({ event: 'delete_user_unauthorized', userId });
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
         await userService.deleteUser(userId);
         res.status(200).json({ message: 'User deleted successfully' });
-        logger.info({ event: 'delete_user_success', userId });
     } catch (error) {
-        logger.error({ event: 'delete_user_error', message: (error as Error).message });
         next(error);
     }
 });

@@ -1,26 +1,59 @@
 import * as dotenv from 'dotenv';
-import express from 'express';
 import cors from 'cors';
 import { userRouter } from './controller/user.routes';
 import { itemRouter } from './controller/item.routes';
 import { shoppingcartRouter } from './controller/shoppingcart.routes';
 import { nutritionlabelRouter } from './controller/nutritionlabel.routes';
-import { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
 import helmet from 'helmet';
-import { logger } from './util/logger';
-import { logSecurityEvents } from './logging.middleware';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
 
 const app = express();
+
+const logToFile = pino(
+    pino.transport({
+        target: 'pino-pretty',
+        options: { singleLine: true, destination: 'logs/app.log' },
+    })
+);
+
+app.use(express.json());
+
+app.use(
+    pinoHttp({
+        logger: logToFile,
+        customSuccessMessage(req, res) {
+            return `${req.method} ${req.url} ${res.statusCode}`;
+        },
+        serializers: {
+            req(req) {
+                const { password, ...safeBody } = req.raw.body || {};
+                return {
+                    id: req.id,
+                    method: req.method,
+                    url: req.url,
+                    timestamp: new Date().toISOString(),
+                    body: safeBody,
+                };
+            },
+            res(res) {
+                return {
+                    statusCode: res.statusCode,
+                };
+            },
+        },
+    })
+);
+
 app.use(helmet());
-app.use(logSecurityEvents);
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
 app.use(cors({ origin: 'http://localhost:8000' }));
-app.use(express.json());
 
 // Swagger docs
 const swaggerOptions = {
@@ -63,16 +96,13 @@ app.get('/status', (_req, res) => {
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({ status: 'unauthorized', message: err.message });
-        logger.warn('Unauthorized Error' + err.message);
     } else if (err.name === 'CoursesError') {
         res.status(400).json({ status: 'domain error', message: err.message });
-        logger.error('Domain error occurred', { error: err });
     } else {
         res.status(400).json({ status: 'application error', message: err.message });
-        logger.error('Application error occurred', { error: err });
     }
 });
 
 app.listen(port || 3000, () => {
-    logger.info(`Back-end is running on port ${port}.`);
+    console.log(`Back-end is running on port ${port}.`);
 });

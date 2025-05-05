@@ -106,7 +106,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import nutritionlabelService from '../service/nutritionlabel.service';
 import { Role } from '../types';
-import { logger } from '../util/logger';
 
 const nutritionlabelRouter = express.Router();
 
@@ -149,17 +148,9 @@ interface AuthenticatedRequest extends Request {
 
 nutritionlabelRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        logger.info({ event: 'get_all_nutritionlabels_attempt' });
-
         const nutritionlabels = await nutritionlabelService.getAllNutritionlabels();
-
         res.status(200).json(nutritionlabels);
-        logger.info({
-            event: 'get_all_nutritionlabels_success',
-            labelCount: nutritionlabels.length,
-        });
     } catch (error) {
-        logger.error({ event: 'get_all_nutritionlabels_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });
@@ -212,10 +203,8 @@ nutritionlabelRouter.get('/', async (req: Request, res: Response, next: NextFunc
 nutritionlabelRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { role } = (req as AuthenticatedRequest).auth;
-        logger.info({ event: 'create_nutritionlabel_attempt', role });
 
         if (role && role !== 'admin') {
-            logger.warn({ event: 'create_nutritionlabel_unauthorized', role });
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
@@ -223,13 +212,7 @@ nutritionlabelRouter.post('/', async (req: Request, res: Response, next: NextFun
         const newNutritionlabel = await nutritionlabelService.createNutritionlabel(nutritionlabel);
 
         res.status(201).json(newNutritionlabel);
-        logger.info({
-            event: 'create_nutritionlabel_success',
-            labelId: newNutritionlabel.getId(),
-            energy: newNutritionlabel.getEnergy(),
-        });
     } catch (error) {
-        logger.error({ event: 'create_nutritionlabel_error', message: (error as Error).message });
         res.status(500).json({ message: (error as Error).message });
     }
 });

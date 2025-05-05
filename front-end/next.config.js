@@ -4,10 +4,6 @@ module.exports = {
     i18n,
     async headers() {
         const cspHeader = `
-            default-src 'self';
-            script-src 'self';
-            style-src 'self';
-            img-src 'self' blob: data:;
             font-src 'self';
             object-src 'none';
             base-uri 'self';
