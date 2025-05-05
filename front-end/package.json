@@ -1,6 +1,6 @@
 {
     "name": "@n4thanj/application-security-front-end",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scripts": {
         "dev": "next dev -p 8000",
         "ci": "npm ci",
