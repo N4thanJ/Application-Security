@@ -16,6 +16,19 @@ const app = express();
 
 app.use(express.json());
 
+const logThrottleCache = new Map();
+const THROTTLE_INTERVAL_MS = 5000;
+
+function shouldLog304(url: any) {
+    const now = Date.now();
+    const lastLogged = logThrottleCache.get(url) || 0;
+    if (now - lastLogged > THROTTLE_INTERVAL_MS) {
+        logThrottleCache.set(url, now);
+        return true;
+    }
+    return false;
+}
+
 const logToFile = pino(
     pino.transport({
         target: 'pino-pretty',
@@ -28,6 +41,14 @@ app.use(
         logger: logToFile,
         customSuccessMessage(req, res) {
             return `${req.method} ${req.url} ${res.statusCode}`;
+        },
+        customLogLevel(req, res, err) {
+            if (res.statusCode >= 500 || err) return 'error';
+            if (res.statusCode >= 400) return 'warn';
+            if (res.statusCode === 304) {
+                return shouldLog304(req.url) ? 'debug' : 'silent';
+            }
+            return 'info';
         },
         serializers: {
             req(req) {
