@@ -7,13 +7,13 @@ version: 2
 updates:
   # Frontend (Next.js)
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directory: "/front-end"
     schedule:
       interval: "weekly"
 
   # Backend (Express.js)
   - package-ecosystem: "npm"
-    directory: "/backend"
+    directory: "/back-end"
     schedule:
       interval: "weekly"
 
