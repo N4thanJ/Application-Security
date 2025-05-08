@@ -4,7 +4,7 @@ import userDb from '../../repository/user.db';
 import shoppingcartService from '../../service/shoppingcart.service';
 import { ShoppingcartInput, UserInput } from '../../types';
 import { ItemInput } from '../../types';
-import bcrypt from 'bcrypt';
+import bcrypt, { genSalt } from 'bcrypt';
 
 // Mocking shoppingcartDb to get all shoppingcarts
 let mockShoppingcartDbGetAllShoppingcarts: jest.Mock;
@@ -63,7 +63,7 @@ test('given: a valid shoppingcart, when: creating a new shoppingcart, then: the 
     // given a valid shoppingcart
     const user1: UserInput = {
         email: 'email@example.com',
-        password: bcrypt.hashSync('password', 10),
+        password: bcrypt.hashSync('password', await genSalt()),
         role: 'user',
     };
 

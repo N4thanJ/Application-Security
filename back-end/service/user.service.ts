@@ -143,7 +143,7 @@ const changePassword = async (
         throw new Error('Password is incorrect.');
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, await genSalt());
 
     return userDb.changePassword(email, hashedPassword);
 };
